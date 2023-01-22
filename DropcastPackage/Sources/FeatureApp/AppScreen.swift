@@ -5,9 +5,7 @@ import SwiftUI
 
 public struct AppScreen: View {
     let store: StoreOf<AppReducer> = .init(initialState: AppReducer.State(), reducer: AppReducer())
-    
-    public init() {}
-    
+
     public var body: some View {
         WithViewStore(store, observe: \.activeTab) { viewStore in
             TabView(selection: viewStore.binding(get: { $0 }, send: { .activeTabChanged($0) })) {
@@ -17,7 +15,7 @@ public struct AppScreen: View {
                         .tabItem {
                             Label("Feed", systemImage: "dot.radiowaves.up.forward")
                         }
-                    
+
                     ShowsScreen(store: store.scope(state: \.showsState, action: { .shows($0) }))
                         .tag(AppReducer.Tab.shows)
                         .tabItem {
@@ -28,6 +26,8 @@ public struct AppScreen: View {
             }
         }
     }
+
+    public init() {}
 }
 
 struct AppScreen_Previews: PreviewProvider {

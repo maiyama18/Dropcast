@@ -3,7 +3,10 @@
 import PackageDescription
 
 extension PackageDescription.Target.Dependency {
-    static let composableArchitecture: Self = .product(name: "ComposableArchitecture", package: "swift-composable-architecture")
+    static let composableArchitecture: Self = .product(
+        name: "ComposableArchitecture",
+        package: "swift-composable-architecture"
+    )
 }
 
 let package = Package(
@@ -29,9 +32,7 @@ let package = Package(
     targets: [
         .target(
             name: "App",
-            dependencies: [
-                "FeatureApp",
-            ]),
+            dependencies: ["FeatureApp"]),
         .target(
             name: "FeatureApp",
             dependencies: [
@@ -41,13 +42,9 @@ let package = Package(
             ]),
         .target(
             name: "FeatureFeed",
-            dependencies: [
-                .composableArchitecture,
-            ]),
+            dependencies: [.composableArchitecture]),
         .target(
             name: "FeatureShows",
-            dependencies: [
-                .composableArchitecture,
-            ]),
+            dependencies: [.composableArchitecture]),
     ]
 )

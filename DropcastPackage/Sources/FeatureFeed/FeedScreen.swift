@@ -3,11 +3,11 @@ import SwiftUI
 
 public struct FeedScreen: View {
     let store: StoreOf<FeedReducer>
-    
+
     public init(store: StoreOf<FeedReducer>) {
         self.store = store
     }
-    
+
     public var body: some View {
         WithViewStore(store, observe: { $0 }) { viewStore in
             Text("Feed Screen")
