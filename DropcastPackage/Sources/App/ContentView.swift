@@ -1,9 +1,11 @@
 import SwiftUI
+import FeatureApp
 
 public struct ContentView: View {
     public init() {}
 
     public var body: some View {
-        Text("Hello World!")
+        AppScreen()
+            .tint(.orange)
     }
 }
