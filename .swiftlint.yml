@@ -1,0 +1,11 @@
+disabled_rules:
+  - multiple_closures_with_trailing_closure
+
+opt_in_rules:
+  - file_header
+  - modifier_order
+  - sorted_imports
+  - unused_capture_list
+
+trailing_comma:
+    mandatory_comma: true
