@@ -9,7 +9,40 @@ extension PackageDescription.Target.Dependency {
     )
 }
 
-let package = Package(
+let dependencies: [PackageDescription.Package.Dependency] = [
+    .package(url: "https://github.com/pointfreeco/swift-composable-architecture", exact: "0.49.2")
+]
+
+let targets: [PackageDescription.Target] = [
+    .target(
+        name: "App",
+        dependencies: ["FeatureApp"]),
+    .target(
+        name: "FeatureApp",
+        dependencies: [
+            .composableArchitecture,
+            "FeatureFeed",
+            "FeatureShows",
+        ]),
+    .target(
+        name: "FeatureFeed",
+        dependencies: [.composableArchitecture]),
+    .target(
+        name: "FeatureShows",
+        dependencies: [.composableArchitecture]),
+].map { (target: PackageDescription.Target) -> PackageDescription.Target in
+    var swiftSettings = target.swiftSettings ?? []
+    swiftSettings.append(
+        .unsafeFlags(
+            ["-strict-concurrency=complete", "-enable-actor-data-race-checks"],
+            .when(configuration: .debug)
+        )
+    )
+    target.swiftSettings = swiftSettings
+    return target
+}
+
+var package = Package(
     name: "DropcastPackage",
     platforms: [.iOS(.v16)],
     products: [
@@ -26,25 +59,6 @@ let package = Package(
             name: "FeatureShows",
             targets: ["FeatureShows"]),
     ],
-    dependencies: [
-        .package(url: "https://github.com/pointfreeco/swift-composable-architecture", exact: "0.49.2")
-    ],
-    targets: [
-        .target(
-            name: "App",
-            dependencies: ["FeatureApp"]),
-        .target(
-            name: "FeatureApp",
-            dependencies: [
-                .composableArchitecture,
-                "FeatureFeed",
-                "FeatureShows",
-            ]),
-        .target(
-            name: "FeatureFeed",
-            dependencies: [.composableArchitecture]),
-        .target(
-            name: "FeatureShows",
-            dependencies: [.composableArchitecture]),
-    ]
+    dependencies: dependencies,
+    targets: targets
 )
