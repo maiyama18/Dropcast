@@ -1,5 +1,5 @@
-import SwiftUI
 import FeatureApp
+import SwiftUI
 
 public struct ContentView: View {
     public init() {}
