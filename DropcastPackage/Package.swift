@@ -28,6 +28,11 @@ let targets: [PackageDescription.Target] = [
         ],
         path: "Sources/Feature/App"
     ),
+    .testTarget(
+        name: "AppFeatureTests",
+        dependencies: ["AppFeature"],
+        path: "Tests/Feature/App"
+    ),
     .target(
         name: "FeedFeature",
         dependencies: [.composableArchitecture],
