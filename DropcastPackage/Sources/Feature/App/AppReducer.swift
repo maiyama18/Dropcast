@@ -1,6 +1,6 @@
 import ComposableArchitecture
-import FeatureFeed
-import FeatureShows
+import FeedFeature
+import ShowsFeature
 
 extension AppReducer {
     enum Tab {
