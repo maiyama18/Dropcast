@@ -16,25 +16,36 @@ let dependencies: [PackageDescription.Package.Dependency] = [
 let targets: [PackageDescription.Target] = [
     .target(
         name: "App",
-        dependencies: ["FeatureApp"]),
+        dependencies: ["AppFeature"],
+        path: "Sources/App/App"
+    ),
     .target(
-        name: "FeatureApp",
+        name: "AppFeature",
         dependencies: [
             .composableArchitecture,
-            "FeatureFeed",
-            "FeatureShows",
-        ]),
+            "FeedFeature",
+            "ShowsFeature",
+        ],
+        path: "Sources/Feature/App"
+    ),
     .target(
-        name: "FeatureFeed",
-        dependencies: [.composableArchitecture]),
+        name: "FeedFeature",
+        dependencies: [.composableArchitecture],
+        path: "Sources/Feature/Feed"
+    ),
     .target(
-        name: "FeatureShows",
-        dependencies: [.composableArchitecture]),
+        name: "ShowsFeature",
+        dependencies: [.composableArchitecture],
+        path: "Sources/Feature/Shows"
+    ),
 ].map { (target: PackageDescription.Target) -> PackageDescription.Target in
     var swiftSettings = target.swiftSettings ?? []
     swiftSettings.append(
         .unsafeFlags(
-            ["-strict-concurrency=complete", "-enable-actor-data-race-checks"],
+            [
+                "-strict-concurrency=complete",
+                "-enable-actor-data-race-checks",
+            ],
             .when(configuration: .debug)
         )
     )
@@ -50,14 +61,14 @@ var package = Package(
             name: "App",
             targets: ["App"]),
         .library(
-            name: "FeatureApp",
-            targets: ["FeatureApp"]),
+            name: "AppFeature",
+            targets: ["AppFeature"]),
         .library(
-            name: "FeatureFeed",
-            targets: ["FeatureFeed"]),
+            name: "FeedFeature",
+            targets: ["FeedFeature"]),
         .library(
-            name: "FeatureShows",
-            targets: ["FeatureShows"]),
+            name: "ShowsFeature",
+            targets: ["ShowsFeature"]),
     ],
     dependencies: dependencies,
     targets: targets

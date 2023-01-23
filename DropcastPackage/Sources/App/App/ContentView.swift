@@ -1,4 +1,4 @@
-import FeatureApp
+import AppFeature
 import SwiftUI
 
 public struct ContentView: View {
