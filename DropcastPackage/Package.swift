@@ -7,10 +7,15 @@ extension PackageDescription.Target.Dependency {
         name: "ComposableArchitecture",
         package: "swift-composable-architecture"
     )
+    static let dependencies: Self = .product(
+        name: "Dependencies",
+        package: "swift-dependencies"
+    )
 }
 
 let dependencies: [PackageDescription.Package.Dependency] = [
-    .package(url: "https://github.com/pointfreeco/swift-composable-architecture", exact: "0.49.2")
+    .package(url: "https://github.com/pointfreeco/swift-composable-architecture", exact: "0.49.2"),
+    .package(url: "https://github.com/pointfreeco/swift-dependencies", exact: "0.1.4"),
 ]
 
 let targets: [PackageDescription.Target] = [
@@ -43,6 +48,33 @@ let targets: [PackageDescription.Target] = [
         dependencies: [.composableArchitecture],
         path: "Sources/Feature/Shows"
     ),
+    .target(
+        name: "ITunesClient",
+        dependencies: [
+            .dependencies,
+            "Entity",
+        ],
+        path: "Sources/Infra/ITunesClient"
+    ),
+    .testTarget(
+        name: "ITunesClientTests",
+        dependencies: [
+            "ITunesClient",
+            "TestHelper",
+        ],
+        path: "Tests/Infra/ITunesClientTests",
+        resources: [.process("Resources")]
+    ),
+    .target(
+        name: "Entity",
+        dependencies: [],
+        path: "Sources/Core/Entity"
+    ),
+    .target(
+        name: "TestHelper",
+        dependencies: [],
+        path: "Sources/Core/TestHelper"
+    ),
 ].map { (target: PackageDescription.Target) -> PackageDescription.Target in
     var swiftSettings = target.swiftSettings ?? []
     swiftSettings.append(
@@ -74,6 +106,9 @@ var package = Package(
         .library(
             name: "ShowsFeature",
             targets: ["ShowsFeature"]),
+        .library(
+            name: "ITunesClient",
+            targets: ["ITunesClient"]),
     ],
     dependencies: dependencies,
     targets: targets
