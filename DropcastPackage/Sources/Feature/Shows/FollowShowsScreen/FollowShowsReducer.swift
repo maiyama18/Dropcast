@@ -1,20 +1,19 @@
 import ComposableArchitecture
 
-public struct ShowsReducer: ReducerProtocol {
+public struct FollowShowsReducer: ReducerProtocol {
     public struct State: Equatable {
-        public init() {}
+        var query: String = ""
     }
 
     public enum Action: Equatable {
-        case task
+        case queryChanged(query: String)
     }
 
-    public init() {}
-
     public var body: some ReducerProtocol<State, Action> {
-        Reduce { _, action in
+        Reduce { state, action in
             switch action {
-            case .task:
+            case .queryChanged(let query):
+                state.query = query
                 return .none
             }
         }
