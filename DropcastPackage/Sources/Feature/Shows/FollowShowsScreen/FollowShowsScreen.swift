@@ -4,15 +4,35 @@ import SwiftUI
 struct FollowShowsScreen: View {
     let store: StoreOf<FollowShowsReducer>
 
+    @Dependency(\.continuousClock) var clock
+
     var body: some View {
         WithViewStore(store, observe: { $0 }) { viewStore in
             NavigationStack {
-                Text("Query: " + viewStore.query)
-                    .navigationTitle("Search shows")
-                    .searchable(
-                        text: viewStore.binding(get: \.query, send: { .queryChanged(query: $0) }),
-                        prompt: Text("Title, Host ...")
-                    )
+                ScrollView {
+                    LazyVStack {
+                        ForEach(viewStore.shows) { show in
+                            VStack(alignment: .leading) {
+                                Text(show.showName)
+                                Text(show.artistName)
+                            }
+                            .padding()
+                            .frame(maxWidth: .infinity, alignment: .leading)
+                        }
+                    }
+                }
+                .navigationTitle("Search shows")
+                .searchable(
+                    text: viewStore.binding(get: \.query, send: { .queryChanged(query: $0) }),
+                    placement: .navigationBarDrawer(displayMode: .always),
+                    prompt: Text("Show name, Host ...")
+                )
+            }
+            .task(id: viewStore.query) {
+                do {
+                    try await clock.sleep(for: .milliseconds(300))
+                    viewStore.send(.queryChangeDebounced)
+                } catch {}
             }
         }
     }

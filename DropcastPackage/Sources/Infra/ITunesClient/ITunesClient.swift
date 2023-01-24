@@ -1,6 +1,7 @@
 import Dependencies
 import Entity
 import Foundation
+import XCTestDynamicOverlay
 
 public struct ITunesClient: Sendable {
     public var searchShows: @Sendable (_ query: String) async throws -> [Show]
@@ -25,6 +26,7 @@ extension ITunesClient {
 
 extension ITunesClient: DependencyKey {
     public static var liveValue: ITunesClient = .live(urlSession: .shared)
+    public static var testValue: ITunesClient = ITunesClient(searchShows: unimplemented())
 }
 
 extension DependencyValues {

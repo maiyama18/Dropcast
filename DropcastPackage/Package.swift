@@ -45,8 +45,20 @@ let targets: [PackageDescription.Target] = [
     ),
     .target(
         name: "ShowsFeature",
-        dependencies: [.composableArchitecture],
+        dependencies: [
+            .composableArchitecture,
+            "Entity",
+            "ITunesClient",
+        ],
         path: "Sources/Feature/Shows"
+    ),
+    .testTarget(
+        name: "ShowsFeatureTests",
+        dependencies: [
+            "ShowsFeature",
+            "TestHelper",
+        ],
+        path: "Tests/Feature/Shows"
     ),
     .target(
         name: "ITunesClient",
