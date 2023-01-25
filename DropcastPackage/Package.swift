@@ -11,17 +11,25 @@ extension PackageDescription.Target.Dependency {
         name: "Dependencies",
         package: "swift-dependencies"
     )
+    static let drops: Self = .product(
+        name: "Drops",
+        package: "Drops"
+    )
 }
 
 let dependencies: [PackageDescription.Package.Dependency] = [
     .package(url: "https://github.com/pointfreeco/swift-composable-architecture", exact: "0.49.2"),
     .package(url: "https://github.com/pointfreeco/swift-dependencies", exact: "0.1.4"),
+    .package(url: "https://github.com/omaralbeik/Drops", exact: "1.6.1"),
 ]
 
 let targets: [PackageDescription.Target] = [
     .target(
         name: "App",
-        dependencies: ["AppFeature"],
+        dependencies: [
+            "AppFeature",
+            "MessageClientLive",
+        ],
         path: "Sources/App/App"
     ),
     .target(
@@ -48,7 +56,9 @@ let targets: [PackageDescription.Target] = [
         dependencies: [
             .composableArchitecture,
             "Entity",
+            "Error",
             "ITunesClient",
+            "MessageClient",
         ],
         path: "Sources/Feature/Shows"
     ),
@@ -65,6 +75,7 @@ let targets: [PackageDescription.Target] = [
         dependencies: [
             .dependencies,
             "Entity",
+            "Error",
         ],
         path: "Sources/Infra/ITunesClient"
     ),
@@ -78,9 +89,28 @@ let targets: [PackageDescription.Target] = [
         resources: [.process("Resources")]
     ),
     .target(
+        name: "MessageClient",
+        dependencies: [.dependencies],
+        path: "Sources/Infra/MessageClient"
+    ),
+    .target(
+        name: "MessageClientLive",
+        dependencies: [
+            .dependencies,
+            .drops,
+            "MessageClient",
+        ],
+        path: "Sources/Infra/MessageClientLive"
+    ),
+    .target(
         name: "Entity",
         dependencies: [],
         path: "Sources/Core/Entity"
+    ),
+    .target(
+        name: "Error",
+        dependencies: [],
+        path: "Sources/Core/Error"
     ),
     .target(
         name: "TestHelper",

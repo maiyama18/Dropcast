@@ -1,4 +1,5 @@
 import AppFeature
+import MessageClientLive
 import SwiftUI
 
 public struct ContentView: View {

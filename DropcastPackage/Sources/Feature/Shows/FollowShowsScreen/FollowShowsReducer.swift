@@ -1,6 +1,7 @@
 import ComposableArchitecture
 import Entity
 import ITunesClient
+import MessageClient
 
 public struct FollowShowsReducer: ReducerProtocol, Sendable {
     public struct State: Equatable {
@@ -16,6 +17,7 @@ public struct FollowShowsReducer: ReducerProtocol, Sendable {
     }
 
     @Dependency(\.iTunesClient) private var iTunesClient
+    @Dependency(\.messageClient) private var messageClient
 
     private enum SearchID {}
 
@@ -51,11 +53,9 @@ public struct FollowShowsReducer: ReducerProtocol, Sendable {
                     state.shows = shows
                     return .none
                 case .failure(let error):
-
-                    // TODO: エラーメッセージを表示
-                    print(error)
-
-                    return .none
+                    return .fireAndForget {
+                        messageClient.presentError(error.userMessage)
+                    }
                 }
             }
         }

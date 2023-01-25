@@ -1,5 +1,6 @@
 import Dependencies
 import Entity
+import Error
 import Foundation
 import XCTestDynamicOverlay
 

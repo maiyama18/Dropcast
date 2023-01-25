@@ -36,12 +36,16 @@ final class FollowShowsReducerTests: XCTestCase {
     }
 
     func test_queryChangeDebounced_searchFailure() async {
+        let errorMessage: LockIsolated<String?> = .init(nil)
         let store = TestStore(
             initialState: FollowShowsReducer.State(),
             reducer: FollowShowsReducer()
         ) {
             $0.iTunesClient.searchShows = { _ in
                 throw TestError.somethingWentWrong
+            }
+            $0.messageClient.presentError = { message in
+                errorMessage.withValue { $0 = message }
             }
         }
 
@@ -50,6 +54,8 @@ final class FollowShowsReducerTests: XCTestCase {
         }
         await store.send(.queryChangeDebounced)
         await store.receive(.searchResponse(.failure(TestError.somethingWentWrong)))
+
+        XCTAssertEqual(errorMessage.value, "Something went wrong")
     }
 
     func test_queryChangedToEmpty_whileSearchRequestInFlight() async {
