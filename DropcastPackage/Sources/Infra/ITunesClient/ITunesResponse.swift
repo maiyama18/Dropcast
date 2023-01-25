@@ -13,6 +13,7 @@ struct ShowResponse: Decodable {
     var primaryGenreName: String
     var feedURL: String
     var trackViewURL: String
+    var artworkURL100: String
     var artworkURL600: String
 
     enum CodingKeys: String, CodingKey {
@@ -22,13 +23,15 @@ struct ShowResponse: Decodable {
         case primaryGenreName
         case feedURL = "feedUrl"
         case trackViewURL = "trackViewUrl"
+        case artworkURL100 = "artworkUrl100"
         case artworkURL600 = "artworkUrl600"
     }
 
     func toShow() -> Show? {
         guard let feedURL = URL(string: feedURL),
               let trackViewURL = URL(string: trackViewURL),
-              let artworkURL600 = URL(string: artworkURL600) else {
+              let artworkURL600 = URL(string: artworkURL600),
+              let artworkURL100 = URL(string: artworkURL100) else {
             return nil
         }
 
@@ -39,7 +42,8 @@ struct ShowResponse: Decodable {
             genreName: primaryGenreName,
             feedURL: feedURL,
             storeURL: trackViewURL,
-            artworkURL: artworkURL600
+            artworkURL: artworkURL600,
+            artworkLowQualityURL: artworkURL100
         )
     }
 }

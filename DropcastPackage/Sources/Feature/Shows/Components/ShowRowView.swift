@@ -6,7 +6,7 @@ struct ShowRowView: View {
 
     var body: some View {
         HStack {
-            AsyncImage(url: show.artworkURL) { image in
+            AsyncImage(url: show.artworkLowQualityURL) { image in
                 image
                     .resizable()
                     .aspectRatio(contentMode: .fit)
