@@ -10,18 +10,16 @@ struct FollowShowsScreen: View {
         WithViewStore(store, observe: { $0 }) { viewStore in
             NavigationStack {
                 ScrollView {
-                    LazyVStack {
+                    LazyVStack(spacing: 0) {
                         ForEach(viewStore.shows) { show in
-                            VStack(alignment: .leading) {
-                                Text(show.showName)
-                                Text(show.artistName)
-                            }
-                            .padding()
-                            .frame(maxWidth: .infinity, alignment: .leading)
+                            ShowRowView(show: show)
+                                .padding(.horizontal, 8)
+                                .padding(.vertical, 4)
                         }
                     }
                 }
                 .navigationTitle("Search shows")
+                .navigationBarTitleDisplayMode(.inline)
                 .searchable(
                     text: viewStore.binding(get: \.query, send: { .queryChanged(query: $0) }),
                     placement: .navigationBarDrawer(displayMode: .always),
