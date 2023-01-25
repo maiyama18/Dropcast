@@ -25,9 +25,12 @@ public struct FollowShowsReducer: ReducerProtocol, Sendable {
             case .queryChanged(let query):
                 state.query = query
 
-                // TODO: query が空文字の場合は検索結果を空にしてリクエストをキャンセルする
-
-                return .none
+                if query.isEmpty {
+                    state.shows = []
+                    return .cancel(id: SearchID.self)
+                } else {
+                    return .none
+                }
             case .queryChangeDebounced:
                 let query = state.query
                 guard !query.isEmpty else {
