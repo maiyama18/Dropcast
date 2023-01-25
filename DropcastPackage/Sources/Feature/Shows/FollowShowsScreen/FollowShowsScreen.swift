@@ -9,12 +9,26 @@ struct FollowShowsScreen: View {
     var body: some View {
         WithViewStore(store, observe: { $0 }) { viewStore in
             NavigationStack {
-                ScrollView {
-                    LazyVStack(spacing: 0) {
-                        ForEach(viewStore.shows) { show in
-                            ShowRowView(show: show)
-                                .padding(.horizontal, 8)
-                                .padding(.vertical, 4)
+                Group {
+                    switch viewStore.shows {
+                    case .empty:
+                        VStack {
+                            Image(systemName: "magnifyingglass")
+                                .font(.largeTitle)
+
+                            Text("No Results")
+                                .font(.title2)
+                        }
+                        .frame(maxHeight: .infinity, alignment: .center)
+                    case .present(let shows):
+                        ScrollView {
+                            LazyVStack(spacing: 0) {
+                                ForEach(shows) { show in
+                                    ShowRowView(show: show)
+                                        .padding(.horizontal, 8)
+                                        .padding(.vertical, 4)
+                                }
+                            }
                         }
                     }
                 }

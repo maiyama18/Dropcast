@@ -26,12 +26,36 @@ final class FollowShowsReducerTests: XCTestCase {
 
         await store.send(.queryChangeDebounced)
         await store.receive(.searchResponse(.success([.fixtureStacktrace, .fixtureStackOverflow]))) {
-            $0.shows = [.fixtureStacktrace, .fixtureStackOverflow]
+            $0.shows = .present(shows: [.fixtureStacktrace, .fixtureStackOverflow])
         }
 
         await store.send(.queryChanged(query: "")) {
             $0.query = ""
-            $0.shows = []
+            $0.shows = .present(shows: [])
+        }
+    }
+
+    func test_queryChangeDebounced_searchEmpty() async {
+        let store = TestStore(
+            initialState: FollowShowsReducer.State(),
+            reducer: FollowShowsReducer()
+        ) {
+            $0.iTunesClient.searchShows = { query in
+                guard query == "stack" else {
+                    XCTFail()
+                    throw TestError.somethingWentWrong
+                }
+                return []
+            }
+        }
+
+        await store.send(.queryChanged(query: "stack")) {
+            $0.query = "stack"
+        }
+
+        await store.send(.queryChangeDebounced)
+        await store.receive(.searchResponse(.success([]))) {
+            $0.shows = .empty
         }
     }
 
@@ -81,7 +105,7 @@ final class FollowShowsReducerTests: XCTestCase {
         await store.send(.queryChangeDebounced)
         await store.send(.queryChanged(query: "")) {
             $0.query = ""
-            $0.shows = []
+            $0.shows = .present(shows: [])
         }
         await clock.advance(by: .seconds(1))
     }

@@ -5,8 +5,13 @@ import MessageClient
 
 public struct FollowShowsReducer: ReducerProtocol, Sendable {
     public struct State: Equatable {
+        public enum Shows: Equatable {
+            case present(shows: [Show])
+            case empty
+        }
+
         public var query: String = ""
-        public var shows: [Show] = []
+        public var shows: Shows = .present(shows: [])
     }
 
     public enum Action: Equatable {
@@ -28,7 +33,7 @@ public struct FollowShowsReducer: ReducerProtocol, Sendable {
                 state.query = query
 
                 if query.isEmpty {
-                    state.shows = []
+                    state.shows = .present(shows: [])
                     return .cancel(id: SearchID.self)
                 } else {
                     return .none
@@ -50,7 +55,7 @@ public struct FollowShowsReducer: ReducerProtocol, Sendable {
             case .searchResponse(let result):
                 switch result {
                 case .success(let shows):
-                    state.shows = shows
+                    state.shows = shows.isEmpty ? .empty : .present(shows: shows)
                     return .none
                 case .failure(let error):
                     return .fireAndForget {
