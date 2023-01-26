@@ -11,7 +11,7 @@ struct ShowResponse: Decodable {
     var artistName: String
     var trackName: String
     var primaryGenreName: String
-    var feedURL: String
+    var feedURL: String?
     var trackViewURL: String
     var artworkURL100: String
     var artworkURL600: String
@@ -28,7 +28,7 @@ struct ShowResponse: Decodable {
     }
 
     func toShow() -> Show? {
-        guard let feedURL = URL(string: feedURL),
+        guard let feedURL = URL(string: feedURL ?? ""),
               let trackViewURL = URL(string: trackViewURL),
               let artworkURL600 = URL(string: artworkURL600),
               let artworkURL100 = URL(string: artworkURL100) else {
