@@ -114,7 +114,7 @@ let targets: [PackageDescription.Target] = [
     ),
     .target(
         name: "TestHelper",
-        dependencies: [],
+        dependencies: [.dependencies],
         path: "Sources/Core/TestHelper"
     ),
 ].map { (target: PackageDescription.Target) -> PackageDescription.Target in
