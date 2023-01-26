@@ -27,7 +27,7 @@ struct ShowResponse: Decodable {
         case artworkURL600 = "artworkUrl600"
     }
 
-    func toShow() -> Show? {
+    func toShow() -> ITunesShow? {
         guard let feedURL = URL(string: feedURL ?? ""),
               let trackViewURL = URL(string: trackViewURL),
               let artworkURL600 = URL(string: artworkURL600),
@@ -35,7 +35,7 @@ struct ShowResponse: Decodable {
             return nil
         }
 
-        return Show(
+        return ITunesShow(
             id: trackID,
             artistName: artistName,
             showName: trackName,

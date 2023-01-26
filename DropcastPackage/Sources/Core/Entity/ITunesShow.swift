@@ -1,6 +1,6 @@
 import Foundation
 
-public struct Show: Sendable, Equatable, Identifiable {
+public struct ITunesShow: Sendable, Equatable, Identifiable {
     public var id: Int
     public var artistName: String
     public var showName: String
@@ -32,8 +32,8 @@ public struct Show: Sendable, Equatable, Identifiable {
 }
 
 #if DEBUG
-extension Show {
-    public static let fixtureStackOverflow = Show(
+extension ITunesShow {
+    public static let fixtureStackOverflow = ITunesShow(
         id: 1483510527,
         artistName: "The Stack Overflow Podcast",
         showName: "The Stack Overflow Podcast",
@@ -46,7 +46,7 @@ extension Show {
                         + "6d32155b-12ec-8d15-2f76-256e8e7f8dcf/mza_16949506039235574720.jpg/100x100bb.jpg")!
     )
 
-    public static let fixtureNature = Show(
+    public static let fixtureNature = ITunesShow(
         id: 81934659,
         artistName: "Springer Nature Limited",
         showName: "Nature Podcast",
@@ -59,7 +59,7 @@ extension Show {
                         + "b05682ce-9ea4-5344-bb60-88507456c327/mza_14062456357964887097.jpg/100x100bb.jpg")!
     )
 
-    public static let fixtureRebuild = Show(
+    public static let fixtureRebuild = ITunesShow(
         id: 81934659,
         artistName: "Tatsuhiko Miyagawa",
         showName: "Rebuild",
@@ -72,7 +72,7 @@ extension Show {
                         + "d620fea4-8f14-8402-1041-0388a31720e6/mza_1949949944137970976.jpg/100x100bb.jpg")!
     )
 
-    public static let fixtureStacktrace = Show(
+    public static let fixtureStacktrace = ITunesShow(
         id: 81934659,
         artistName: "John Sundell and Gui Rambo",
         showName: "Stacktrace",
@@ -85,7 +85,7 @@ extension Show {
                         + "21b183f6-53e2-fe5e-eabb-f7447577c9b7/mza_9137980121963783437.png/100x100bb.jpg")!
     )
 
-    public static let fixtureBilingualNews = Show(
+    public static let fixtureBilingualNews = ITunesShow(
         id: 81934659,
         artistName: "Michael & Mami",
         showName: "バイリンガルニュース (Bilingual News)",
@@ -99,7 +99,7 @@ extension Show {
                         + "d868497c-f3b5-f40d-00d7-514cbdc3ac8b/mza_12097083422146527699.jpg/100x100bb.jpg")!
     )
 
-    public static let fixtureFukabori = Show(
+    public static let fixtureFukabori = ITunesShow(
         id: 81934659,
         artistName: "iwashi",
         showName: "fukabori.fm",
@@ -112,7 +112,7 @@ extension Show {
                         + "0297144d-fd3d-8f10-b8d1-2f6331e06f9c/mza_4554497525722024755.jpeg/100x100bb.jpg")!
     )
 
-    public static let fixtureSuperLongProperties = Show(
+    public static let fixtureSuperLongProperties = ITunesShow(
         id: 81934659,
         artistName: "すごく長い運営者の名前 and すごく長い運営者の名前 and すごく長い運営者の名前 and すごく長い運営者の名前",
         showName: "すごく長いタイトルすごく長いタイトルすごく長いタイトルすごく長いタイトルすごく長いタイトルすごく長いタイトル",

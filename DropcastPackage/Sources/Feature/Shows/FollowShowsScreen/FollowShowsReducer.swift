@@ -8,9 +8,9 @@ public struct FollowShowsReducer: ReducerProtocol, Sendable {
         public enum ShowsState: Equatable {
             case prompt
             case empty
-            case loaded(shows: [Show])
+            case loaded(shows: [ITunesShow])
 
-            var currentShows: [Show] {
+            var currentShows: [ITunesShow] {
                 switch self {
                 case .prompt, .empty:
                     return []
@@ -29,7 +29,7 @@ public struct FollowShowsReducer: ReducerProtocol, Sendable {
         case queryChanged(query: String)
         case queryChangeDebounced
 
-        case searchResponse(TaskResult<[Show]>)
+        case searchResponse(TaskResult<[ITunesShow]>)
     }
 
     @Dependency(\.iTunesClient) private var iTunesClient
