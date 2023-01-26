@@ -24,6 +24,9 @@ let dependencies: [PackageDescription.Package.Dependency] = [
 ]
 
 let targets: [PackageDescription.Target] = [
+
+    // App module
+
     .target(
         name: "App",
         dependencies: [
@@ -32,6 +35,9 @@ let targets: [PackageDescription.Target] = [
         ],
         path: "Sources/App/App"
     ),
+
+    // Feature module
+
     .target(
         name: "AppFeature",
         dependencies: [
@@ -70,6 +76,9 @@ let targets: [PackageDescription.Target] = [
         ],
         path: "Tests/Feature/Shows"
     ),
+
+    // Infra module
+
     .target(
         name: "ITunesClient",
         dependencies: [
@@ -102,6 +111,9 @@ let targets: [PackageDescription.Target] = [
         ],
         path: "Sources/Infra/MessageClientLive"
     ),
+
+    // Core module
+
     .target(
         name: "Entity",
         dependencies: [],
