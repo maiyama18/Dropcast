@@ -5,6 +5,7 @@ import XCTest
 
 final class ITunesClientTests: XCTestCase {
     private var client: ITunesClient!
+
     override func setUp() {
         let config = URLSessionConfiguration.ephemeral
         config.protocolClasses = [URLProtocolStub.self]
