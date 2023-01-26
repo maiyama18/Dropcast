@@ -5,13 +5,24 @@ import MessageClient
 
 public struct FollowShowsReducer: ReducerProtocol, Sendable {
     public struct State: Equatable {
-        public enum Shows: Equatable {
-            case present(shows: [Show])
+        public enum ShowsState: Equatable {
+            case prompt
             case empty
+            case loaded(shows: [Show])
+
+            var currentShows: [Show] {
+                switch self {
+                case .prompt, .empty:
+                    return []
+                case .loaded(let shows):
+                    return shows
+                }
+            }
         }
 
         public var query: String = ""
-        public var shows: Shows = .present(shows: [])
+        public var showsState: ShowsState = .prompt
+        public var searchRequestInFlight: Bool = false
     }
 
     public enum Action: Equatable {
@@ -33,7 +44,8 @@ public struct FollowShowsReducer: ReducerProtocol, Sendable {
                 state.query = query
 
                 if query.isEmpty {
-                    state.shows = .present(shows: [])
+                    state.searchRequestInFlight = false
+                    state.showsState = .prompt
                     return .cancel(id: SearchID.self)
                 } else {
                     return .none
@@ -44,6 +56,7 @@ public struct FollowShowsReducer: ReducerProtocol, Sendable {
                     return .none
                 }
 
+                state.searchRequestInFlight = true
                 return .task {
                     await .searchResponse(
                         TaskResult {
@@ -53,11 +66,15 @@ public struct FollowShowsReducer: ReducerProtocol, Sendable {
                 }
                 .cancellable(id: SearchID.self)
             case .searchResponse(let result):
+                state.searchRequestInFlight = false
+
                 switch result {
                 case .success(let shows):
-                    state.shows = shows.isEmpty ? .empty : .present(shows: shows)
+                    state.showsState = shows.isEmpty ? .empty : .loaded(shows: shows)
                     return .none
                 case .failure(let error):
+                    let currentShows = state.showsState.currentShows
+                    state.showsState = currentShows.isEmpty ? .prompt : .loaded(shows: currentShows)
                     return .fireAndForget {
                         messageClient.presentError(error.userMessage)
                     }

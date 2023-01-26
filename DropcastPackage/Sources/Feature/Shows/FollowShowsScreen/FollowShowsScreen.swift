@@ -10,17 +10,12 @@ struct FollowShowsScreen: View {
         WithViewStore(store, observe: { $0 }) { viewStore in
             NavigationStack {
                 Group {
-                    switch viewStore.shows {
+                    switch viewStore.showsState {
+                    case .prompt:
+                        labelView(title: "Search Shows")
                     case .empty:
-                        VStack {
-                            Image(systemName: "magnifyingglass")
-                                .font(.largeTitle)
-
-                            Text("No Results")
-                                .font(.title2)
-                        }
-                        .frame(maxHeight: .infinity, alignment: .center)
-                    case .present(let shows):
+                        labelView(title: "No Results")
+                    case .loaded(let shows):
                         ScrollView {
                             LazyVStack(spacing: 0) {
                                 ForEach(shows) { show in
@@ -32,6 +27,12 @@ struct FollowShowsScreen: View {
                         }
                     }
                 }
+                .overlay {
+                    if viewStore.searchRequestInFlight {
+                        ProgressView()
+                            .scaleEffect(2)
+                    }
+                }
                 .navigationTitle("Search shows")
                 .navigationBarTitleDisplayMode(.inline)
                 .searchable(
@@ -39,6 +40,8 @@ struct FollowShowsScreen: View {
                     placement: .navigationBarDrawer(displayMode: .always),
                     prompt: Text("Show name, Host ...")
                 )
+                .autocorrectionDisabled(true)
+                .textInputAutocapitalization(.never)
             }
             .task(id: viewStore.query) {
                 do {
@@ -48,6 +51,20 @@ struct FollowShowsScreen: View {
             }
         }
     }
+
+    @ViewBuilder
+    private func labelView(title: String) -> some View {
+        VStack(spacing: 12) {
+            Image(systemName: "magnifyingglass")
+                .font(.largeTitle.bold())
+
+            Text(title)
+                .font(.title2)
+        }
+        .foregroundStyle(.secondary)
+        .frame(maxHeight: .infinity, alignment: .center)
+    }
+
 }
 
 struct FollowShowsScreen_Previews: PreviewProvider {
