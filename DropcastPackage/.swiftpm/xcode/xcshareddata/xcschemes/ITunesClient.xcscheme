@@ -14,10 +14,10 @@
             buildForAnalyzing = "YES">
             <BuildableReference
                BuildableIdentifier = "primary"
-               BlueprintIdentifier = "3819E801297D19DC0074B17C"
-               BuildableName = "DropcastDev.app"
-               BlueprintName = "DropcastDev"
-               ReferencedContainer = "container:DropcastDev.xcodeproj">
+               BlueprintIdentifier = "ITunesClient"
+               BuildableName = "ITunesClient"
+               BlueprintName = "ITunesClient"
+               ReferencedContainer = "container:">
             </BuildableReference>
          </BuildActionEntry>
       </BuildActionEntries>
@@ -32,30 +32,10 @@
             skipped = "NO">
             <BuildableReference
                BuildableIdentifier = "primary"
-               BlueprintIdentifier = "AppFeatureTests"
-               BuildableName = "AppFeatureTests"
-               BlueprintName = "AppFeatureTests"
-               ReferencedContainer = "container:../DropcastPackage">
-            </BuildableReference>
-         </TestableReference>
-         <TestableReference
-            skipped = "NO">
-            <BuildableReference
-               BuildableIdentifier = "primary"
                BlueprintIdentifier = "ITunesClientTests"
                BuildableName = "ITunesClientTests"
                BlueprintName = "ITunesClientTests"
-               ReferencedContainer = "container:../DropcastPackage">
-            </BuildableReference>
-         </TestableReference>
-         <TestableReference
-            skipped = "NO">
-            <BuildableReference
-               BuildableIdentifier = "primary"
-               BlueprintIdentifier = "ShowsFeatureTests"
-               BuildableName = "ShowsFeatureTests"
-               BlueprintName = "ShowsFeatureTests"
-               ReferencedContainer = "container:../DropcastPackage">
+               ReferencedContainer = "container:">
             </BuildableReference>
          </TestableReference>
       </Testables>
@@ -70,16 +50,6 @@
       debugDocumentVersioning = "YES"
       debugServiceExtension = "internal"
       allowLocationSimulation = "YES">
-      <BuildableProductRunnable
-         runnableDebuggingMode = "0">
-         <BuildableReference
-            BuildableIdentifier = "primary"
-            BlueprintIdentifier = "3819E801297D19DC0074B17C"
-            BuildableName = "DropcastDev.app"
-            BlueprintName = "DropcastDev"
-            ReferencedContainer = "container:DropcastDev.xcodeproj">
-         </BuildableReference>
-      </BuildableProductRunnable>
    </LaunchAction>
    <ProfileAction
       buildConfiguration = "Release"
@@ -87,16 +57,15 @@
       savedToolIdentifier = ""
       useCustomWorkingDirectory = "NO"
       debugDocumentVersioning = "YES">
-      <BuildableProductRunnable
-         runnableDebuggingMode = "0">
+      <MacroExpansion>
          <BuildableReference
             BuildableIdentifier = "primary"
-            BlueprintIdentifier = "3819E801297D19DC0074B17C"
-            BuildableName = "DropcastDev.app"
-            BlueprintName = "DropcastDev"
-            ReferencedContainer = "container:DropcastDev.xcodeproj">
+            BlueprintIdentifier = "ITunesClient"
+            BuildableName = "ITunesClient"
+            BlueprintName = "ITunesClient"
+            ReferencedContainer = "container:">
          </BuildableReference>
-      </BuildableProductRunnable>
+      </MacroExpansion>
    </ProfileAction>
    <AnalyzeAction
       buildConfiguration = "Debug">

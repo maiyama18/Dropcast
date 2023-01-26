@@ -1,5 +1,8 @@
 disabled_rules:
   - multiple_closures_with_trailing_closure
+  - todo
+  - xctfail_message
+  - nesting
 
 opt_in_rules:
   - file_header
@@ -9,3 +12,5 @@ opt_in_rules:
 
 trailing_comma:
     mandatory_comma: true
+
+line_length: 180
