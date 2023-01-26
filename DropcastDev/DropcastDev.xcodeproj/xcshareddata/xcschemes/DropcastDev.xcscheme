@@ -38,6 +38,26 @@
                ReferencedContainer = "container:../DropcastPackage">
             </BuildableReference>
          </TestableReference>
+         <TestableReference
+            skipped = "NO">
+            <BuildableReference
+               BuildableIdentifier = "primary"
+               BlueprintIdentifier = "ITunesClientTests"
+               BuildableName = "ITunesClientTests"
+               BlueprintName = "ITunesClientTests"
+               ReferencedContainer = "container:../DropcastPackage">
+            </BuildableReference>
+         </TestableReference>
+         <TestableReference
+            skipped = "NO">
+            <BuildableReference
+               BuildableIdentifier = "primary"
+               BlueprintIdentifier = "ShowsFeatureTests"
+               BuildableName = "ShowsFeatureTests"
+               BlueprintName = "ShowsFeatureTests"
+               ReferencedContainer = "container:../DropcastPackage">
+            </BuildableReference>
+         </TestableReference>
       </Testables>
    </TestAction>
    <LaunchAction
