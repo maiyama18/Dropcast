@@ -2,7 +2,7 @@ import Entity
 import SwiftUI
 
 struct ShowRowView: View {
-    let show: Show
+    let show: ITunesShow
 
     var body: some View {
         HStack {

@@ -5,7 +5,7 @@ import Foundation
 import XCTestDynamicOverlay
 
 public struct ITunesClient: Sendable {
-    public var searchShows: @Sendable (_ query: String) async throws -> [Show]
+    public var searchShows: @Sendable (_ query: String) async throws -> [ITunesShow]
 }
 
 extension ITunesClient {

@@ -33,7 +33,7 @@ struct FollowShowsScreen: View {
                             .scaleEffect(2)
                     }
                 }
-                .navigationTitle("Search shows")
+                .navigationTitle("Follow shows")
                 .navigationBarTitleDisplayMode(.inline)
                 .searchable(
                     text: viewStore.binding(get: \.query, send: { .queryChanged(query: $0) }),

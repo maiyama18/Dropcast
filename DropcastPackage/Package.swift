@@ -15,15 +15,23 @@ extension PackageDescription.Target.Dependency {
         name: "Drops",
         package: "Drops"
     )
+    static let feedKit: Self = .product(
+        name: "FeedKit",
+        package: "FeedKit"
+    )
 }
 
 let dependencies: [PackageDescription.Package.Dependency] = [
     .package(url: "https://github.com/pointfreeco/swift-composable-architecture", exact: "0.49.2"),
     .package(url: "https://github.com/pointfreeco/swift-dependencies", exact: "0.1.4"),
     .package(url: "https://github.com/omaralbeik/Drops", exact: "1.6.1"),
+    .package(url: "https://github.com/nmdias/FeedKit", exact: "9.1.2"),
 ]
 
 let targets: [PackageDescription.Target] = [
+
+    // App module
+
     .target(
         name: "App",
         dependencies: [
@@ -32,6 +40,9 @@ let targets: [PackageDescription.Target] = [
         ],
         path: "Sources/App/App"
     ),
+
+    // Feature module
+
     .target(
         name: "AppFeature",
         dependencies: [
@@ -70,6 +81,28 @@ let targets: [PackageDescription.Target] = [
         ],
         path: "Tests/Feature/Shows"
     ),
+
+    // Infra module
+
+    .target(
+        name: "RSSClient",
+        dependencies: [
+            .dependencies,
+            .feedKit,
+            "Entity",
+            "Error",
+        ],
+        path: "Sources/Infra/RSSClient"
+    ),
+    .testTarget(
+        name: "RSSClientTests",
+        dependencies: [
+            "RSSClient",
+            "TestHelper",
+        ],
+        path: "Tests/Infra/RSSClientTests",
+        resources: [.process("Resources")]
+    ),
     .target(
         name: "ITunesClient",
         dependencies: [
@@ -102,6 +135,9 @@ let targets: [PackageDescription.Target] = [
         ],
         path: "Sources/Infra/MessageClientLive"
     ),
+
+    // Core module
+
     .target(
         name: "Entity",
         dependencies: [],
@@ -151,6 +187,9 @@ var package = Package(
         .library(
             name: "ITunesClient",
             targets: ["ITunesClient"]),
+        .library(
+            name: "RSSClient",
+            targets: ["RSSClient"]),
     ],
     dependencies: dependencies,
     targets: targets
