@@ -1,5 +1,6 @@
 import DatabaseClient
 import Entity
+import Error
 import XCTest
 
 @testable import DatabaseClientLive
@@ -38,5 +39,21 @@ final class DatabaseClientLiveTests: XCTestCase {
         )
     }
 
-    // FIXME: test_following_already_followed_show_does_not_create_duplicated_entity
+    func test_following_already_followed_show_does_not_create_duplicated_entity() throws {
+        XCTAssertEqual(try client.fetchFollowingShows(), [])
+
+        try client.followShow(.fixtureRebuild)
+
+        XCTAssertEqual(try client.fetchFollowingShows(), [.fixtureRebuild])
+
+        XCTAssertThrowsError(try client.followShow(.fixtureRebuild)) { error in
+            guard let databaseError = try? XCTUnwrap(error as? DatabaseError) else {
+                XCTFail()
+                return
+            }
+            XCTAssertEqual(databaseError, .alreadyFollowed)
+        }
+
+        XCTAssertEqual(try client.fetchFollowingShows(), [.fixtureRebuild])
+    }
 }

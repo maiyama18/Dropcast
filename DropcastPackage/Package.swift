@@ -97,6 +97,7 @@ let targets: [PackageDescription.Target] = [
         dependencies: [
             .dependencies,
             "DatabaseClient",
+            "Entity",
             "Error",
         ],
         path: "Sources/Infra/DatabaseClientLive"
