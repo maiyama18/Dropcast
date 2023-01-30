@@ -15,7 +15,7 @@ extension RSSClient {
                 let parser = FeedParser(data: data)
                 let rssFeed = try await parser.parseRSS()
 
-                guard let show = rssFeed.toShow() else {
+                guard let show = rssFeed.toShow(feedURL: url) else {
                     throw RSSError.invalidFeed
                 }
                 return show

@@ -6,6 +6,7 @@ protocol PersistentProvider: Sendable {
 }
 
 final class CloudKitPersistentProvider: PersistentProvider {
+    // TODO: switch container identifier based on build
     static let shared: CloudKitPersistentProvider = .init(
         containerIdentifier: "iCloud.com.muijp.DropcastDev"
     )
