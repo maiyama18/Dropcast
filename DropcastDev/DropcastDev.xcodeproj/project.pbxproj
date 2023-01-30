@@ -16,6 +16,8 @@
 		3819E802297D19DC0074B17C /* DropcastDev.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = DropcastDev.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		3819E805297D19DC0074B17C /* DropcastDevApp.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DropcastDevApp.swift; sourceTree = "<group>"; };
 		3819E809297D19DD0074B17C /* Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Assets.xcassets; sourceTree = "<group>"; };
+		38DCC9E329873F46003F8B66 /* DropcastDev.entitlements */ = {isa = PBXFileReference; lastKnownFileType = text.plist.entitlements; path = DropcastDev.entitlements; sourceTree = "<group>"; };
+		38DCC9E429873F95003F8B66 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist; path = Info.plist; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -51,6 +53,8 @@
 		3819E804297D19DC0074B17C /* DropcastDev */ = {
 			isa = PBXGroup;
 			children = (
+				38DCC9E429873F95003F8B66 /* Info.plist */,
+				38DCC9E329873F46003F8B66 /* DropcastDev.entitlements */,
 				3819E805297D19DC0074B17C /* DropcastDevApp.swift */,
 			);
 			path = DropcastDev;
@@ -261,12 +265,14 @@
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME = AccentColor;
+				CODE_SIGN_ENTITLEMENTS = DropcastDev/DropcastDev.entitlements;
 				CODE_SIGN_STYLE = Automatic;
 				CURRENT_PROJECT_VERSION = 1;
 				DEVELOPMENT_ASSET_PATHS = "";
 				DEVELOPMENT_TEAM = 56T4RFDKJR;
 				ENABLE_PREVIEWS = YES;
 				GENERATE_INFOPLIST_FILE = YES;
+				INFOPLIST_FILE = DropcastDev/Info.plist;
 				INFOPLIST_KEY_UIApplicationSceneManifest_Generation = YES;
 				INFOPLIST_KEY_UIApplicationSupportsIndirectInputEvents = YES;
 				INFOPLIST_KEY_UILaunchScreen_Generation = YES;
@@ -291,12 +297,14 @@
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME = AccentColor;
+				CODE_SIGN_ENTITLEMENTS = DropcastDev/DropcastDev.entitlements;
 				CODE_SIGN_STYLE = Automatic;
 				CURRENT_PROJECT_VERSION = 1;
 				DEVELOPMENT_ASSET_PATHS = "";
 				DEVELOPMENT_TEAM = 56T4RFDKJR;
 				ENABLE_PREVIEWS = YES;
 				GENERATE_INFOPLIST_FILE = YES;
+				INFOPLIST_FILE = DropcastDev/Info.plist;
 				INFOPLIST_KEY_UIApplicationSceneManifest_Generation = YES;
 				INFOPLIST_KEY_UIApplicationSupportsIndirectInputEvents = YES;
 				INFOPLIST_KEY_UILaunchScreen_Generation = YES;

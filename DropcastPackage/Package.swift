@@ -85,6 +85,31 @@ let targets: [PackageDescription.Target] = [
     // Infra module
 
     .target(
+        name: "DatabaseClient",
+        dependencies: [
+            .dependencies,
+            "Entity",
+        ],
+        path: "Sources/Infra/DatabaseClient"
+    ),
+    .target(
+        name: "DatabaseClientLive",
+        dependencies: [
+            .dependencies,
+            "DatabaseClient",
+            "Error",
+        ],
+        path: "Sources/Infra/DatabaseClientLive"
+    ),
+    .testTarget(
+        name: "DatabaseClientLiveTests",
+        dependencies: [
+            "DatabaseClientLive",
+            "TestHelper",
+        ],
+        path: "Tests/Infra/DatabaseClientLiveTests"
+    ),
+    .target(
         name: "RSSClient",
         dependencies: [
             .dependencies,
@@ -190,6 +215,9 @@ var package = Package(
         .library(
             name: "RSSClient",
             targets: ["RSSClient"]),
+        .library(
+            name: "DatabaseClientLive",
+            targets: ["DatabaseClientLive"]),
     ],
     dependencies: dependencies,
     targets: targets

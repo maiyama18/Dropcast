@@ -28,3 +28,14 @@ public enum RSSError: Error, HasMessage {
         }
     }
 }
+
+public enum DatabaseError: Error, HasMessage {
+    case followError
+
+    var message: String {
+        switch self {
+        case .followError:
+            return "Failed to follow the show"
+        }
+    }
+}

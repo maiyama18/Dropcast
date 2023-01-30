@@ -27,6 +27,7 @@ final class RSSClientTests: XCTestCase {
             ]
         )
 
+        // TODO: linkURL の assert を追加
         let show = try await client.fetch(feedURL)
         XCTAssertEqual(show.title, "Rebuild")
         XCTAssertEqual(show.description, "ウェブ開発、プログラミング、モバイル、ガジェットなどにフォーカスしたテクノロジー系ポッドキャストです。 #rebuildfm")
@@ -54,6 +55,7 @@ final class RSSClientTests: XCTestCase {
             ]
         )
 
+        // TODO: linkURL の assert を追加
         let show = try await client.fetch(feedURL)
         XCTAssertEqual(show.title, "Swift by Sundell")
         XCTAssertEqual(show.description, "In-depth conversations about Swift and software development in general, hosted by John Sundell.")
