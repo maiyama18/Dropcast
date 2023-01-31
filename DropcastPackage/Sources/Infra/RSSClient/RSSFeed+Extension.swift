@@ -3,7 +3,7 @@ import FeedKit
 import Foundation
 
 extension RSSFeed {
-    func toShow() -> Show? {
+    func toShow(feedURL: URL) -> Show? {
         guard let title = title,
               let imageURL = URL(string: image?.url ?? "") ?? URL(string: iTunes?.iTunesImage?.attributes?.href ?? ""),
               let items else {
@@ -31,6 +31,7 @@ extension RSSFeed {
             title: title,
             description: (description ?? iTunes?.iTunesSummary)?.trimmingCharacters(in: .newlines).trimmingCharacters(in: .whitespaces),
             author: iTunes?.iTunesAuthor ?? iTunes?.iTunesOwner?.name,
+            feedURL: feedURL,
             imageURL: imageURL,
             linkURL: URL(string: link ?? ""),
             episodes: episodes

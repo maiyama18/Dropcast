@@ -1,16 +1,43 @@
 import ComposableArchitecture
 import Entity
+import Error
+import Foundation
 import ITunesClient
 import MessageClient
+import RSSClient
 
 public struct FollowShowsReducer: ReducerProtocol, Sendable {
     public struct State: Equatable {
+        public struct Show: Equatable, Identifiable {
+            public var feedURL: URL
+            public var imageURL: URL
+            public var title: String
+            public var author: String?
+
+            public var id: URL { feedURL }
+
+            public init(feedURL: URL, imageURL: URL, title: String, author: String?) {
+                self.feedURL = feedURL
+                self.imageURL = imageURL
+                self.title = title
+                self.author = author
+            }
+
+            init(iTunesShow: ITunesShow) {
+                self.init(feedURL: iTunesShow.feedURL, imageURL: iTunesShow.artworkLowQualityURL, title: iTunesShow.showName, author: iTunesShow.artistName)
+            }
+
+            init(show: Entity.Show) {
+                self.init(feedURL: show.feedURL, imageURL: show.imageURL, title: show.title, author: show.author)
+            }
+        }
+
         public enum ShowsState: Equatable {
             case prompt
             case empty
-            case loaded(shows: [ITunesShow])
+            case loaded(shows: [State.Show])
 
-            var currentShows: [ITunesShow] {
+            var currentShows: [State.Show] {
                 switch self {
                 case .prompt, .empty:
                     return []
@@ -29,11 +56,13 @@ public struct FollowShowsReducer: ReducerProtocol, Sendable {
         case queryChanged(query: String)
         case queryChangeDebounced
 
-        case searchResponse(TaskResult<[ITunesShow]>)
+        case querySearchResponse(TaskResult<[ITunesShow]>)
+        case urlSearchResponse(TaskResult<Entity.Show>)
     }
 
     @Dependency(\.iTunesClient) private var iTunesClient
     @Dependency(\.messageClient) private var messageClient
+    @Dependency(\.rssClient) private var rssClient
 
     private enum SearchID {}
 
@@ -58,19 +87,19 @@ public struct FollowShowsReducer: ReducerProtocol, Sendable {
 
                 state.searchRequestInFlight = true
                 return .task {
-                    await .searchResponse(
-                        TaskResult {
-                            try await self.iTunesClient.searchShows(query)
-                        }
-                    )
+                    if let url = URL(string: query), (url.scheme == "https" || url.scheme == "http") {
+                        return await .urlSearchResponse(TaskResult { try await rssClient.fetch(url) })
+                    } else {
+                        return await .querySearchResponse(TaskResult { try await self.iTunesClient.searchShows(query) })
+                    }
                 }
                 .cancellable(id: SearchID.self)
-            case .searchResponse(let result):
+            case .querySearchResponse(let result):
                 state.searchRequestInFlight = false
 
                 switch result {
                 case .success(let shows):
-                    state.showsState = shows.isEmpty ? .empty : .loaded(shows: shows)
+                    state.showsState = shows.isEmpty ? .empty : .loaded(shows: shows.map { State.Show(iTunesShow: $0) })
                     return .none
                 case .failure(let error):
                     let currentShows = state.showsState.currentShows
@@ -78,6 +107,17 @@ public struct FollowShowsReducer: ReducerProtocol, Sendable {
                     return .fireAndForget {
                         messageClient.presentError(error.userMessage)
                     }
+                }
+            case .urlSearchResponse(let result):
+                state.searchRequestInFlight = false
+
+                switch result {
+                case .success(let show):
+                    state.showsState = .loaded(shows: [State.Show(show: show)])
+                    return .none
+                case .failure:
+                    state.showsState = .empty
+                    return .none
                 }
             }
         }

@@ -17,11 +17,10 @@ struct FollowShowsScreen: View {
                         labelView(title: "No Results")
                     case .loaded(let shows):
                         ScrollView {
-                            LazyVStack(spacing: 0) {
+                            LazyVStack(spacing: 12) {
                                 ForEach(shows) { show in
                                     ShowRowView(show: show)
-                                        .padding(.horizontal, 8)
-                                        .padding(.vertical, 4)
+                                        .padding(.horizontal)
                                 }
                             }
                         }
@@ -38,7 +37,7 @@ struct FollowShowsScreen: View {
                 .searchable(
                     text: viewStore.binding(get: \.query, send: { .queryChanged(query: $0) }),
                     placement: .navigationBarDrawer(displayMode: .always),
-                    prompt: Text("Show name, Host ...")
+                    prompt: Text("Show name, Host, Feed URL ...")
                 )
                 .autocorrectionDisabled(true)
                 .textInputAutocapitalization(.never)
@@ -69,11 +68,14 @@ struct FollowShowsScreen: View {
 
 struct FollowShowsScreen_Previews: PreviewProvider {
     static var previews: some View {
-        FollowShowsScreen(
-            store: StoreOf<FollowShowsReducer>(
-                initialState: FollowShowsReducer.State(),
-                reducer: FollowShowsReducer()
+        NavigationStack {
+            FollowShowsScreen(
+                store: StoreOf<FollowShowsReducer>(
+                    initialState: FollowShowsReducer.State(),
+                    reducer: FollowShowsReducer()
+                )
             )
-        )
+        }
+        .tint(.orange)
     }
 }

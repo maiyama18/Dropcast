@@ -32,6 +32,7 @@ final class RSSClientTests: XCTestCase {
         XCTAssertEqual(show.description, "ウェブ開発、プログラミング、モバイル、ガジェットなどにフォーカスしたテクノロジー系ポッドキャストです。 #rebuildfm")
         XCTAssertEqual(show.author, "Tatsuhiko Miyagawa")
         XCTAssertEqual(show.imageURL, URL(string: "https://cdn.rebuild.fm/images/icon1400.jpg")!)
+        XCTAssertEqual(show.linkURL, URL(string: "https://rebuild.fm")!)
         XCTAssertEqual(show.episodes.count, 477)
 
         let latestEpisode = try XCTUnwrap(show.episodes.first)
@@ -59,6 +60,7 @@ final class RSSClientTests: XCTestCase {
         XCTAssertEqual(show.description, "In-depth conversations about Swift and software development in general, hosted by John Sundell.")
         XCTAssertEqual(show.author, "John Sundell")
         XCTAssertEqual(show.imageURL, URL(string: "https://www.swiftbysundell.com/images/podcastArtwork.png")!)
+        XCTAssertEqual(show.linkURL, URL(string: "https://www.swiftbysundell.com/podcast")!)
         XCTAssertEqual(show.episodes.count, 123)
 
         let latestEpisode = try XCTUnwrap(show.episodes.first)
@@ -92,6 +94,7 @@ final class RSSClientTests: XCTestCase {
         )
         XCTAssertEqual(show.author, "Kazuma Arino")
         XCTAssertEqual(show.imageURL, URL(string: "https://d3t3ozftmdmh3i.cloudfront.net/production/podcast_uploaded/998960/998960-1535212397504-93ed2911e3e38.jpg")!)
+        XCTAssertEqual(show.linkURL, URL(string: "https://anchor.fm/karino2")!)
         XCTAssertEqual(show.episodes.count, 226)
 
         let latestEpisode = try XCTUnwrap(show.episodes.first)

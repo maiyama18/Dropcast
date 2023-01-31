@@ -29,7 +29,6 @@ struct ShowResponse: Decodable {
 
     func toShow() -> ITunesShow? {
         guard let feedURL = URL(string: feedURL ?? ""),
-              let trackViewURL = URL(string: trackViewURL),
               let artworkURL600 = URL(string: artworkURL600),
               let artworkURL100 = URL(string: artworkURL100) else {
             return nil
@@ -39,9 +38,7 @@ struct ShowResponse: Decodable {
             id: trackID,
             artistName: artistName,
             showName: trackName,
-            genreName: primaryGenreName,
             feedURL: feedURL,
-            storeURL: trackViewURL,
             artworkURL: artworkURL600,
             artworkLowQualityURL: artworkURL100
         )

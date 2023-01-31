@@ -3,6 +3,14 @@
 import PackageDescription
 
 extension PackageDescription.Target.Dependency {
+    static let algorithms: Self = .product(
+        name: "Algorithms",
+        package: "swift-algorithms"
+    )
+    static let asyncAlgorithms: Self = .product(
+        name: "AsyncAlgorithms",
+        package: "swift-async-algorithms"
+    )
     static let composableArchitecture: Self = .product(
         name: "ComposableArchitecture",
         package: "swift-composable-architecture"
@@ -19,13 +27,20 @@ extension PackageDescription.Target.Dependency {
         name: "FeedKit",
         package: "FeedKit"
     )
+    static let identifiedCollections: Self = .product(
+        name: "IdentifiedCollections",
+        package: "swift-identified-collections"
+    )
 }
 
 let dependencies: [PackageDescription.Package.Dependency] = [
+    .package(url: "https://github.com/apple/swift-algorithms", exact: "1.0.0"),
+    .package(url: "https://github.com/apple/swift-async-algorithms", exact: "0.0.4"),
+    .package(url: "https://github.com/nmdias/FeedKit", exact: "9.1.2"),
+    .package(url: "https://github.com/omaralbeik/Drops", exact: "1.6.1"),
     .package(url: "https://github.com/pointfreeco/swift-composable-architecture", exact: "0.49.2"),
     .package(url: "https://github.com/pointfreeco/swift-dependencies", exact: "0.1.4"),
-    .package(url: "https://github.com/omaralbeik/Drops", exact: "1.6.1"),
-    .package(url: "https://github.com/nmdias/FeedKit", exact: "9.1.2"),
+    .package(url: "https://github.com/pointfreeco/swift-identified-collections", exact: "0.6.0"),
 ]
 
 let targets: [PackageDescription.Target] = [
@@ -70,6 +85,7 @@ let targets: [PackageDescription.Target] = [
             "Error",
             "ITunesClient",
             "MessageClient",
+            "RSSClient",
         ],
         path: "Sources/Feature/Shows"
     ),
@@ -84,6 +100,33 @@ let targets: [PackageDescription.Target] = [
 
     // Infra module
 
+    .target(
+        name: "DatabaseClient",
+        dependencies: [
+            .asyncAlgorithms,
+            .dependencies,
+            .identifiedCollections,
+            "Entity",
+        ],
+        path: "Sources/Infra/DatabaseClient"
+    ),
+    .target(
+        name: "DatabaseClientLive",
+        dependencies: [
+            .algorithms,
+            "DatabaseClient",
+            "Error",
+        ],
+        path: "Sources/Infra/DatabaseClientLive"
+    ),
+    .testTarget(
+        name: "DatabaseClientLiveTests",
+        dependencies: [
+            "DatabaseClientLive",
+            "TestHelper",
+        ],
+        path: "Tests/Infra/DatabaseClientLiveTests"
+    ),
     .target(
         name: "RSSClient",
         dependencies: [
@@ -150,7 +193,10 @@ let targets: [PackageDescription.Target] = [
     ),
     .target(
         name: "TestHelper",
-        dependencies: [.dependencies],
+        dependencies: [
+            .asyncAlgorithms,
+            .dependencies,
+        ],
         path: "Sources/Core/TestHelper"
     ),
 ].map { (target: PackageDescription.Target) -> PackageDescription.Target in
@@ -190,6 +236,9 @@ var package = Package(
         .library(
             name: "RSSClient",
             targets: ["RSSClient"]),
+        .library(
+            name: "DatabaseClientLive",
+            targets: ["DatabaseClientLive"]),
     ],
     dependencies: dependencies,
     targets: targets

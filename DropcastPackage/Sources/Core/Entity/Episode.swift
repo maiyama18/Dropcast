@@ -1,6 +1,6 @@
 import Foundation
 
-public struct Episode {
+public struct Episode: Sendable, Equatable {
     public var guid: String
     public var title: String
     public var subtitle: String?

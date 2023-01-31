@@ -1,8 +1,9 @@
 disabled_rules:
+  - function_body_length
   - multiple_closures_with_trailing_closure
+  - nesting
   - todo
   - xctfail_message
-  - nesting
 
 opt_in_rules:
   - file_header

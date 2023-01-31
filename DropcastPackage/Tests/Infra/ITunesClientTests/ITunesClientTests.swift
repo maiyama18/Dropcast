@@ -30,14 +30,9 @@ final class ITunesClientTests: XCTestCase {
         XCTAssertEqual(rebuild.id, 603013428)
         XCTAssertEqual(rebuild.artistName, "Tatsuhiko Miyagawa")
         XCTAssertEqual(rebuild.showName, "Rebuild")
-        XCTAssertEqual(rebuild.genreName, "Technology")
         XCTAssertEqual(
             rebuild.feedURL,
             URL(string: "https://feeds.rebuild.fm/rebuildfm")
-        )
-        XCTAssertEqual(
-            rebuild.storeURL,
-            URL(string: "https://podcasts.apple.com/us/podcast/rebuild/id603013428?uo=4")
         )
         XCTAssertEqual(
             rebuild.artworkURL,
