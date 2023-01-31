@@ -85,6 +85,7 @@ let targets: [PackageDescription.Target] = [
             "Error",
             "ITunesClient",
             "MessageClient",
+            "RSSClient",
         ],
         path: "Sources/Feature/Shows"
     ),

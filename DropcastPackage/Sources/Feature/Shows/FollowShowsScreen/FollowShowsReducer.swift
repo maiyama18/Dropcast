@@ -1,7 +1,10 @@
 import ComposableArchitecture
 import Entity
+import Error
+import Foundation
 import ITunesClient
 import MessageClient
+import RSSClient
 
 public struct FollowShowsReducer: ReducerProtocol, Sendable {
     public struct State: Equatable {
@@ -34,6 +37,7 @@ public struct FollowShowsReducer: ReducerProtocol, Sendable {
 
     @Dependency(\.iTunesClient) private var iTunesClient
     @Dependency(\.messageClient) private var messageClient
+    @Dependency(\.rssClient) private var rssClient
 
     private enum SearchID {}
 
@@ -60,7 +64,16 @@ public struct FollowShowsReducer: ReducerProtocol, Sendable {
                 return .task {
                     await .searchResponse(
                         TaskResult {
-                            try await self.iTunesClient.searchShows(query)
+                            if let url = URL(string: query), (url.scheme == "https" || url.scheme == "http") {
+                                do {
+                                    let show = try await rssClient.fetch(url)
+                                    return [ITunesShow(show: show)]
+                                } catch {
+                                    return []
+                                }
+                            } else {
+                                return try await self.iTunesClient.searchShows(query)
+                            }
                         }
                     )
                 }

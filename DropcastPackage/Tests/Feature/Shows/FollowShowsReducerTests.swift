@@ -1,4 +1,6 @@
 import ComposableArchitecture
+import Entity
+import Error
 import TestHelper
 import XCTest
 
@@ -6,7 +8,7 @@ import XCTest
 
 @MainActor
 final class FollowShowsReducerTests: XCTestCase {
-    func test_queryChangeDebounced_searchSuccess_and_queryChangedToEmpty_promptShown() async {
+    func test_search_by_query_success_shows_results_and_empty_query_delete_previous_results() async {
         let store = TestStore(
             initialState: FollowShowsReducer.State(),
             reducer: FollowShowsReducer()
@@ -38,7 +40,7 @@ final class FollowShowsReducerTests: XCTestCase {
         }
     }
 
-    func test_queryChangeDebounced_searchEmpty() async {
+    func test_search_returns_empty_result() async {
         let store = TestStore(
             initialState: FollowShowsReducer.State(),
             reducer: FollowShowsReducer()
@@ -65,7 +67,7 @@ final class FollowShowsReducerTests: XCTestCase {
         }
     }
 
-    func test_queryChangeDebounced_searchFailure() async {
+    func test_search_failure_shows_error_message() async {
         let errorMessage: LockIsolated<String?> = .init(nil)
         let store = TestStore(
             initialState: FollowShowsReducer.State(),
@@ -93,7 +95,7 @@ final class FollowShowsReducerTests: XCTestCase {
         XCTAssertEqual(errorMessage.value, "Something went wrong")
     }
 
-    func test_queryChangeDebounced_searchSuccess_and_searchFailure() async {
+    func test_search_failure_after_success_shows_error_message_with_previous_search_results() async {
         let errorMessage: LockIsolated<String?> = .init(nil)
         let store = TestStore(
             initialState: FollowShowsReducer.State(),
@@ -134,7 +136,7 @@ final class FollowShowsReducerTests: XCTestCase {
         XCTAssertEqual(errorMessage.value, "Something went wrong")
     }
 
-    func test_queryChangedToEmpty_whileSearchRequestInFlight() async {
+    func test_query_changed_to_empty_while_searching_cancels_search() async {
         let clock = TestClock()
 
         let store = TestStore(
@@ -163,5 +165,60 @@ final class FollowShowsReducerTests: XCTestCase {
             $0.showsState = .prompt
         }
         await clock.advance(by: .seconds(1))
+    }
+
+    func test_query_parsed_as_url_shows_show_from_rss() async {
+        let store = TestStore(
+            initialState: FollowShowsReducer.State(),
+            reducer: FollowShowsReducer()
+        ) {
+            $0.rssClient.fetch = { url in
+                guard url == URL(string: "https://feeds.rebuild.fm/rebuildfm") else {
+                    XCTFail()
+                    throw TestError.somethingWentWrong
+                }
+                return .fixtureRebuild
+            }
+        }
+
+        await store.send(.queryChanged(query: "https://feeds.rebuild.fm/rebuildfm")) {
+            $0.query = "https://feeds.rebuild.fm/rebuildfm"
+        }
+
+        await store.send(.queryChangeDebounced) {
+            $0.searchRequestInFlight = true
+        }
+        let fixtureRebuild = ITunesShow(show: .fixtureRebuild)
+        await store.receive(.searchResponse(.success([fixtureRebuild]))) {
+            $0.searchRequestInFlight = false
+            $0.showsState = .loaded(shows: [fixtureRebuild])
+        }
+    }
+
+    func test_query_parsed_as_invalid_url_shows_empty_show() async {
+        let store = TestStore(
+            initialState: FollowShowsReducer.State(),
+            reducer: FollowShowsReducer()
+        ) {
+            $0.rssClient.fetch = { url in
+                guard url == URL(string: "https://feeds.rebuild.fm/reb") else {
+                    XCTFail()
+                    throw TestError.somethingWentWrong
+                }
+                throw RSSError.invalidFeed
+            }
+        }
+
+        await store.send(.queryChanged(query: "https://feeds.rebuild.fm/reb")) {
+            $0.query = "https://feeds.rebuild.fm/reb"
+        }
+
+        await store.send(.queryChangeDebounced) {
+            $0.searchRequestInFlight = true
+        }
+        await store.receive(.searchResponse(.success([]))) {
+            $0.searchRequestInFlight = false
+            $0.showsState = .empty
+        }
     }
 }
