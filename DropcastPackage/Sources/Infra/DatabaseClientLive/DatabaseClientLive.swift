@@ -1,28 +1,34 @@
+import Algorithms
 import AsyncAlgorithms
 @preconcurrency import CoreData
 import DatabaseClient
 import Dependencies
 import Entity
 import Error
+import IdentifiedCollections
 
 extension DatabaseClient {
     static func live(persistentProvider: PersistentProvider) -> DatabaseClient {
         final class Delegate: NSObject, NSFetchedResultsControllerDelegate, Sendable {
-            let showsStream: AsyncChannel<[Show]> = .init()
+            let showsStream: AsyncChannel<IdentifiedArrayOf<Show>> = .init()
 
             func sendInitialValue(_ controller: NSFetchedResultsController<ShowRecord>) {
                 try? controller.performFetch()
-                let shows = controller.fetchedObjects?.compactMap { $0.toShow() } ?? []
-                Task {
-                    await showsStream.send(shows)
-                }
+                guard let records = controller.fetchedObjects else { return }
+                sendFetchedShowRecords(records)
             }
 
             func controllerDidChangeContent(_ controller: NSFetchedResultsController<NSFetchRequestResult>) {
                 guard let records = controller.fetchedObjects as? [ShowRecord] else { return }
+                sendFetchedShowRecords(records)
+            }
+
+            private func sendFetchedShowRecords(_ records: [ShowRecord]) {
                 let shows = records.compactMap { $0.toShow() }
+                let uniquedShows = shows.uniqued(on: { $0.feedURL })
+                let identifiedShows = IdentifiedArrayOf(uniqueElements: uniquedShows)
                 Task {
-                    await showsStream.send(shows)
+                    await showsStream.send(identifiedShows)
                 }
             }
         }

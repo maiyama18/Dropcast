@@ -1,14 +1,15 @@
 import AsyncAlgorithms
 import Dependencies
 import Entity
+import IdentifiedCollections
 
 public struct DatabaseClient: Sendable {
     public var followShow: @Sendable (Show) throws -> Void
-    public var followedShowsStream: @Sendable () -> AsyncChannel<[Show]>
+    public var followedShowsStream: @Sendable () -> AsyncChannel<IdentifiedArrayOf<Show>>
 
     public init(
         followShow: @escaping @Sendable (Show) throws -> Void,
-        followedShowsStream: @escaping @Sendable () -> AsyncChannel<[Show]>
+        followedShowsStream: @escaping @Sendable () -> AsyncChannel<IdentifiedArrayOf<Show>>
     ) {
         self.followShow = followShow
         self.followedShowsStream = followedShowsStream

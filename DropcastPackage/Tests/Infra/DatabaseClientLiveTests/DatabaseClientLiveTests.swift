@@ -8,10 +8,12 @@ import XCTest
 @testable import DatabaseClientLive
 
 final class DatabaseClientLiveTests: XCTestCase {
+    private var persistentProvider: PersistentProvider!
     private var client: DatabaseClient!
 
     override func setUp() {
-        client = .live(persistentProvider: InMemoryPersistentProvider())
+        persistentProvider = InMemoryPersistentProvider()
+        client = .live(persistentProvider: persistentProvider)
     }
 
     func test_followed_shows_are_received_from_channel_and_ordered_by_title() async throws {
@@ -42,5 +44,18 @@ final class DatabaseClientLiveTests: XCTestCase {
         try client.followShow(.fixtureRebuild)
 
         try await XCTAssertNoReceive(from: followedShowsSequence)
+    }
+
+    func test_accidental_duplication_of_show_in_database_is_removed_in_received_sequence() async throws {
+        try persistentProvider.executeInBackground { context in
+            _ = ShowRecord(context: context, show: .fixtureRebuild)
+            try context.save()
+            _ = ShowRecord(context: context, show: .fixtureRebuild)
+            try context.save()
+        }
+
+        let followedShowsSequence = client.followedShowsStream()
+
+        try await XCTAssertReceive(from: followedShowsSequence, [.fixtureRebuild])
     }
 }

@@ -3,6 +3,10 @@
 import PackageDescription
 
 extension PackageDescription.Target.Dependency {
+    static let algorithms: Self = .product(
+        name: "Algorithms",
+        package: "swift-algorithms"
+    )
     static let asyncAlgorithms: Self = .product(
         name: "AsyncAlgorithms",
         package: "swift-async-algorithms"
@@ -23,14 +27,20 @@ extension PackageDescription.Target.Dependency {
         name: "FeedKit",
         package: "FeedKit"
     )
+    static let identifiedCollections: Self = .product(
+        name: "IdentifiedCollections",
+        package: "swift-identified-collections"
+    )
 }
 
 let dependencies: [PackageDescription.Package.Dependency] = [
+    .package(url: "https://github.com/apple/swift-algorithms", exact: "1.0.0"),
     .package(url: "https://github.com/apple/swift-async-algorithms", exact: "0.0.4"),
+    .package(url: "https://github.com/nmdias/FeedKit", exact: "9.1.2"),
+    .package(url: "https://github.com/omaralbeik/Drops", exact: "1.6.1"),
     .package(url: "https://github.com/pointfreeco/swift-composable-architecture", exact: "0.49.2"),
     .package(url: "https://github.com/pointfreeco/swift-dependencies", exact: "0.1.4"),
-    .package(url: "https://github.com/omaralbeik/Drops", exact: "1.6.1"),
-    .package(url: "https://github.com/nmdias/FeedKit", exact: "9.1.2"),
+    .package(url: "https://github.com/pointfreeco/swift-identified-collections", exact: "0.6.0"),
 ]
 
 let targets: [PackageDescription.Target] = [
@@ -94,6 +104,7 @@ let targets: [PackageDescription.Target] = [
         dependencies: [
             .asyncAlgorithms,
             .dependencies,
+            .identifiedCollections,
             "Entity",
         ],
         path: "Sources/Infra/DatabaseClient"
@@ -101,10 +112,8 @@ let targets: [PackageDescription.Target] = [
     .target(
         name: "DatabaseClientLive",
         dependencies: [
-            .asyncAlgorithms,
-            .dependencies,
+            .algorithms,
             "DatabaseClient",
-            "Entity",
             "Error",
         ],
         path: "Sources/Infra/DatabaseClientLive"
