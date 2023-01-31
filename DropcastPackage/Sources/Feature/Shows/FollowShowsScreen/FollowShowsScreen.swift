@@ -17,11 +17,10 @@ struct FollowShowsScreen: View {
                         labelView(title: "No Results")
                     case .loaded(let shows):
                         ScrollView {
-                            LazyVStack(spacing: 0) {
+                            LazyVStack(spacing: 12) {
                                 ForEach(shows) { show in
                                     ShowRowView(show: show)
-                                        .padding(.horizontal, 8)
-                                        .padding(.vertical, 4)
+                                        .padding(.horizontal)
                                 }
                             }
                         }

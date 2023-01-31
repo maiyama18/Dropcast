@@ -5,17 +5,19 @@ struct ShowRowView: View {
     let show: FollowShowsReducer.State.Show
 
     var body: some View {
-        HStack {
+        HStack(spacing: 12) {
             AsyncImage(url: show.imageURL) { image in
                 image
                     .resizable()
                     .aspectRatio(contentMode: .fit)
             } placeholder: {
                 Color.secondary
+                    .opacity(0.3)
             }
-            .frame(width: 80, height: 80)
+            .frame(width: 72, height: 72)
+            .cornerRadius(12)
 
-            VStack(alignment: .leading) {
+            VStack(alignment: .leading, spacing: 4) {
                 Text(show.title)
                     .lineLimit(2)
 
