@@ -1,23 +1,24 @@
+import AsyncAlgorithms
 import Dependencies
 import Entity
 
 public struct DatabaseClient: Sendable {
     public var followShow: @Sendable (Show) throws -> Void
-    public var fetchFollowingShows: @Sendable () throws -> [Show]
+    public var followedShowsStream: @Sendable () -> AsyncChannel<[Show]>
 
     public init(
         followShow: @escaping @Sendable (Show) throws -> Void,
-        fetchFollowingShows: @escaping @Sendable () throws -> [Show]
+        followedShowsStream: @escaping @Sendable () -> AsyncChannel<[Show]>
     ) {
         self.followShow = followShow
-        self.fetchFollowingShows = fetchFollowingShows
+        self.followedShowsStream = followedShowsStream
     }
 }
 
 extension DatabaseClient: TestDependencyKey {
     public static let testValue: DatabaseClient = DatabaseClient(
         followShow: unimplemented(),
-        fetchFollowingShows: unimplemented()
+        followedShowsStream: unimplemented()
     )
 }
 

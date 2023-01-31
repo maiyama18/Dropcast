@@ -3,6 +3,10 @@
 import PackageDescription
 
 extension PackageDescription.Target.Dependency {
+    static let asyncAlgorithms: Self = .product(
+        name: "AsyncAlgorithms",
+        package: "swift-async-algorithms"
+    )
     static let composableArchitecture: Self = .product(
         name: "ComposableArchitecture",
         package: "swift-composable-architecture"
@@ -22,6 +26,7 @@ extension PackageDescription.Target.Dependency {
 }
 
 let dependencies: [PackageDescription.Package.Dependency] = [
+    .package(url: "https://github.com/apple/swift-async-algorithms", exact: "0.0.4"),
     .package(url: "https://github.com/pointfreeco/swift-composable-architecture", exact: "0.49.2"),
     .package(url: "https://github.com/pointfreeco/swift-dependencies", exact: "0.1.4"),
     .package(url: "https://github.com/omaralbeik/Drops", exact: "1.6.1"),
@@ -87,6 +92,7 @@ let targets: [PackageDescription.Target] = [
     .target(
         name: "DatabaseClient",
         dependencies: [
+            .asyncAlgorithms,
             .dependencies,
             "Entity",
         ],
@@ -95,6 +101,7 @@ let targets: [PackageDescription.Target] = [
     .target(
         name: "DatabaseClientLive",
         dependencies: [
+            .asyncAlgorithms,
             .dependencies,
             "DatabaseClient",
             "Entity",
@@ -176,7 +183,10 @@ let targets: [PackageDescription.Target] = [
     ),
     .target(
         name: "TestHelper",
-        dependencies: [.dependencies],
+        dependencies: [
+            .asyncAlgorithms,
+            .dependencies,
+        ],
         path: "Sources/Core/TestHelper"
     ),
 ].map { (target: PackageDescription.Target) -> PackageDescription.Target in
