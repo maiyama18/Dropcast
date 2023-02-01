@@ -111,7 +111,7 @@ let targets: [PackageDescription.Target] = [
     .testTarget(
         name: "ShowDetailFeatureTest",
         dependencies: [
-            "DatabaseClientLive",
+            "DatabaseClient",
             "ShowDetailFeature",
             "TestHelper",
         ],
@@ -123,29 +123,22 @@ let targets: [PackageDescription.Target] = [
     .target(
         name: "DatabaseClient",
         dependencies: [
+            .algorithms,
             .asyncAlgorithms,
             .dependencies,
             .identifiedCollections,
             "Entity",
+            "Error",
         ],
         path: "Sources/Infra/DatabaseClient"
     ),
-    .target(
-        name: "DatabaseClientLive",
-        dependencies: [
-            .algorithms,
-            "DatabaseClient",
-            "Error",
-        ],
-        path: "Sources/Infra/DatabaseClientLive"
-    ),
     .testTarget(
-        name: "DatabaseClientLiveTests",
+        name: "DatabaseClientTests",
         dependencies: [
-            "DatabaseClientLive",
+            "DatabaseClient",
             "TestHelper",
         ],
-        path: "Tests/Infra/DatabaseClientLiveTests"
+        path: "Tests/Infra/DatabaseClientTests"
     ),
     .target(
         name: "RSSClient",
@@ -260,8 +253,8 @@ var package = Package(
             name: "RSSClient",
             targets: ["RSSClient"]),
         .library(
-            name: "DatabaseClientLive",
-            targets: ["DatabaseClientLive"]),
+            name: "DatabaseClient",
+            targets: ["DatabaseClient"]),
     ],
     dependencies: dependencies,
     targets: targets
