@@ -8,7 +8,7 @@ import RSSClient
 
 public struct FollowShowsReducer: ReducerProtocol, Sendable {
     public struct State: Equatable {
-        public struct Show: Equatable, Identifiable {
+        public struct Show: Equatable, Identifiable, Hashable {
             public var feedURL: URL
             public var imageURL: URL
             public var title: String
@@ -47,14 +47,22 @@ public struct FollowShowsReducer: ReducerProtocol, Sendable {
             }
         }
 
+        public enum Route: Equatable, Hashable {
+            case showDetail(show: State.Show)
+        }
+
         public var query: String = ""
         public var showsState: ShowsState = .prompt
         public var searchRequestInFlight: Bool = false
+
+        public var path: [Route] = []
     }
 
     public enum Action: Equatable {
         case queryChanged(query: String)
         case queryChangeDebounced
+        case showTapped(show: State.Show)
+        case pathChanged(path: [State.Route])
 
         case querySearchResponse(TaskResult<[ITunesShow]>)
         case urlSearchResponse(TaskResult<Entity.Show>)
@@ -94,6 +102,12 @@ public struct FollowShowsReducer: ReducerProtocol, Sendable {
                     }
                 }
                 .cancellable(id: SearchID.self)
+            case .showTapped(let show):
+                state.path.append(.showDetail(show: show))
+                return .none
+            case .pathChanged(let path):
+                state.path = path
+                return .none
             case .querySearchResponse(let result):
                 state.searchRequestInFlight = false
 

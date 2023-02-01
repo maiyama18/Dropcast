@@ -263,4 +263,53 @@ final class FollowShowsReducerTests: XCTestCase {
             $0.showsState = .empty
         }
     }
+
+    func test_tapping_show_makes_transition() async {
+        let store = TestStore(
+            initialState: FollowShowsReducer.State(),
+            reducer: FollowShowsReducer()
+        ) {
+            $0.iTunesClient.searchShows = { query in
+                guard query == "stack" else {
+                    XCTFail()
+                    throw TestError.somethingWentWrong
+                }
+                return [.fixtureStacktrace, .fixtureStackOverflow]
+            }
+        }
+
+        await store.send(.queryChanged(query: "stack")) {
+            $0.query = "stack"
+        }
+
+        await store.send(.queryChangeDebounced) {
+            $0.searchRequestInFlight = true
+        }
+
+        let stacktrace = FollowShowsReducer.State.Show(
+            feedURL: URL(string: "https://stacktracepodcast.fm/feed.rss")!,
+            imageURL: URL(string: "https://is4-ssl.mzstatic.com/image/thumb/Podcasts122/v4/21/b1/83/"
+                          + "21b183f6-53e2-fe5e-eabb-f7447577c9b7/mza_9137980121963783437.png/100x100bb.jpg")!,
+            title: "Stacktrace",
+            author: "John Sundell and Gui Rambo"
+        )
+        await store.receive(.querySearchResponse(.success([.fixtureStacktrace, .fixtureStackOverflow]))) {
+            $0.searchRequestInFlight = false
+            $0.showsState = .loaded(
+                shows: [
+                    stacktrace,
+                    FollowShowsReducer.State.Show(
+                        feedURL: URL(string: "https://feeds.simplecast.com/XA_851k3")!,
+                        imageURL: URL(string: "https://is4-ssl.mzstatic.com/image/thumb/Podcasts116/v4/6d/32/15/"
+                                      + "6d32155b-12ec-8d15-2f76-256e8e7f8dcf/mza_16949506039235574720.jpg/100x100bb.jpg")!,
+                        title: "The Stack Overflow Podcast",
+                        author: "The Stack Overflow Podcast"
+                    ),
+                ]
+            )
+        }
+        await store.send(.showTapped(show: stacktrace)) {
+            $0.path = [.showDetail(show: stacktrace)]
+        }
+    }
 }

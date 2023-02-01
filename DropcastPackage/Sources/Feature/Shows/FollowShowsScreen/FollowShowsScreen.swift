@@ -8,7 +8,7 @@ struct FollowShowsScreen: View {
 
     var body: some View {
         WithViewStore(store, observe: { $0 }) { viewStore in
-            NavigationStack {
+            NavigationStack(path: viewStore.binding(get: \.path, send: { .pathChanged(path: $0) })) {
                 Group {
                     switch viewStore.showsState {
                     case .prompt:
@@ -21,6 +21,10 @@ struct FollowShowsScreen: View {
                                 ForEach(shows) { show in
                                     ShowRowView(show: show)
                                         .padding(.horizontal)
+                                        .containerShape(Rectangle())
+                                        .onTapGesture {
+                                            viewStore.send(.showTapped(show: show))
+                                        }
                                 }
                             }
                         }
@@ -34,6 +38,12 @@ struct FollowShowsScreen: View {
                 }
                 .navigationTitle("Follow shows")
                 .navigationBarTitleDisplayMode(.inline)
+                .navigationDestination(for: FollowShowsReducer.State.Route.self) { route in
+                    switch route {
+                    case .showDetail(let show):
+                        Text(show.title)
+                    }
+                }
                 .searchable(
                     text: viewStore.binding(get: \.query, send: { .queryChanged(query: $0) }),
                     placement: .navigationBarDrawer(displayMode: .always),
