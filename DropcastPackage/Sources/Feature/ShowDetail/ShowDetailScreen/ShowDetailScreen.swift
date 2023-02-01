@@ -72,7 +72,7 @@ struct ShowDetailScreen_Previews: PreviewProvider {
                 imageURL: Show.fixtureRebuild.imageURL,
                 title: Show.fixtureRebuild.title,
                 author: Show.fixtureRebuild.author,
-                description: Show.fixtureRebuild.description
+                linkURL: Show.fixtureRebuild.linkURL
             )
         }
         .tint(.orange)

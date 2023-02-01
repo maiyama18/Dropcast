@@ -1,10 +1,12 @@
 import ComposableArchitecture
+import ScreenProvider
 import SwiftUI
 
 struct FollowShowsScreen: View {
     let store: StoreOf<FollowShowsReducer>
 
-    @Dependency(\.continuousClock) var clock
+    @Dependency(\.continuousClock) private var clock
+    @Dependency(\.screenProvider) private var screenProvider
 
     var body: some View {
         WithViewStore(store, observe: { $0 }) { viewStore in
@@ -41,7 +43,14 @@ struct FollowShowsScreen: View {
                 .navigationDestination(for: FollowShowsReducer.State.Route.self) { route in
                     switch route {
                     case .showDetail(let show):
-                        Text(show.title)
+                        screenProvider.provideShowDetailScreen(
+                            .init(
+                                feedURL: show.feedURL,
+                                imageURL: show.imageURL,
+                                title: show.title,
+                                author: show.author
+                            )
+                        )
                     }
                 }
                 .searchable(
