@@ -8,7 +8,7 @@ import Error
 import IdentifiedCollections
 
 extension DatabaseClient {
-    static func live(persistentProvider: PersistentProvider) -> DatabaseClient {
+    public static func live(persistentProvider: PersistentProvider) -> DatabaseClient {
         final class Delegate: NSObject, NSFetchedResultsControllerDelegate, Sendable {
             let showsStream: AsyncChannel<IdentifiedArrayOf<Show>> = .init()
 
@@ -61,6 +61,7 @@ extension DatabaseClient {
         }
 
         return DatabaseClient(
+            fetchShow: fetchShow(feedURL:),
             followShow: { show in
                 guard try fetchShow(feedURL: show.feedURL) == nil else {
                     return

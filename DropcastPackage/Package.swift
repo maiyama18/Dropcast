@@ -97,6 +97,26 @@ let targets: [PackageDescription.Target] = [
         ],
         path: "Tests/Feature/Shows"
     ),
+    .target(
+        name: "ShowDetailFeature",
+        dependencies: [
+            .composableArchitecture,
+            "DatabaseClient",
+            "Entity",
+            "MessageClient",
+            "RSSClient",
+        ],
+        path: "Sources/Feature/ShowDetail"
+    ),
+    .testTarget(
+        name: "ShowDetailFeatureTest",
+        dependencies: [
+            "DatabaseClientLive",
+            "ShowDetailFeature",
+            "TestHelper",
+        ],
+        path: "Tests/Feature/ShowDetail"
+    ),
 
     // Infra module
 
@@ -230,6 +250,9 @@ var package = Package(
         .library(
             name: "ShowsFeature",
             targets: ["ShowsFeature"]),
+        .library(
+            name: "ShowDetailFeature",
+            targets: ["ShowDetailFeature"]),
         .library(
             name: "ITunesClient",
             targets: ["ITunesClient"]),

@@ -1,7 +1,7 @@
 import CoreData
 import Dependencies
 
-protocol PersistentProvider: Sendable {
+public protocol PersistentProvider: Sendable {
     func executeInBackground<T: Sendable>(operation: (NSManagedObjectContext) throws -> T) rethrows -> T
 }
 
@@ -51,10 +51,10 @@ final class CloudKitPersistentProvider: PersistentProvider {
     }
 }
 
-final class InMemoryPersistentProvider: PersistentProvider {
+public final class InMemoryPersistentProvider: PersistentProvider {
     private let persistentContainer: LockIsolated<NSPersistentContainer>
 
-    init() {
+    public init() {
         persistentContainer = LockIsolated({
             let model = NSManagedObjectModel(contentsOf: Bundle.module.url(forResource: "Model", withExtension: "momd")!)!
             let container = NSPersistentCloudKitContainer(name: "Model", managedObjectModel: model)
@@ -76,7 +76,7 @@ final class InMemoryPersistentProvider: PersistentProvider {
         }
     }
 
-    func executeInBackground<T: Sendable>(operation: (NSManagedObjectContext) throws -> T) rethrows -> T {
+    public func executeInBackground<T: Sendable>(operation: (NSManagedObjectContext) throws -> T) rethrows -> T {
         try persistentContainer.withValue { container in
             let context = container.newBackgroundContext()
             return try context.performAndWait {
