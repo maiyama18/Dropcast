@@ -9,7 +9,7 @@ import XCTest
 
 @MainActor
 final class ShowDetailReducerTests: XCTestCase {
-    func test_transition_from_query_search() async {
+    func test_transition() async {
         let clock = TestClock()
         let store = TestStore(
             initialState: ShowDetailReducer.State(
@@ -47,50 +47,14 @@ final class ShowDetailReducerTests: XCTestCase {
         }
     }
 
-    func test_transition_from_feed_url_search() async {
-        let clock = TestClock()
-        let store = TestStore(
-            initialState: ShowDetailReducer.State(
-                feedURL: Show.fixtureRebuild.feedURL,
-                imageURL: Show.fixtureRebuild.imageURL,
-                title: Show.fixtureRebuild.title,
-                author: Show.fixtureRebuild.author,
-                description: Show.fixtureRebuild.description,
-                linkURL: Show.fixtureRebuild.linkURL
-            ),
-            reducer: ShowDetailReducer()
-        ) {
-            $0.databaseClient = .live(persistentProvider: InMemoryPersistentProvider())
-
-            $0.rssClient.fetch = { url in
-                XCTAssertEqual(url, Show.fixtureRebuild.feedURL)
-                try await clock.sleep(for: .seconds(1))
-                return Show.fixtureRebuild
-            }
-        }
-
-        await store.send(.task) {
-            $0.taskRequestInFlight = true
-        }
-        await store.receive(.databaseShowResponse(.success(nil))) {
-            $0.followed = false
-        }
-        await clock.advance(by: .seconds(1))
-        await store.receive(.rssShowResponse(.success(.fixtureRebuild))) {
-            $0.taskRequestInFlight = false
-        }
-    }
-
     func test_show_existing_in_database_is_considered_followed() async {
         let clock = TestClock()
         let store = TestStore(
             initialState: ShowDetailReducer.State(
-                feedURL: Show.fixtureRebuild.feedURL,
-                imageURL: Show.fixtureRebuild.imageURL,
-                title: Show.fixtureRebuild.title,
-                author: Show.fixtureRebuild.author,
-                description: Show.fixtureRebuild.description,
-                linkURL: Show.fixtureRebuild.linkURL
+                feedURL: ITunesShow.fixtureRebuild.feedURL,
+                imageURL: ITunesShow.fixtureRebuild.artworkLowQualityURL,
+                title: ITunesShow.fixtureRebuild.showName,
+                author: ITunesShow.fixtureRebuild.artistName
             ),
             reducer: ShowDetailReducer()
         ) {
@@ -117,6 +81,12 @@ final class ShowDetailReducerTests: XCTestCase {
         await clock.advance(by: .seconds(1))
         await store.receive(.rssShowResponse(.success(.fixtureRebuild))) {
             $0.taskRequestInFlight = false
+
+            $0.imageURL = Show.fixtureRebuild.imageURL
+            $0.title = Show.fixtureRebuild.title
+            $0.author = Show.fixtureRebuild.author
+            $0.linkURL = Show.fixtureRebuild.linkURL
+            $0.description = Show.fixtureRebuild.description
         }
     }
 
@@ -125,12 +95,10 @@ final class ShowDetailReducerTests: XCTestCase {
         let clock = TestClock()
         let store = TestStore(
             initialState: ShowDetailReducer.State(
-                feedURL: Show.fixtureRebuild.feedURL,
-                imageURL: Show.fixtureRebuild.imageURL,
-                title: Show.fixtureRebuild.title,
-                author: Show.fixtureRebuild.author,
-                description: Show.fixtureRebuild.description,
-                linkURL: Show.fixtureRebuild.linkURL
+                feedURL: ITunesShow.fixtureRebuild.feedURL,
+                imageURL: ITunesShow.fixtureRebuild.artworkLowQualityURL,
+                title: ITunesShow.fixtureRebuild.showName,
+                author: ITunesShow.fixtureRebuild.artistName
             ),
             reducer: ShowDetailReducer()
         ) {
@@ -153,6 +121,12 @@ final class ShowDetailReducerTests: XCTestCase {
         await clock.advance(by: .seconds(1))
         await store.receive(.rssShowResponse(.success(.fixtureRebuild))) {
             $0.taskRequestInFlight = false
+
+            $0.imageURL = Show.fixtureRebuild.imageURL
+            $0.title = Show.fixtureRebuild.title
+            $0.author = Show.fixtureRebuild.author
+            $0.linkURL = Show.fixtureRebuild.linkURL
+            $0.description = Show.fixtureRebuild.description
         }
 
         XCTAssertEqual(errorMessage.value, "Something went wrong")
@@ -163,12 +137,10 @@ final class ShowDetailReducerTests: XCTestCase {
         let clock = TestClock()
         let store = TestStore(
             initialState: ShowDetailReducer.State(
-                feedURL: Show.fixtureRebuild.feedURL,
-                imageURL: Show.fixtureRebuild.imageURL,
-                title: Show.fixtureRebuild.title,
-                author: Show.fixtureRebuild.author,
-                description: Show.fixtureRebuild.description,
-                linkURL: Show.fixtureRebuild.linkURL
+                feedURL: ITunesShow.fixtureRebuild.feedURL,
+                imageURL: ITunesShow.fixtureRebuild.artworkLowQualityURL,
+                title: ITunesShow.fixtureRebuild.showName,
+                author: ITunesShow.fixtureRebuild.artistName
             ),
             reducer: ShowDetailReducer()
         ) {
@@ -202,12 +174,10 @@ final class ShowDetailReducerTests: XCTestCase {
         let databaseClient: DatabaseClient = .live(persistentProvider: InMemoryPersistentProvider())
         let store = TestStore(
             initialState: ShowDetailReducer.State(
-                feedURL: Show.fixtureRebuild.feedURL,
-                imageURL: Show.fixtureRebuild.imageURL,
-                title: Show.fixtureRebuild.title,
-                author: Show.fixtureRebuild.author,
-                description: Show.fixtureRebuild.description,
-                linkURL: Show.fixtureRebuild.linkURL
+                feedURL: ITunesShow.fixtureRebuild.feedURL,
+                imageURL: ITunesShow.fixtureRebuild.artworkLowQualityURL,
+                title: ITunesShow.fixtureRebuild.showName,
+                author: ITunesShow.fixtureRebuild.artistName
             ),
             reducer: ShowDetailReducer()
         ) {
@@ -239,12 +209,10 @@ final class ShowDetailReducerTests: XCTestCase {
         let errorMessage: LockIsolated<String?> = .init(nil)
         let store = TestStore(
             initialState: ShowDetailReducer.State(
-                feedURL: Show.fixtureRebuild.feedURL,
-                imageURL: Show.fixtureRebuild.imageURL,
-                title: Show.fixtureRebuild.title,
-                author: Show.fixtureRebuild.author,
-                description: Show.fixtureRebuild.description,
-                linkURL: Show.fixtureRebuild.linkURL
+                feedURL: ITunesShow.fixtureRebuild.feedURL,
+                imageURL: ITunesShow.fixtureRebuild.artworkLowQualityURL,
+                title: ITunesShow.fixtureRebuild.showName,
+                author: ITunesShow.fixtureRebuild.artistName
             ),
             reducer: ShowDetailReducer()
         ) {
