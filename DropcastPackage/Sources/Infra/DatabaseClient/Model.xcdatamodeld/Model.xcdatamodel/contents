@@ -7,10 +7,5 @@
         <attribute name="linkURL" optional="YES" attributeType="URI"/>
         <attribute name="showDescription" optional="YES" attributeType="String"/>
         <attribute name="title" optional="YES" attributeType="String"/>
-        <uniquenessConstraints>
-            <uniquenessConstraint>
-                <constraint value="title"/>
-            </uniquenessConstraint>
-        </uniquenessConstraints>
     </entity>
 </model>
