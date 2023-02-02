@@ -51,7 +51,6 @@ struct FollowShowsScreen: View {
                     }
                 }
                 .navigationTitle("Follow shows")
-                .navigationBarTitleDisplayMode(.inline)
                 .searchable(
                     text: viewStore.binding(get: \.query, send: { .queryChanged(query: $0) }),
                     placement: .navigationBarDrawer(displayMode: .always),
@@ -86,14 +85,12 @@ struct FollowShowsScreen: View {
 
 struct FollowShowsScreen_Previews: PreviewProvider {
     static var previews: some View {
-        NavigationStack {
-            FollowShowsScreen(
-                store: StoreOf<FollowShowsReducer>(
-                    initialState: FollowShowsReducer.State(),
-                    reducer: FollowShowsReducer()
-                )
+        FollowShowsScreen(
+            store: StoreOf<FollowShowsReducer>(
+                initialState: FollowShowsReducer.State(),
+                reducer: FollowShowsReducer()
             )
-        }
+        )
         .tint(.orange)
     }
 }
