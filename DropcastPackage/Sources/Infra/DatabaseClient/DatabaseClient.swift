@@ -31,6 +31,7 @@ extension DatabaseClient {
             func sendInitialValue(_ controller: NSFetchedResultsController<ShowRecord>) {
                 try? controller.performFetch()
                 guard let records = controller.fetchedObjects else { return }
+                print(records.map { $0.title })
                 sendFetchedShowRecords(records)
             }
 

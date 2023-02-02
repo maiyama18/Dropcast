@@ -10,20 +10,37 @@ public struct ShowListScreen: View {
 
     public var body: some View {
         WithViewStore(store, observe: { $0 }) { viewStore in
-            NavigationStack {
-                Text("Shows Screen")
-                    .task {
-                        viewStore.send(.task)
-                    }
-                    .toolbar {
-                        ToolbarItem(placement: .navigationBarTrailing) {
-                            Button {
-                                viewStore.send(.openShowSearchButtonTapped)
-                            } label: {
-                                Image(systemName: "plus")
+            NavigationView {
+                Group {
+                    if let shows = viewStore.shows {
+                        if shows.isEmpty {
+                            emptyView(onButtonTapped: { viewStore.send(.openShowSearchButtonTapped) })
+                        } else {
+                            ScrollView {
+                                ForEach(shows) { show in
+                                    ShowRowView(show: show)
+                                }
                             }
+                            .padding(.horizontal)
+                        }
+                    } else {
+                        ProgressView()
+                            .scaleEffect(2)
+                    }
+                }
+                .toolbar {
+                    ToolbarItem(placement: .navigationBarTrailing) {
+                        Button {
+                            viewStore.send(.openShowSearchButtonTapped)
+                        } label: {
+                            Image(systemName: "plus")
+                                .bold()
                         }
                     }
+                }
+            }
+            .task {
+                viewStore.send(.task)
             }
             .sheet(
                 isPresented: viewStore.binding(
@@ -37,6 +54,31 @@ public struct ShowListScreen: View {
             }
         }
     }
+
+    @ViewBuilder
+    private func emptyView(onButtonTapped: @escaping () -> Void) -> some View {
+        VStack(spacing: 0) {
+            Image(systemName: "face.dashed")
+                .font(.largeTitle)
+                .foregroundStyle(.secondary)
+
+            Spacer()
+                .frame(height: 8)
+
+            Text("No shows")
+                .font(.title2)
+                .foregroundStyle(.secondary)
+
+            Spacer()
+                .frame(height: 16)
+
+            Button("Follow your favorite show!") {
+                onButtonTapped()
+            }
+            .tint(.orange)
+        }
+        .frame(maxHeight: .infinity, alignment: .center)
+    }
 }
 
 struct ShowListScreen_Previews: PreviewProvider {
@@ -47,5 +89,6 @@ struct ShowListScreen_Previews: PreviewProvider {
                 reducer: ShowListReducer()
             )
         )
+        .tint(.orange)
     }
 }

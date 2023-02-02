@@ -38,7 +38,7 @@ public struct ShowDetailReducer: ReducerProtocol, Sendable {
         }
     }
 
-    public enum Action: Equatable {
+    public enum Action: Equatable, Sendable {
         case task
         case disappear
         case toggleFollowButtonTapped

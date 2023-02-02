@@ -2,7 +2,7 @@ import Entity
 import SwiftUI
 
 struct ShowRowView: View {
-    let show: ShowSearchReducer.State.Show
+    let show: SimpleShow
 
     var body: some View {
         HStack(spacing: 12) {
@@ -44,7 +44,7 @@ struct ShowRowView_Previews: PreviewProvider {
             ShowRowView(show: .init(iTunesShow: .fixtureNature))
             ShowRowView(show: .init(iTunesShow: .fixtureBilingualNews))
             ShowRowView(show: .init(iTunesShow: .fixtureFukabori))
-            ShowRowView(show: .init(iTunesShow: .fixtureSuperLongProperties))
+//            ShowRowView(show: .init(iTunesShow: .fixtureSuperLongProperties))
         }
         .padding(.horizontal)
     }
