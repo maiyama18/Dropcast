@@ -25,6 +25,9 @@ public struct ShowDetailScreen: View {
             .task {
                 viewStore.send(.task)
             }
+            .onDisappear {
+                viewStore.send(.disappear)
+            }
             .toolbar {
                 ToolbarItem(placement: .navigationBarTrailing) {
                     Menu {

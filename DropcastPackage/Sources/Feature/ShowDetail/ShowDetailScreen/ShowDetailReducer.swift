@@ -40,6 +40,7 @@ public struct ShowDetailReducer: ReducerProtocol, Sendable {
 
     public enum Action: Equatable {
         case task
+        case disappear
         case toggleFollowButtonTapped
 
         case databaseShowResponse(TaskResult<Show?>)
@@ -52,6 +53,8 @@ public struct ShowDetailReducer: ReducerProtocol, Sendable {
     @Dependency(\.rssClient) private var rssClient
 
     public init() {}
+
+    private enum RSSRequestID {}
 
     public var body: some ReducerProtocol<State, Action> {
         Reduce { state, action in
@@ -73,7 +76,10 @@ public struct ShowDetailReducer: ReducerProtocol, Sendable {
                             }
                         )
                     }
+                    .cancellable(id: RSSRequestID.self)
                 )
+            case .disappear:
+                return .cancel(id: RSSRequestID.self)
             case .toggleFollowButtonTapped:
                 let show = Show(
                     title: state.title,

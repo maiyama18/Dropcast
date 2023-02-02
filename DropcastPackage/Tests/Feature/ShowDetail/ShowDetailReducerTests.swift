@@ -242,4 +242,35 @@ final class ShowDetailReducerTests: XCTestCase {
 
         XCTAssertEqual(errorMessage.value, "Failed to follow the show")
     }
+
+    func test_in_flight_rss_request_cancelled_on_disappear() async {
+        let clock = TestClock()
+        let store = TestStore(
+            initialState: ShowDetailReducer.State(
+                feedURL: ITunesShow.fixtureRebuild.feedURL,
+                imageURL: ITunesShow.fixtureRebuild.artworkLowQualityURL,
+                title: ITunesShow.fixtureRebuild.showName,
+                author: ITunesShow.fixtureRebuild.artistName
+            ),
+            reducer: ShowDetailReducer()
+        ) {
+            $0.databaseClient = .live(persistentProvider: InMemoryPersistentProvider())
+
+            $0.rssClient.fetch = { url in
+                XCTAssertEqual(url, ITunesShow.fixtureRebuild.feedURL)
+                try await clock.sleep(for: .seconds(1))
+                return Show.fixtureRebuild
+            }
+        }
+
+        await store.send(.task) {
+            $0.taskRequestInFlight = true
+        }
+        await store.receive(.databaseShowResponse(.success(nil))) {
+            $0.followed = false
+        }
+        await store.send(.disappear)
+        await clock.advance(by: .seconds(1))
+        // no rss response should be received
+    }
 }
