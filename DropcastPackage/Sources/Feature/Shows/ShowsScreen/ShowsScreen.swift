@@ -32,7 +32,7 @@ public struct ShowsScreen: View {
                 )
             ) {
                 IfLetStore(store.scope(state: \.followShowsState, action: { .followShows($0) })) {
-                    FollowShowsScreen(store: $0)
+                    ShowSearchScreen(store: $0)
                 }
             }
         }

@@ -7,11 +7,11 @@ import XCTest
 @testable import ShowsFeature
 
 @MainActor
-final class FollowShowsReducerTests: XCTestCase {
+final class ShowSearchReducerTests: XCTestCase {
     func test_search_by_query_success_shows_results_and_empty_query_delete_previous_results() async {
         let store = TestStore(
-            initialState: FollowShowsReducer.State(),
-            reducer: FollowShowsReducer()
+            initialState: ShowSearchReducer.State(),
+            reducer: ShowSearchReducer()
         ) {
             $0.iTunesClient.searchShows = { query in
                 guard query == "stack" else {
@@ -33,14 +33,14 @@ final class FollowShowsReducerTests: XCTestCase {
             $0.searchRequestInFlight = false
             $0.showsState = .loaded(
                 shows: [
-                    FollowShowsReducer.State.Show(
+                    ShowSearchReducer.State.Show(
                         feedURL: URL(string: "https://stacktracepodcast.fm/feed.rss")!,
                         imageURL: URL(string: "https://is4-ssl.mzstatic.com/image/thumb/Podcasts122/v4/21/b1/83/"
                                       + "21b183f6-53e2-fe5e-eabb-f7447577c9b7/mza_9137980121963783437.png/100x100bb.jpg")!,
                         title: "Stacktrace",
                         author: "John Sundell and Gui Rambo"
                     ),
-                    FollowShowsReducer.State.Show(
+                    ShowSearchReducer.State.Show(
                         feedURL: URL(string: "https://feeds.simplecast.com/XA_851k3")!,
                         imageURL: URL(string: "https://is4-ssl.mzstatic.com/image/thumb/Podcasts116/v4/6d/32/15/"
                                       + "6d32155b-12ec-8d15-2f76-256e8e7f8dcf/mza_16949506039235574720.jpg/100x100bb.jpg")!,
@@ -59,8 +59,8 @@ final class FollowShowsReducerTests: XCTestCase {
 
     func test_empty_result_shows_empty_view() async {
         let store = TestStore(
-            initialState: FollowShowsReducer.State(),
-            reducer: FollowShowsReducer()
+            initialState: ShowSearchReducer.State(),
+            reducer: ShowSearchReducer()
         ) {
             $0.iTunesClient.searchShows = { query in
                 guard query == "stack" else {
@@ -87,8 +87,8 @@ final class FollowShowsReducerTests: XCTestCase {
     func test_search_failure_shows_error_message() async {
         let errorMessage: LockIsolated<String?> = .init(nil)
         let store = TestStore(
-            initialState: FollowShowsReducer.State(),
-            reducer: FollowShowsReducer()
+            initialState: ShowSearchReducer.State(),
+            reducer: ShowSearchReducer()
         ) {
             $0.iTunesClient.searchShows = { _ in
                 throw TestError.somethingWentWrong
@@ -115,8 +115,8 @@ final class FollowShowsReducerTests: XCTestCase {
     func test_search_failure_after_success_shows_error_message_with_previous_search_results() async {
         let errorMessage: LockIsolated<String?> = .init(nil)
         let store = TestStore(
-            initialState: FollowShowsReducer.State(),
-            reducer: FollowShowsReducer()
+            initialState: ShowSearchReducer.State(),
+            reducer: ShowSearchReducer()
         ) {
             $0.iTunesClient.searchShows = { query in
                 if query == "stack" {
@@ -140,14 +140,14 @@ final class FollowShowsReducerTests: XCTestCase {
             $0.searchRequestInFlight = false
             $0.showsState = .loaded(
                 shows: [
-                    FollowShowsReducer.State.Show(
+                    ShowSearchReducer.State.Show(
                         feedURL: URL(string: "https://stacktracepodcast.fm/feed.rss")!,
                         imageURL: URL(string: "https://is4-ssl.mzstatic.com/image/thumb/Podcasts122/v4/21/b1/83/"
                                       + "21b183f6-53e2-fe5e-eabb-f7447577c9b7/mza_9137980121963783437.png/100x100bb.jpg")!,
                         title: "Stacktrace",
                         author: "John Sundell and Gui Rambo"
                     ),
-                    FollowShowsReducer.State.Show(
+                    ShowSearchReducer.State.Show(
                         feedURL: URL(string: "https://feeds.simplecast.com/XA_851k3")!,
                         imageURL: URL(string: "https://is4-ssl.mzstatic.com/image/thumb/Podcasts116/v4/6d/32/15/"
                                       + "6d32155b-12ec-8d15-2f76-256e8e7f8dcf/mza_16949506039235574720.jpg/100x100bb.jpg")!,
@@ -174,8 +174,8 @@ final class FollowShowsReducerTests: XCTestCase {
         let clock = TestClock()
 
         let store = TestStore(
-            initialState: FollowShowsReducer.State(),
-            reducer: FollowShowsReducer()
+            initialState: ShowSearchReducer.State(),
+            reducer: ShowSearchReducer()
         ) {
             $0.iTunesClient.searchShows = { query in
                 guard query == "stack" else {
@@ -203,8 +203,8 @@ final class FollowShowsReducerTests: XCTestCase {
 
     func test_query_parsed_as_url_shows_show_from_rss() async {
         let store = TestStore(
-            initialState: FollowShowsReducer.State(),
-            reducer: FollowShowsReducer()
+            initialState: ShowSearchReducer.State(),
+            reducer: ShowSearchReducer()
         ) {
             $0.rssClient.fetch = { url in
                 guard url == URL(string: "https://feeds.rebuild.fm/rebuildfm") else {
@@ -226,7 +226,7 @@ final class FollowShowsReducerTests: XCTestCase {
             $0.searchRequestInFlight = false
             $0.showsState = .loaded(
                 shows: [
-                    FollowShowsReducer.State.Show(
+                    ShowSearchReducer.State.Show(
                         feedURL: URL(string: "https://feeds.rebuild.fm/rebuildfm")!,
                         imageURL: URL(string: "https://cdn.rebuild.fm/images/icon1400.jpg")!,
                         title: "Rebuild",
@@ -239,8 +239,8 @@ final class FollowShowsReducerTests: XCTestCase {
 
     func test_query_parsed_as_invalid_url_shows_empty_view() async {
         let store = TestStore(
-            initialState: FollowShowsReducer.State(),
-            reducer: FollowShowsReducer()
+            initialState: ShowSearchReducer.State(),
+            reducer: ShowSearchReducer()
         ) {
             $0.rssClient.fetch = { url in
                 guard url == URL(string: "https://feeds.rebuild.fm/reb") else {
@@ -265,8 +265,8 @@ final class FollowShowsReducerTests: XCTestCase {
     }
     func test_query_with_http_url_does_not_fetch_rss() async {
         let store = TestStore(
-            initialState: FollowShowsReducer.State(),
-            reducer: FollowShowsReducer()
+            initialState: ShowSearchReducer.State(),
+            reducer: ShowSearchReducer()
         ) {
             $0.iTunesClient.searchShows = { query in
                 XCTAssertEqual(query, "http://feeds.rebuild.fm/rebuildfm")
@@ -289,8 +289,8 @@ final class FollowShowsReducerTests: XCTestCase {
 
     func test_tapping_show_makes_transition() async {
         let store = TestStore(
-            initialState: FollowShowsReducer.State(),
-            reducer: FollowShowsReducer()
+            initialState: ShowSearchReducer.State(),
+            reducer: ShowSearchReducer()
         ) {
             $0.iTunesClient.searchShows = { query in
                 guard query == "stack" else {

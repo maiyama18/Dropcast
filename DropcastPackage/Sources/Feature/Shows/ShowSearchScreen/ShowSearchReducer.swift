@@ -7,7 +7,7 @@ import MessageClient
 import RSSClient
 import ShowDetailFeature
 
-public struct FollowShowsReducer: ReducerProtocol, Sendable {
+public struct ShowSearchReducer: ReducerProtocol, Sendable {
     public struct State: Equatable {
         public struct Show: Equatable, Identifiable, Hashable {
             public var feedURL: URL

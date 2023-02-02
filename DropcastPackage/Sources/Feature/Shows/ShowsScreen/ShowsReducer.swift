@@ -2,7 +2,7 @@ import ComposableArchitecture
 
 public struct ShowsReducer: ReducerProtocol {
     public struct State: Equatable {
-        public var followShowsState: FollowShowsReducer.State?
+        public var followShowsState: ShowSearchReducer.State?
 
         public init() {}
 
@@ -14,7 +14,7 @@ public struct ShowsReducer: ReducerProtocol {
         case openFollowShowsButtonTapped
         case followShowsDismissed
 
-        case followShows(FollowShowsReducer.Action)
+        case followShows(ShowSearchReducer.Action)
     }
 
     public init() {}
@@ -25,7 +25,7 @@ public struct ShowsReducer: ReducerProtocol {
             case .task:
                 return .none
             case .openFollowShowsButtonTapped:
-                state.followShowsState = FollowShowsReducer.State()
+                state.followShowsState = ShowSearchReducer.State()
                 return .none
             case .followShowsDismissed:
                 state.followShowsState = nil
@@ -35,7 +35,7 @@ public struct ShowsReducer: ReducerProtocol {
             }
         }
         .ifLet(\.followShowsState, action: /Action.followShows) {
-            FollowShowsReducer()
+            ShowSearchReducer()
         }
     }
 }
