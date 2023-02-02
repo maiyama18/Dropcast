@@ -2,7 +2,7 @@ import Entity
 import SwiftUI
 
 struct ShowRowView: View {
-    let show: FollowShowsReducer.State.Show
+    let show: ShowSearchReducer.State.Show
 
     var body: some View {
         HStack(spacing: 12) {

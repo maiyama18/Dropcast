@@ -1,10 +1,10 @@
 import ComposableArchitecture
 import SwiftUI
 
-public struct ShowsScreen: View {
-    let store: StoreOf<ShowsReducer>
+public struct ShowListScreen: View {
+    let store: StoreOf<ShowListReducer>
 
-    public init(store: StoreOf<ShowsReducer>) {
+    public init(store: StoreOf<ShowListReducer>) {
         self.store = store
     }
 
@@ -18,7 +18,7 @@ public struct ShowsScreen: View {
                     .toolbar {
                         ToolbarItem(placement: .navigationBarTrailing) {
                             Button {
-                                viewStore.send(.openFollowShowsButtonTapped)
+                                viewStore.send(.openShowSearchButtonTapped)
                             } label: {
                                 Image(systemName: "plus")
                             }
@@ -28,23 +28,23 @@ public struct ShowsScreen: View {
             .sheet(
                 isPresented: viewStore.binding(
                     get: \.followShowsPresented,
-                    send: { _ in .followShowsDismissed }
+                    send: { _ in .showSearchDismissed }
                 )
             ) {
-                IfLetStore(store.scope(state: \.followShowsState, action: { .followShows($0) })) {
-                    FollowShowsScreen(store: $0)
+                IfLetStore(store.scope(state: \.showSearchState, action: { .showSearch($0) })) {
+                    ShowSearchScreen(store: $0)
                 }
             }
         }
     }
 }
 
-struct ShowsScreen_Previews: PreviewProvider {
+struct ShowListScreen_Previews: PreviewProvider {
     static var previews: some View {
-        ShowsScreen(
-            store: StoreOf<ShowsReducer>(
-                initialState: ShowsReducer.State(),
-                reducer: ShowsReducer()
+        ShowListScreen(
+            store: StoreOf<ShowListReducer>(
+                initialState: ShowListReducer.State(),
+                reducer: ShowListReducer()
             )
         )
     }

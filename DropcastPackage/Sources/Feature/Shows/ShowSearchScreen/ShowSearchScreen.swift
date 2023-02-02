@@ -2,8 +2,8 @@ import ComposableArchitecture
 import ShowDetailFeature
 import SwiftUI
 
-struct FollowShowsScreen: View {
-    let store: StoreOf<FollowShowsReducer>
+struct ShowSearchScreen: View {
+    let store: StoreOf<ShowSearchReducer>
 
     @Dependency(\.continuousClock) private var clock
 
@@ -83,12 +83,12 @@ struct FollowShowsScreen: View {
 
 }
 
-struct FollowShowsScreen_Previews: PreviewProvider {
+struct ShowSearchScreen_Previews: PreviewProvider {
     static var previews: some View {
-        FollowShowsScreen(
-            store: StoreOf<FollowShowsReducer>(
-                initialState: FollowShowsReducer.State(),
-                reducer: FollowShowsReducer()
+        ShowSearchScreen(
+            store: StoreOf<ShowSearchReducer>(
+                initialState: ShowSearchReducer.State(),
+                reducer: ShowSearchReducer()
             )
         )
         .tint(.orange)

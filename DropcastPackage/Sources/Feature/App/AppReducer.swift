@@ -14,14 +14,14 @@ struct AppReducer: ReducerProtocol {
         var activeTab: Tab = .feed
 
         var feedState: FeedReducer.State = .init()
-        var showsState: ShowsReducer.State = .init()
+        var showsState: ShowListReducer.State = .init()
     }
 
     enum Action: Equatable {
         case activeTabChanged(Tab)
 
         case feed(FeedReducer.Action)
-        case shows(ShowsReducer.Action)
+        case shows(ShowListReducer.Action)
     }
 
     var body: some ReducerProtocol<State, Action> {
@@ -42,7 +42,7 @@ struct AppReducer: ReducerProtocol {
         }
 
         Scope(state: \.showsState, action: /Action.shows) {
-            ShowsReducer()
+            ShowListReducer()
         }
     }
 }
