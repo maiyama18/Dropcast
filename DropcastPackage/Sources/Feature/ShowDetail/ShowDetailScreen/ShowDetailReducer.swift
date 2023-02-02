@@ -5,7 +5,7 @@ import Foundation
 import MessageClient
 import RSSClient
 
-public struct ShowDetailReducer: ReducerProtocol {
+public struct ShowDetailReducer: ReducerProtocol, Sendable {
     public struct State: Equatable {
         public var feedURL: URL
         public var imageURL: URL
