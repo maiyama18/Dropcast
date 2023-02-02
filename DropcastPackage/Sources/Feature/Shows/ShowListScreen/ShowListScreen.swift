@@ -1,10 +1,10 @@
 import ComposableArchitecture
 import SwiftUI
 
-public struct ShowsScreen: View {
-    let store: StoreOf<ShowsReducer>
+public struct ShowListScreen: View {
+    let store: StoreOf<ShowListReducer>
 
-    public init(store: StoreOf<ShowsReducer>) {
+    public init(store: StoreOf<ShowListReducer>) {
         self.store = store
     }
 
@@ -39,12 +39,12 @@ public struct ShowsScreen: View {
     }
 }
 
-struct ShowsScreen_Previews: PreviewProvider {
+struct ShowListScreen_Previews: PreviewProvider {
     static var previews: some View {
-        ShowsScreen(
-            store: StoreOf<ShowsReducer>(
-                initialState: ShowsReducer.State(),
-                reducer: ShowsReducer()
+        ShowListScreen(
+            store: StoreOf<ShowListReducer>(
+                initialState: ShowListReducer.State(),
+                reducer: ShowListReducer()
             )
         )
     }

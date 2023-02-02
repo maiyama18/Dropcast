@@ -16,7 +16,7 @@ public struct AppScreen: View {
                             Label("Feed", systemImage: "dot.radiowaves.up.forward")
                         }
 
-                    ShowsScreen(store: store.scope(state: \.showsState, action: { .shows($0) }))
+                    ShowListScreen(store: store.scope(state: \.showsState, action: { .shows($0) }))
                         .tag(AppReducer.Tab.shows)
                         .tabItem {
                             Label("Shows", systemImage: "square.stack.3d.down.right")

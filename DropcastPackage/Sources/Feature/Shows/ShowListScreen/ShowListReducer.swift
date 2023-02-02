@@ -1,6 +1,6 @@
 import ComposableArchitecture
 
-public struct ShowsReducer: ReducerProtocol {
+public struct ShowListReducer: ReducerProtocol {
     public struct State: Equatable {
         public var followShowsState: ShowSearchReducer.State?
 
