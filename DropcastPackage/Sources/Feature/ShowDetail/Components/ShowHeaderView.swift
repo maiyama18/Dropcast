@@ -2,11 +2,11 @@ import SwiftUI
 
 struct ShowHeaderView: View {
     var imageURL: URL
+    var title: String
     var author: String?
     var description: String?
     var followed: Bool?
     var requestInFlight: Bool
-    var toggleFollowButtonTapped: () -> Void
 
     var body: some View {
         VStack(alignment: .leading, spacing: 12) {
@@ -23,9 +23,16 @@ struct ShowHeaderView: View {
                 .cornerRadius(12)
 
                 VStack(alignment: .leading, spacing: 0) {
+                    Text(title)
+                        .font(.headline.bold())
+                        .lineLimit(3)
+
+                    Spacer(minLength: 0)
+                        .frame(height: 2)
+
                     Group {
                         if let author {
-                            Text("by " + author)
+                            Text(author)
                         } else if requestInFlight {
                             Text("Lorem ipsum")
                                 .redacted(reason: .placeholder)
@@ -39,7 +46,7 @@ struct ShowHeaderView: View {
                         .frame(height: 12)
 
                     Button {
-                        toggleFollowButtonTapped()
+
                     } label: {
                         if let followed {
                             if followed {
@@ -94,11 +101,11 @@ struct ShowHeaderView_Previews: PreviewProvider {
             let rebuild = Show.fixtureRebuild
             ShowHeaderView(
                 imageURL: rebuild.imageURL,
+                title: rebuild.title,
                 author: rebuild.author,
                 description: rebuild.description,
                 followed: false,
-                requestInFlight: false,
-                toggleFollowButtonTapped: {}
+                requestInFlight: false
             )
             .padding()
 
@@ -107,11 +114,11 @@ struct ShowHeaderView_Previews: PreviewProvider {
             let swift = Show.fixtureSwiftBySundell
             ShowHeaderView(
                 imageURL: swift.imageURL,
+                title: swift.title,
                 author: swift.author,
                 description: swift.description,
                 followed: true,
-                requestInFlight: false,
-                toggleFollowButtonTapped: {}
+                requestInFlight: false
             )
             .padding()
 
@@ -120,11 +127,11 @@ struct ShowHeaderView_Previews: PreviewProvider {
             let program = Show.fixtureプログラム雑談
             ShowHeaderView(
                 imageURL: program.imageURL,
+                title: program.title,
                 author: program.author,
                 description: program.description,
                 followed: nil,
-                requestInFlight: false,
-                toggleFollowButtonTapped: {}
+                requestInFlight: false
             )
             .padding()
         }

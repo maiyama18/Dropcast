@@ -14,11 +14,11 @@ public struct ShowDetailScreen: View {
             ScrollView {
                 ShowHeaderView(
                     imageURL: viewStore.imageURL,
+                    title: viewStore.title,
                     author: viewStore.author,
                     description: viewStore.description,
                     followed: viewStore.followed,
-                    requestInFlight: viewStore.taskRequestInFlight,
-                    toggleFollowButtonTapped: { viewStore.send(.toggleFollowButtonTapped) }
+                    requestInFlight: viewStore.taskRequestInFlight
                 )
                 .padding()
             }
@@ -43,8 +43,8 @@ public struct ShowDetailScreen: View {
                     }
                 }
             }
-            .navigationTitle(viewStore.title)
         }
+        .navigationBarTitleDisplayMode(.inline)
     }
 }
 

@@ -36,11 +36,11 @@ struct FollowShowsScreen: View {
                                         )
                                     ) {
                                         ShowRowView(show: show)
-                                            .padding(.horizontal)
                                     }
-                                    .buttonStyle(.plain)
+                                    .tint(.primary)
                                 }
                             }
+                            .padding(.horizontal)
                         }
                     }
                 }
