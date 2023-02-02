@@ -5,9 +5,7 @@ import Error
 import TestHelper
 import XCTest
 
-@testable import DatabaseClientLive
-
-final class DatabaseClientLiveTests: XCTestCase {
+final class DatabaseClientTests: XCTestCase {
     private var persistentProvider: PersistentProvider!
     private var client: DatabaseClient!
 

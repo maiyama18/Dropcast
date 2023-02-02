@@ -14,9 +14,9 @@
             buildForAnalyzing = "YES">
             <BuildableReference
                BuildableIdentifier = "primary"
-               BlueprintIdentifier = "DatabaseClientLive"
-               BuildableName = "DatabaseClientLive"
-               BlueprintName = "DatabaseClientLive"
+               BlueprintIdentifier = "ShowDetailFeature"
+               BuildableName = "ShowDetailFeature"
+               BlueprintName = "ShowDetailFeature"
                ReferencedContainer = "container:">
             </BuildableReference>
          </BuildActionEntry>
@@ -32,9 +32,9 @@
             skipped = "NO">
             <BuildableReference
                BuildableIdentifier = "primary"
-               BlueprintIdentifier = "DatabaseClientLiveTests"
-               BuildableName = "DatabaseClientLiveTests"
-               BlueprintName = "DatabaseClientLiveTests"
+               BlueprintIdentifier = "ShowDetailFeatureTest"
+               BuildableName = "ShowDetailFeatureTest"
+               BlueprintName = "ShowDetailFeatureTest"
                ReferencedContainer = "container:">
             </BuildableReference>
          </TestableReference>
@@ -60,9 +60,9 @@
       <MacroExpansion>
          <BuildableReference
             BuildableIdentifier = "primary"
-            BlueprintIdentifier = "DatabaseClientLive"
-            BuildableName = "DatabaseClientLive"
-            BlueprintName = "DatabaseClientLive"
+            BlueprintIdentifier = "ShowDetailFeature"
+            BuildableName = "ShowDetailFeature"
+            BlueprintName = "ShowDetailFeature"
             ReferencedContainer = "container:">
          </BuildableReference>
       </MacroExpansion>

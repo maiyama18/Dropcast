@@ -1,14 +1,15 @@
 import ComposableArchitecture
+import ShowDetailFeature
 import SwiftUI
 
 struct FollowShowsScreen: View {
     let store: StoreOf<FollowShowsReducer>
 
-    @Dependency(\.continuousClock) var clock
+    @Dependency(\.continuousClock) private var clock
 
     var body: some View {
         WithViewStore(store, observe: { $0 }) { viewStore in
-            NavigationStack {
+            NavigationView {
                 Group {
                     switch viewStore.showsState {
                     case .prompt:
@@ -19,10 +20,27 @@ struct FollowShowsScreen: View {
                         ScrollView {
                             LazyVStack(spacing: 12) {
                                 ForEach(shows) { show in
-                                    ShowRowView(show: show)
-                                        .padding(.horizontal)
+                                    NavigationLink(
+                                        destination: IfLetStore(
+                                            self.store.scope(
+                                                state: \.selectedShowState?.value,
+                                                action: { .showDetail($0) }
+                                            )
+                                        ) {
+                                            ShowDetailScreen(store: $0)
+                                        },
+                                        tag: show.feedURL,
+                                        selection: viewStore.binding(
+                                            get: \.selectedShowState?.id,
+                                            send: { .showDetailSelected(feedURL: $0) }
+                                        )
+                                    ) {
+                                        ShowRowView(show: show)
+                                    }
+                                    .tint(.primary)
                                 }
                             }
+                            .padding(.horizontal)
                         }
                     }
                 }
@@ -33,11 +51,10 @@ struct FollowShowsScreen: View {
                     }
                 }
                 .navigationTitle("Follow shows")
-                .navigationBarTitleDisplayMode(.inline)
                 .searchable(
                     text: viewStore.binding(get: \.query, send: { .queryChanged(query: $0) }),
                     placement: .navigationBarDrawer(displayMode: .always),
-                    prompt: Text("Show name, Host, Feed URL ...")
+                    prompt: Text("Show title, Feed URL, Author...")
                 )
                 .autocorrectionDisabled(true)
                 .textInputAutocapitalization(.never)
@@ -68,14 +85,12 @@ struct FollowShowsScreen: View {
 
 struct FollowShowsScreen_Previews: PreviewProvider {
     static var previews: some View {
-        NavigationStack {
-            FollowShowsScreen(
-                store: StoreOf<FollowShowsReducer>(
-                    initialState: FollowShowsReducer.State(),
-                    reducer: FollowShowsReducer()
-                )
+        FollowShowsScreen(
+            store: StoreOf<FollowShowsReducer>(
+                initialState: FollowShowsReducer.State(),
+                reducer: FollowShowsReducer()
             )
-        }
+        )
         .tint(.orange)
     }
 }

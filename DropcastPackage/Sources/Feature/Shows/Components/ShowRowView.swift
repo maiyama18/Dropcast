@@ -20,10 +20,12 @@ struct ShowRowView: View {
             VStack(alignment: .leading, spacing: 4) {
                 Text(show.title)
                     .lineLimit(2)
+                    .multilineTextAlignment(.leading)
 
                 if let author = show.author {
                     Text(author)
                         .lineLimit(2)
+                        .multilineTextAlignment(.leading)
                         .font(.subheadline)
                         .foregroundStyle(.secondary)
                 }

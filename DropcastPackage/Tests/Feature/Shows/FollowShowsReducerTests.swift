@@ -263,4 +263,66 @@ final class FollowShowsReducerTests: XCTestCase {
             $0.showsState = .empty
         }
     }
+    func test_query_with_http_url_does_not_fetch_rss() async {
+        let store = TestStore(
+            initialState: FollowShowsReducer.State(),
+            reducer: FollowShowsReducer()
+        ) {
+            $0.iTunesClient.searchShows = { query in
+                XCTAssertEqual(query, "http://feeds.rebuild.fm/rebuildfm")
+                return []
+            }
+        }
+
+        await store.send(.queryChanged(query: "http://feeds.rebuild.fm/rebuildfm")) {
+            $0.query = "http://feeds.rebuild.fm/rebuildfm"
+        }
+
+        await store.send(.queryChangeDebounced) {
+            $0.searchRequestInFlight = true
+        }
+        await store.receive(.querySearchResponse(.success([]))) {
+            $0.searchRequestInFlight = false
+            $0.showsState = .empty
+        }
+    }
+
+    func test_tapping_show_makes_transition() async {
+        let store = TestStore(
+            initialState: FollowShowsReducer.State(),
+            reducer: FollowShowsReducer()
+        ) {
+            $0.iTunesClient.searchShows = { query in
+                guard query == "stack" else {
+                    XCTFail()
+                    throw TestError.somethingWentWrong
+                }
+                return [.fixtureStacktrace, .fixtureStackOverflow]
+            }
+        }
+
+        store.exhaustivity = .off
+
+        await store.send(.queryChanged(query: "stack")) {
+            $0.query = "stack"
+        }
+        await store.send(.queryChangeDebounced) {
+            $0.searchRequestInFlight = true
+        }
+        await store.receive(.querySearchResponse(.success([.fixtureStacktrace, .fixtureStackOverflow])))
+
+        store.exhaustivity = .on
+
+        await store.send(.showDetailSelected(feedURL: ITunesShow.fixtureStacktrace.feedURL)) {
+            $0.selectedShowState = Identified(
+                .init(
+                    feedURL: ITunesShow.fixtureStacktrace.feedURL,
+                    imageURL: ITunesShow.fixtureStacktrace.artworkLowQualityURL,
+                    title: ITunesShow.fixtureStacktrace.showName,
+                    author: ITunesShow.fixtureStacktrace.artistName
+                ),
+                id: ITunesShow.fixtureStacktrace.feedURL
+            )
+        }
+    }
 }

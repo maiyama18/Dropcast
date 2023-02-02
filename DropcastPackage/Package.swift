@@ -86,6 +86,7 @@ let targets: [PackageDescription.Target] = [
             "ITunesClient",
             "MessageClient",
             "RSSClient",
+            "ShowDetailFeature",
         ],
         path: "Sources/Feature/Shows"
     ),
@@ -97,35 +98,48 @@ let targets: [PackageDescription.Target] = [
         ],
         path: "Tests/Feature/Shows"
     ),
+    .target(
+        name: "ShowDetailFeature",
+        dependencies: [
+            .composableArchitecture,
+            "DatabaseClient",
+            "Entity",
+            "MessageClient",
+            "RSSClient",
+        ],
+        path: "Sources/Feature/ShowDetail"
+    ),
+    .testTarget(
+        name: "ShowDetailFeatureTest",
+        dependencies: [
+            "DatabaseClient",
+            "ShowDetailFeature",
+            "TestHelper",
+        ],
+        path: "Tests/Feature/ShowDetail"
+    ),
 
     // Infra module
 
     .target(
         name: "DatabaseClient",
         dependencies: [
+            .algorithms,
             .asyncAlgorithms,
             .dependencies,
             .identifiedCollections,
             "Entity",
+            "Error",
         ],
         path: "Sources/Infra/DatabaseClient"
     ),
-    .target(
-        name: "DatabaseClientLive",
-        dependencies: [
-            .algorithms,
-            "DatabaseClient",
-            "Error",
-        ],
-        path: "Sources/Infra/DatabaseClientLive"
-    ),
     .testTarget(
-        name: "DatabaseClientLiveTests",
+        name: "DatabaseClientTests",
         dependencies: [
-            "DatabaseClientLive",
+            "DatabaseClient",
             "TestHelper",
         ],
-        path: "Tests/Infra/DatabaseClientLiveTests"
+        path: "Tests/Infra/DatabaseClientTests"
     ),
     .target(
         name: "RSSClient",
@@ -231,14 +245,17 @@ var package = Package(
             name: "ShowsFeature",
             targets: ["ShowsFeature"]),
         .library(
+            name: "ShowDetailFeature",
+            targets: ["ShowDetailFeature"]),
+        .library(
             name: "ITunesClient",
             targets: ["ITunesClient"]),
         .library(
             name: "RSSClient",
             targets: ["RSSClient"]),
         .library(
-            name: "DatabaseClientLive",
-            targets: ["DatabaseClientLive"]),
+            name: "DatabaseClient",
+            targets: ["DatabaseClient"]),
     ],
     dependencies: dependencies,
     targets: targets

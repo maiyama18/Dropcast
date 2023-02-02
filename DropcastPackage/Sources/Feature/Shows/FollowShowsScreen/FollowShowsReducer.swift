@@ -5,10 +5,11 @@ import Foundation
 import ITunesClient
 import MessageClient
 import RSSClient
+import ShowDetailFeature
 
 public struct FollowShowsReducer: ReducerProtocol, Sendable {
     public struct State: Equatable {
-        public struct Show: Equatable, Identifiable {
+        public struct Show: Equatable, Identifiable, Hashable {
             public var feedURL: URL
             public var imageURL: URL
             public var title: String
@@ -35,9 +36,9 @@ public struct FollowShowsReducer: ReducerProtocol, Sendable {
         public enum ShowsState: Equatable {
             case prompt
             case empty
-            case loaded(shows: [State.Show])
+            case loaded(shows: IdentifiedArrayOf<State.Show>)
 
-            var currentShows: [State.Show] {
+            var currentShows: IdentifiedArrayOf<State.Show> {
                 switch self {
                 case .prompt, .empty:
                     return []
@@ -50,14 +51,19 @@ public struct FollowShowsReducer: ReducerProtocol, Sendable {
         public var query: String = ""
         public var showsState: ShowsState = .prompt
         public var searchRequestInFlight: Bool = false
+
+        public var selectedShowState: Identified<URL, ShowDetailReducer.State>?
     }
 
     public enum Action: Equatable {
         case queryChanged(query: String)
         case queryChangeDebounced
+        case showDetailSelected(feedURL: URL?)
 
         case querySearchResponse(TaskResult<[ITunesShow]>)
         case urlSearchResponse(TaskResult<Entity.Show>)
+
+        case showDetail(ShowDetailReducer.Action)
     }
 
     @Dependency(\.iTunesClient) private var iTunesClient
@@ -87,19 +93,37 @@ public struct FollowShowsReducer: ReducerProtocol, Sendable {
 
                 state.searchRequestInFlight = true
                 return .task {
-                    if let url = URL(string: query), (url.scheme == "https" || url.scheme == "http") {
+                    if let url = URL(string: query), url.scheme == "https" {
                         return await .urlSearchResponse(TaskResult { try await rssClient.fetch(url) })
                     } else {
                         return await .querySearchResponse(TaskResult { try await self.iTunesClient.searchShows(query) })
                     }
                 }
                 .cancellable(id: SearchID.self)
+            case .showDetailSelected(let feedURL):
+                if let feedURL, let show = state.showsState.currentShows[id: feedURL] {
+                    state.selectedShowState = Identified(
+                        .init(feedURL: show.feedURL, imageURL: show.imageURL, title: show.title, author: show.author),
+                        id: \.feedURL
+                    )
+                } else {
+                    state.selectedShowState = nil
+                }
+                return .none
             case .querySearchResponse(let result):
                 state.searchRequestInFlight = false
 
                 switch result {
                 case .success(let shows):
-                    state.showsState = shows.isEmpty ? .empty : .loaded(shows: shows.map { State.Show(iTunesShow: $0) })
+                    state.showsState = shows.isEmpty
+                    ? .empty
+                    : .loaded(
+                        shows: IdentifiedArrayOf(
+                            uniqueElements: shows
+                                .uniqued(on: { $0.feedURL })
+                                .map { State.Show(iTunesShow: $0) }
+                        )
+                    )
                     return .none
                 case .failure(let error):
                     let currentShows = state.showsState.currentShows
@@ -119,6 +143,13 @@ public struct FollowShowsReducer: ReducerProtocol, Sendable {
                     state.showsState = .empty
                     return .none
                 }
+            case .showDetail:
+                return .none
+            }
+        }
+        .ifLet(\.selectedShowState, action: /Action.showDetail) {
+            Scope(state: \Identified<URL, ShowDetailReducer.State>.value, action: /.self) {
+                ShowDetailReducer()
             }
         }
     }
