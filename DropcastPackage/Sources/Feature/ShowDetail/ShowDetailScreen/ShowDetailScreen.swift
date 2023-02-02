@@ -5,25 +5,8 @@ import SwiftUI
 public struct ShowDetailScreen: View {
     let store: StoreOf<ShowDetailReducer>
 
-    public init(
-        feedURL: URL,
-        imageURL: URL,
-        title: String,
-        author: String?,
-        description: String? = nil,
-        linkURL: URL? = nil
-    ) {
-        store = Store(
-            initialState: ShowDetailReducer.State(
-                feedURL: feedURL,
-                imageURL: imageURL,
-                title: title,
-                author: author,
-                description: description,
-                linkURL: linkURL
-            ),
-            reducer: ShowDetailReducer()
-        )
+    public init(store: StoreOf<ShowDetailReducer>) {
+        self.store = store
     }
 
     public var body: some View {
@@ -68,11 +51,14 @@ struct ShowDetailScreen_Previews: PreviewProvider {
     static var previews: some View {
         NavigationStack {
             ShowDetailScreen(
-                feedURL: Show.fixtureRebuild.feedURL,
-                imageURL: Show.fixtureRebuild.imageURL,
-                title: Show.fixtureRebuild.title,
-                author: Show.fixtureRebuild.author,
-                linkURL: Show.fixtureRebuild.linkURL
+                store: .init(
+                    initialState: .init(
+                        feedURL: Show.fixtureRebuild.feedURL,
+                        imageURL: Show.fixtureRebuild.imageURL,
+                        title: Show.fixtureRebuild.title
+                    ),
+                    reducer: ShowDetailReducer()
+                )
             )
         }
         .tint(.orange)

@@ -1,6 +1,5 @@
 import AppFeature
 import MessageClientLive
-import ScreenProviderLive
 import SwiftUI
 
 public struct ContentView: View {

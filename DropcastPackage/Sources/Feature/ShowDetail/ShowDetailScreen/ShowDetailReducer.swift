@@ -5,20 +5,40 @@ import Foundation
 import MessageClient
 import RSSClient
 
-struct ShowDetailReducer: ReducerProtocol {
-    struct State: Equatable {
-        var feedURL: URL
-        var imageURL: URL
-        var title: String
-        var author: String?
-        var description: String?
-        var linkURL: URL?
-        var followed: Bool? // initially undetermined
+public struct ShowDetailReducer: ReducerProtocol {
+    public struct State: Equatable {
+        public var feedURL: URL
+        public var imageURL: URL
+        public var title: String
+        public var author: String?
+        public var description: String?
+        public var linkURL: URL?
+        public var followed: Bool? // initially undetermined
 
-        var taskRequestInFlight: Bool = false
+        public var taskRequestInFlight: Bool = false
+
+        public init(
+            feedURL: URL,
+            imageURL: URL,
+            title: String,
+            author: String? = nil,
+            description: String? = nil,
+            linkURL: URL? = nil,
+            followed: Bool? = nil,
+            taskRequestInFlight: Bool = false
+        ) {
+            self.feedURL = feedURL
+            self.imageURL = imageURL
+            self.title = title
+            self.author = author
+            self.description = description
+            self.linkURL = linkURL
+            self.followed = followed
+            self.taskRequestInFlight = taskRequestInFlight
+        }
     }
 
-    enum Action: Equatable {
+    public enum Action: Equatable {
         case task
         case toggleFollowButtonTapped
 
@@ -31,7 +51,9 @@ struct ShowDetailReducer: ReducerProtocol {
     @Dependency(\.messageClient) private var messageClient
     @Dependency(\.rssClient) private var rssClient
 
-    var body: some ReducerProtocol<State, Action> {
+    public init() {}
+
+    public var body: some ReducerProtocol<State, Action> {
         Reduce { state, action in
             switch action {
             case .task:

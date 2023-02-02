@@ -52,7 +52,6 @@ let targets: [PackageDescription.Target] = [
         dependencies: [
             "AppFeature",
             "MessageClientLive",
-            "ScreenProviderLive",
         ],
         path: "Sources/App/App"
     ),
@@ -87,7 +86,7 @@ let targets: [PackageDescription.Target] = [
             "ITunesClient",
             "MessageClient",
             "RSSClient",
-            "ScreenProvider",
+            "ShowDetailFeature",
         ],
         path: "Sources/Feature/Shows"
     ),
@@ -205,19 +204,6 @@ let targets: [PackageDescription.Target] = [
         name: "Error",
         dependencies: [],
         path: "Sources/Core/Error"
-    ),
-    .target(
-        name: "ScreenProvider",
-        dependencies: [.dependencies],
-        path: "Sources/Core/ScreenProvider"
-    ),
-    .target(
-        name: "ScreenProviderLive",
-        dependencies: [
-            "ScreenProvider",
-            "ShowDetailFeature",
-        ],
-        path: "Sources/Core/ScreenProviderLive"
     ),
     .target(
         name: "TestHelper",
