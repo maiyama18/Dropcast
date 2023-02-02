@@ -18,7 +18,8 @@ public struct ShowDetailScreen: View {
                     author: viewStore.author,
                     description: viewStore.description,
                     followed: viewStore.followed,
-                    requestInFlight: viewStore.taskRequestInFlight
+                    requestInFlight: viewStore.taskRequestInFlight,
+                    toggleFollowButtonTapped: { viewStore.send(.toggleFollowButtonTapped) }
                 )
                 .padding()
             }
