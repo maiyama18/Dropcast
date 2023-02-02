@@ -16,12 +16,12 @@ public struct ShowListScreen: View {
                         if shows.isEmpty {
                             emptyView(onButtonTapped: { viewStore.send(.openShowSearchButtonTapped) })
                         } else {
-                            ScrollView {
+                            List {
                                 ForEach(shows) { show in
                                     ShowRowView(show: show)
                                 }
                             }
-                            .padding(.horizontal)
+                            .listStyle(.plain)
                         }
                     } else {
                         ProgressView()
@@ -38,6 +38,7 @@ public struct ShowListScreen: View {
                         }
                     }
                 }
+                .navigationTitle("Shows")
             }
             .task {
                 viewStore.send(.task)
