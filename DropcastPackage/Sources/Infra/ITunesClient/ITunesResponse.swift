@@ -29,6 +29,7 @@ struct ShowResponse: Decodable {
 
     func toShow() -> ITunesShow? {
         guard let feedURL = URL(string: feedURL ?? ""),
+              feedURL.scheme == "https",
               let artworkURL600 = URL(string: artworkURL600),
               let artworkURL100 = URL(string: artworkURL100) else {
             return nil

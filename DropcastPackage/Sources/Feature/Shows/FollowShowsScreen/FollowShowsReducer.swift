@@ -93,7 +93,7 @@ public struct FollowShowsReducer: ReducerProtocol, Sendable {
 
                 state.searchRequestInFlight = true
                 return .task {
-                    if let url = URL(string: query), (url.scheme == "https" || url.scheme == "http") {
+                    if let url = URL(string: query), url.scheme == "https" {
                         return await .urlSearchResponse(TaskResult { try await rssClient.fetch(url) })
                     } else {
                         return await .querySearchResponse(TaskResult { try await self.iTunesClient.searchShows(query) })
