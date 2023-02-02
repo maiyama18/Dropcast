@@ -54,7 +54,7 @@ struct FollowShowsScreen: View {
                 .searchable(
                     text: viewStore.binding(get: \.query, send: { .queryChanged(query: $0) }),
                     placement: .navigationBarDrawer(displayMode: .always),
-                    prompt: Text("Show name, Host, Feed URL ...")
+                    prompt: Text("Show title, Feed URL, Author...")
                 )
                 .autocorrectionDisabled(true)
                 .textInputAutocapitalization(.never)
