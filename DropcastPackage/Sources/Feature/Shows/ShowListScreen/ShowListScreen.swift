@@ -18,7 +18,7 @@ public struct ShowListScreen: View {
                     .toolbar {
                         ToolbarItem(placement: .navigationBarTrailing) {
                             Button {
-                                viewStore.send(.openFollowShowsButtonTapped)
+                                viewStore.send(.openShowSearchButtonTapped)
                             } label: {
                                 Image(systemName: "plus")
                             }
@@ -28,10 +28,10 @@ public struct ShowListScreen: View {
             .sheet(
                 isPresented: viewStore.binding(
                     get: \.followShowsPresented,
-                    send: { _ in .followShowsDismissed }
+                    send: { _ in .showSearchDismissed }
                 )
             ) {
-                IfLetStore(store.scope(state: \.followShowsState, action: { .followShows($0) })) {
+                IfLetStore(store.scope(state: \.showSearchState, action: { .showSearch($0) })) {
                     ShowSearchScreen(store: $0)
                 }
             }

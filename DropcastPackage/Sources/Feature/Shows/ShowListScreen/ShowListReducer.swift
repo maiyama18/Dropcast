@@ -2,19 +2,19 @@ import ComposableArchitecture
 
 public struct ShowListReducer: ReducerProtocol {
     public struct State: Equatable {
-        public var followShowsState: ShowSearchReducer.State?
+        public var showSearchState: ShowSearchReducer.State?
 
         public init() {}
 
-        public var followShowsPresented: Bool { followShowsState != nil }
+        public var followShowsPresented: Bool { showSearchState != nil }
     }
 
     public enum Action: Equatable {
         case task
-        case openFollowShowsButtonTapped
-        case followShowsDismissed
+        case openShowSearchButtonTapped
+        case showSearchDismissed
 
-        case followShows(ShowSearchReducer.Action)
+        case showSearch(ShowSearchReducer.Action)
     }
 
     public init() {}
@@ -24,17 +24,17 @@ public struct ShowListReducer: ReducerProtocol {
             switch action {
             case .task:
                 return .none
-            case .openFollowShowsButtonTapped:
-                state.followShowsState = ShowSearchReducer.State()
+            case .openShowSearchButtonTapped:
+                state.showSearchState = ShowSearchReducer.State()
                 return .none
-            case .followShowsDismissed:
-                state.followShowsState = nil
+            case .showSearchDismissed:
+                state.showSearchState = nil
                 return .none
-            case .followShows:
+            case .showSearch:
                 return .none
             }
         }
-        .ifLet(\.followShowsState, action: /Action.followShows) {
+        .ifLet(\.showSearchState, action: /Action.showSearch) {
             ShowSearchReducer()
         }
     }
