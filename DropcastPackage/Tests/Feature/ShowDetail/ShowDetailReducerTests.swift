@@ -77,16 +77,16 @@ final class ShowDetailReducerTests: XCTestCase {
         }
         await store.receive(.databaseShowResponse(.success(.fixtureRebuild))) {
             $0.followed = true
-        }
-        await clock.advance(by: .seconds(1))
-        await store.receive(.rssShowResponse(.success(.fixtureRebuild))) {
-            $0.taskRequestInFlight = false
 
             $0.imageURL = Show.fixtureRebuild.imageURL
             $0.title = Show.fixtureRebuild.title
             $0.author = Show.fixtureRebuild.author
             $0.linkURL = Show.fixtureRebuild.linkURL
             $0.description = Show.fixtureRebuild.description
+        }
+        await clock.advance(by: .seconds(1))
+        await store.receive(.rssShowResponse(.success(.fixtureRebuild))) {
+            $0.taskRequestInFlight = false
         }
     }
 

@@ -64,7 +64,7 @@ public struct ShowDetailReducer: ReducerProtocol, Sendable {
             switch action {
             case .task:
                 state.taskRequestInFlight = true
-                return .merge(
+                return .concatenate(
                     .task { [feedURL = state.feedURL] in
                         await .databaseShowResponse(
                             TaskResult {
@@ -117,6 +117,9 @@ public struct ShowDetailReducer: ReducerProtocol, Sendable {
                 switch result {
                 case .success(let show):
                     state.followed = show != nil
+                    if let show {
+                        reflectShow(state: &state, show: show)
+                    }
                     return .none
                 case .failure(let error):
                     return .fireAndForget {
@@ -127,11 +130,7 @@ public struct ShowDetailReducer: ReducerProtocol, Sendable {
                 state.taskRequestInFlight = false
                 switch result {
                 case .success(let show):
-                    state.imageURL = show.imageURL
-                    state.title = show.title
-                    state.author = show.author
-                    state.linkURL = show.linkURL
-                    state.description = show.description
+                    reflectShow(state: &state, show: show)
                     return .none
                 case .failure(let error):
                     return .fireAndForget {
@@ -150,5 +149,13 @@ public struct ShowDetailReducer: ReducerProtocol, Sendable {
                 }
             }
         }
+    }
+
+    private func reflectShow(state: inout State, show: Show) {
+        state.imageURL = show.imageURL
+        state.title = show.title
+        state.author = show.author
+        state.linkURL = show.linkURL
+        state.description = show.description
     }
 }
