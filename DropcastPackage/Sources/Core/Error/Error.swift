@@ -32,6 +32,7 @@ public enum RSSError: Error, Equatable, HasMessage {
 public enum DatabaseError: Error, Equatable, HasMessage {
     case followError
     case alreadyFollowed
+    case unfollowError
 
     var message: String {
         switch self {
@@ -39,6 +40,8 @@ public enum DatabaseError: Error, Equatable, HasMessage {
             return "Failed to follow the show"
         case .alreadyFollowed:
             return "This show is already followed"
+        case .unfollowError:
+            return "Failed to unfollow the show"
         }
     }
 }

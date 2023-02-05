@@ -10,15 +10,18 @@ import IdentifiedCollections
 public struct DatabaseClient: Sendable {
     public var fetchShow: @Sendable (URL) throws -> Show?
     public var followShow: @Sendable (Show) throws -> Void
+    public var unfollowShow: @Sendable (URL) throws -> Void
     public var followedShowsStream: @Sendable () -> AsyncChannel<IdentifiedArrayOf<Show>>
 
     public init(
         fetchShow: @escaping @Sendable (URL) throws -> Show?,
         followShow: @escaping @Sendable (Show) throws -> Void,
+        unfollowShow: @escaping @Sendable (URL) throws -> Void,
         followedShowsStream: @escaping @Sendable () -> AsyncChannel<IdentifiedArrayOf<Show>>
     ) {
         self.fetchShow = fetchShow
         self.followShow = followShow
+        self.unfollowShow = unfollowShow
         self.followedShowsStream = followedShowsStream
     }
 }
@@ -94,6 +97,21 @@ extension DatabaseClient {
                     }
                 }
             },
+            unfollowShow: { feedURL in
+                try persistentProvider.executeInBackground { context in
+                    let request = ShowRecord.fetchRequest()
+                    request.predicate = NSPredicate(format: "%K = %@", #keyPath(ShowRecord.feedURL), feedURL as NSURL)
+                    let records = try context.fetch(request)
+                    guard let record = records.first else { return }
+                    context.delete(record)
+                    do {
+                        try context.save()
+                    } catch {
+                        context.rollback()
+                        throw DatabaseError.unfollowError
+                    }
+                }
+            },
             followedShowsStream: {
                 showsController.delegate = delegate
                 delegate.sendInitialValue(showsController)
@@ -109,6 +127,7 @@ extension DatabaseClient: DependencyKey {
     public static let testValue: DatabaseClient = DatabaseClient(
         fetchShow: unimplemented(),
         followShow: unimplemented(),
+        unfollowShow: unimplemented(),
         followedShowsStream: unimplemented()
     )
     public static let previewValue: DatabaseClient = DatabaseClient.live(persistentProvider: InMemoryPersistentProvider())
