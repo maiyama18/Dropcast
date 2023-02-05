@@ -1,7 +1,10 @@
 import ComposableArchitecture
+import Entity
+import Foundation
 
-public struct ShowListReducer: ReducerProtocol {
+public struct ShowListReducer: ReducerProtocol, Sendable {
     public struct State: Equatable {
+        public var shows: IdentifiedArrayOf<SimpleShow>?
         public var showSearchState: ShowSearchReducer.State?
 
         public init() {}
@@ -9,13 +12,18 @@ public struct ShowListReducer: ReducerProtocol {
         public var followShowsPresented: Bool { showSearchState != nil }
     }
 
-    public enum Action: Equatable {
+    public enum Action: Equatable, Sendable {
         case task
         case openShowSearchButtonTapped
+        case showSwipeToDeleted(feedURL: URL)
         case showSearchDismissed
+
+        case showsResponse(IdentifiedArrayOf<Show>)
 
         case showSearch(ShowSearchReducer.Action)
     }
+
+    @Dependency(\.databaseClient) private var databaseClient
 
     public init() {}
 
@@ -23,12 +31,23 @@ public struct ShowListReducer: ReducerProtocol {
         Reduce { state, action in
             switch action {
             case .task:
-                return .none
+                return .run { send in
+                    for await shows in databaseClient.followedShowsStream() {
+                        await send(.showsResponse(shows))
+                    }
+                }
             case .openShowSearchButtonTapped:
                 state.showSearchState = ShowSearchReducer.State()
                 return .none
+            case .showSwipeToDeleted(let feedURL):
+                return .fireAndForget {
+                    try databaseClient.unfollowShow(feedURL)
+                }
             case .showSearchDismissed:
                 state.showSearchState = nil
+                return .none
+            case .showsResponse(let shows):
+                state.shows = IdentifiedArrayOf(uniqueElements: shows.map { SimpleShow(show: $0) })
                 return .none
             case .showSearch:
                 return .none

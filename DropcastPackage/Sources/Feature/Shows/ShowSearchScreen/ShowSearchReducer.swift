@@ -9,36 +9,13 @@ import ShowDetailFeature
 
 public struct ShowSearchReducer: ReducerProtocol, Sendable {
     public struct State: Equatable {
-        public struct Show: Equatable, Identifiable, Hashable {
-            public var feedURL: URL
-            public var imageURL: URL
-            public var title: String
-            public var author: String?
-
-            public var id: URL { feedURL }
-
-            public init(feedURL: URL, imageURL: URL, title: String, author: String?) {
-                self.feedURL = feedURL
-                self.imageURL = imageURL
-                self.title = title
-                self.author = author
-            }
-
-            init(iTunesShow: ITunesShow) {
-                self.init(feedURL: iTunesShow.feedURL, imageURL: iTunesShow.artworkLowQualityURL, title: iTunesShow.showName, author: iTunesShow.artistName)
-            }
-
-            init(show: Entity.Show) {
-                self.init(feedURL: show.feedURL, imageURL: show.imageURL, title: show.title, author: show.author)
-            }
-        }
 
         public enum ShowsState: Equatable {
             case prompt
             case empty
-            case loaded(shows: IdentifiedArrayOf<State.Show>)
+            case loaded(shows: IdentifiedArrayOf<SimpleShow>)
 
-            var currentShows: IdentifiedArrayOf<State.Show> {
+            var currentShows: IdentifiedArrayOf<SimpleShow> {
                 switch self {
                 case .prompt, .empty:
                     return []
@@ -55,7 +32,7 @@ public struct ShowSearchReducer: ReducerProtocol, Sendable {
         public var selectedShowState: Identified<URL, ShowDetailReducer.State>?
     }
 
-    public enum Action: Equatable {
+    public enum Action: Equatable, Sendable {
         case queryChanged(query: String)
         case queryChangeDebounced
         case showDetailSelected(feedURL: URL?)
@@ -121,7 +98,7 @@ public struct ShowSearchReducer: ReducerProtocol, Sendable {
                         shows: IdentifiedArrayOf(
                             uniqueElements: shows
                                 .uniqued(on: { $0.feedURL })
-                                .map { State.Show(iTunesShow: $0) }
+                                .map { SimpleShow(iTunesShow: $0) }
                         )
                     )
                     return .none
@@ -137,7 +114,7 @@ public struct ShowSearchReducer: ReducerProtocol, Sendable {
 
                 switch result {
                 case .success(let show):
-                    state.showsState = .loaded(shows: [State.Show(show: show)])
+                    state.showsState = .loaded(shows: [SimpleShow(show: show)])
                     return .none
                 case .failure:
                     state.showsState = .empty

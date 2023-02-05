@@ -7,6 +7,7 @@ struct ShowHeaderView: View {
     var description: String?
     var followed: Bool?
     var requestInFlight: Bool
+    var toggleFollowButtonTapped: () -> Void
 
     var body: some View {
         VStack(alignment: .leading, spacing: 12) {
@@ -46,16 +47,16 @@ struct ShowHeaderView: View {
                         .frame(height: 12)
 
                     Button {
-
+                        toggleFollowButtonTapped()
                     } label: {
                         if let followed {
                             if followed {
                                 Label("Followed", systemImage: "checkmark")
                             } else {
-                                Text("Follow")
+                                Label("Follow", systemImage: "plus")
                             }
                         } else {
-                            Text("Loading")
+                            Label("Loading", systemImage: "circle.dashed")
                         }
                     }
                     .followButtonStyle(followed: followed)
@@ -105,7 +106,8 @@ struct ShowHeaderView_Previews: PreviewProvider {
                 author: rebuild.author,
                 description: rebuild.description,
                 followed: false,
-                requestInFlight: false
+                requestInFlight: false,
+                toggleFollowButtonTapped: {}
             )
             .padding()
 
@@ -118,7 +120,8 @@ struct ShowHeaderView_Previews: PreviewProvider {
                 author: swift.author,
                 description: swift.description,
                 followed: true,
-                requestInFlight: false
+                requestInFlight: false,
+                toggleFollowButtonTapped: {}
             )
             .padding()
 
@@ -131,7 +134,8 @@ struct ShowHeaderView_Previews: PreviewProvider {
                 author: program.author,
                 description: program.description,
                 followed: nil,
-                requestInFlight: false
+                requestInFlight: false,
+                toggleFollowButtonTapped: {}
             )
             .padding()
         }

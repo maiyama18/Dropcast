@@ -38,14 +38,14 @@ public struct ShowDetailReducer: ReducerProtocol, Sendable {
         }
     }
 
-    public enum Action: Equatable {
+    public enum Action: Equatable, Sendable {
         case task
         case disappear
         case toggleFollowButtonTapped
 
         case databaseShowResponse(TaskResult<Show?>)
         case rssShowResponse(TaskResult<Show>)
-        case followResponse(TaskResult<Bool>)
+        case toggleFollowResponse(TaskResult<Bool>)
     }
 
     @Dependency(\.databaseClient) private var databaseClient
@@ -81,6 +81,8 @@ public struct ShowDetailReducer: ReducerProtocol, Sendable {
             case .disappear:
                 return .cancel(id: RSSRequestID.self)
             case .toggleFollowButtonTapped:
+                guard let followed = state.followed else { return .none }
+
                 let show = Show(
                     title: state.title,
                     description: state.description,
@@ -90,10 +92,15 @@ public struct ShowDetailReducer: ReducerProtocol, Sendable {
                     linkURL: state.linkURL,
                     episodes: []
                 )
+
                 return .task {
-                    await .followResponse(
+                    await .toggleFollowResponse(
                         TaskResult {
-                            try databaseClient.followShow(show)
+                            if followed {
+                                try databaseClient.unfollowShow(show.feedURL)
+                            } else {
+                                try databaseClient.followShow(show)
+                            }
                             return true
                         }
                     )
@@ -123,10 +130,10 @@ public struct ShowDetailReducer: ReducerProtocol, Sendable {
                         messageClient.presentError(error.userMessage)
                     }
                 }
-            case .followResponse(let result):
+            case .toggleFollowResponse(let result):
                 switch result {
                 case .success:
-                    state.followed = true
+                    state.followed?.toggle()
                     return .none
                 case .failure(let error):
                     return .fireAndForget {

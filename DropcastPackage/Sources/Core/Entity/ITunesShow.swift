@@ -61,7 +61,7 @@ extension ITunesShow {
     )
 
     public static let fixtureRebuild = ITunesShow(
-        id: 81934659,
+        id: 81934650,
         artistName: "Tatsuhiko Miyagawa",
         showName: "Rebuild",
         feedURL: URL(string: "https://feeds.rebuild.fm/rebuildfm")!,
@@ -72,7 +72,7 @@ extension ITunesShow {
     )
 
     public static let fixtureStacktrace = ITunesShow(
-        id: 81934659,
+        id: 81934619,
         artistName: "John Sundell and Gui Rambo",
         showName: "Stacktrace",
         feedURL: URL(string: "https://stacktracepodcast.fm/feed.rss")!,
@@ -83,7 +83,7 @@ extension ITunesShow {
     )
 
     public static let fixtureBilingualNews = ITunesShow(
-        id: 81934659,
+        id: 81934620,
         artistName: "Michael & Mami",
         showName: "バイリンガルニュース (Bilingual News)",
         feedURL: URL(string: "https://bilingualnews.libsyn.com/rss")!,
@@ -94,7 +94,7 @@ extension ITunesShow {
     )
 
     public static let fixtureFukabori = ITunesShow(
-        id: 81934659,
+        id: 81934699,
         artistName: "iwashi",
         showName: "fukabori.fm",
         feedURL: URL(string: "https://rss.art19.com/fukabori")!,
@@ -105,10 +105,10 @@ extension ITunesShow {
     )
 
     public static let fixtureSuperLongProperties = ITunesShow(
-        id: 81934659,
+        id: 81934259,
         artistName: "すごく長い運営者の名前 and すごく長い運営者の名前 and すごく長い運営者の名前 and すごく長い運営者の名前",
         showName: "すごく長いタイトルすごく長いタイトルすごく長いタイトルすごく長いタイトルすごく長いタイトルすごく長いタイトル",
-        feedURL: URL(string: "https://rss.art19.com/fukabori")!,
+        feedURL: URL(string: "https://rss.art19.com/superlong")!,
         artworkURL: URL(string: "https://pbs.twimg.com/profile_images/1456394232143695872/hifjifgW_400x400.jpg")!,
         artworkLowQualityURL: URL(string: "https://pbs.twimg.com/profile_images/1456394232143695872/hifjifgW_400x400.jpg")!
     )
