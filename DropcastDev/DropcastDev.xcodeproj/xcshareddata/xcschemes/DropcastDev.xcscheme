@@ -72,9 +72,19 @@
             skipped = "NO">
             <BuildableReference
                BuildableIdentifier = "primary"
-               BlueprintIdentifier = "DatabaseClientLiveTests"
-               BuildableName = "DatabaseClientLiveTests"
-               BlueprintName = "DatabaseClientLiveTests"
+               BlueprintIdentifier = "DatabaseClientTests"
+               BuildableName = "DatabaseClientTests"
+               BlueprintName = "DatabaseClientTests"
+               ReferencedContainer = "container:../DropcastPackage">
+            </BuildableReference>
+         </TestableReference>
+         <TestableReference
+            skipped = "NO">
+            <BuildableReference
+               BuildableIdentifier = "primary"
+               BlueprintIdentifier = "ShowDetailFeatureTest"
+               BuildableName = "ShowDetailFeatureTest"
+               BlueprintName = "ShowDetailFeatureTest"
                ReferencedContainer = "container:../DropcastPackage">
             </BuildableReference>
          </TestableReference>
