@@ -102,6 +102,7 @@ let targets: [PackageDescription.Target] = [
         name: "ShowDetailFeature",
         dependencies: [
             .composableArchitecture,
+            "ClipboardClient",
             "DatabaseClient",
             "Entity",
             "MessageClient",

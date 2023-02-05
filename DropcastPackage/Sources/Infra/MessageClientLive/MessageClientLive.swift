@@ -4,19 +4,29 @@ import MessageClient
 import UIKit
 
 extension MessageClient {
-    static let live: MessageClient = MessageClient(
-        presentError: { title in
-            Drops.hideAll()
+    static var live: MessageClient {
+        @Sendable
+        func present(title: String, iconSystemName: String, iconColor: UIColor) {
+                Drops.hideAll()
 
-            let drop = Drop(
-                title: title,
-                titleNumberOfLines: 2,
-                icon: UIImage(systemName: "exclamationmark.circle")?
-                    .withTintColor(.systemRed, renderingMode: .alwaysOriginal)
-            )
-            Drops.show(drop)
+                let drop = Drop(
+                    title: title,
+                    titleNumberOfLines: 2,
+                    icon: UIImage(systemName: iconSystemName)?
+                        .withTintColor(iconColor, renderingMode: .alwaysOriginal)
+                )
+                Drops.show(drop)
         }
-    )
+
+        return MessageClient(
+            presentError: { title in
+                present(title: title, iconSystemName: "exclamationmark.circle", iconColor: .systemRed)
+            },
+            presentSuccess: { title in
+                present(title: title, iconSystemName: "checkmark.circle", iconColor: .systemTeal)
+            }
+        )
+    }
 }
 
 extension MessageClient: DependencyKey {

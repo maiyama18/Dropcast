@@ -3,13 +3,13 @@ import UIKit
 
 public struct ClipboardClient: Sendable {
     public var copy: @Sendable (String) -> Void
-    public var copiedString: String?
+    public var copiedString: @Sendable () -> String?
 }
 
 extension ClipboardClient {
     public static let live: ClipboardClient = ClipboardClient(
         copy: { UIPasteboard.general.string = $0 },
-        copiedString: UIPasteboard.general.string
+        copiedString: { UIPasteboard.general.string }
     )
 }
 

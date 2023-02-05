@@ -33,7 +33,7 @@ public struct ShowDetailScreen: View {
                 ToolbarItem(placement: .navigationBarTrailing) {
                     Menu {
                         Button {
-
+                            viewStore.send(.copyFeedURLButtonTapped)
                         } label: {
                             Label("Copy Feed URL", systemImage: "doc")
                         }

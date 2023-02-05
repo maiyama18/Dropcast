@@ -285,6 +285,45 @@ final class ShowDetailReducerTests: XCTestCase {
         XCTAssertEqual(try databaseClient.fetchShow(Show.fixtureRebuild.feedURL), nil)
     }
 
+    func test_copy_feed_url() async {
+        let copiedString: LockIsolated<String?> = .init(nil)
+        let successTitle: LockIsolated<String?> = .init(nil)
+        let store = TestStore(
+            initialState: ShowDetailReducer.State(
+                feedURL: ITunesShow.fixtureRebuild.feedURL,
+                imageURL: ITunesShow.fixtureRebuild.artworkLowQualityURL,
+                title: ITunesShow.fixtureRebuild.showName,
+                author: ITunesShow.fixtureRebuild.artistName
+            ),
+            reducer: ShowDetailReducer()
+        ) {
+            $0.databaseClient = .live(persistentProvider: InMemoryPersistentProvider())
+
+            $0.rssClient.fetch = { url in
+                XCTAssertEqual(url, ITunesShow.fixtureRebuild.feedURL)
+                return Show.fixtureRebuild
+            }
+
+            $0.messageClient.presentSuccess = { title in successTitle.withValue { $0 = title } }
+
+            $0.clipboardClient.copy = { string in copiedString.withValue { $0 = string } }
+            $0.clipboardClient.copiedString = { copiedString.value }
+        }
+
+        store.exhaustivity = .off
+
+        await store.send(.task)
+        await store.receive(.databaseShowResponse(.success(nil)))
+        await store.receive(.rssShowResponse(.success(.fixtureRebuild)))
+
+        store.exhaustivity = .on
+
+        await store.send(.copyFeedURLButtonTapped)
+
+        XCTAssertEqual(copiedString.value, ITunesShow.fixtureRebuild.feedURL.absoluteString)
+        XCTAssertEqual(successTitle.value, "Copied")
+    }
+
     func test_in_flight_rss_request_cancelled_on_disappear() async {
         let clock = TestClock()
         let store = TestStore(

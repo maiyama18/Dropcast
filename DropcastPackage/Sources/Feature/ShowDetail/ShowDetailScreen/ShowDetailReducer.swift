@@ -1,3 +1,4 @@
+import ClipboardClient
 import ComposableArchitecture
 import DatabaseClient
 import Entity
@@ -42,12 +43,14 @@ public struct ShowDetailReducer: ReducerProtocol, Sendable {
         case task
         case disappear
         case toggleFollowButtonTapped
+        case copyFeedURLButtonTapped
 
         case databaseShowResponse(TaskResult<Show?>)
         case rssShowResponse(TaskResult<Show>)
         case toggleFollowResponse(TaskResult<Bool>)
     }
 
+    @Dependency(\.clipboardClient) private var clipboardClient
     @Dependency(\.databaseClient) private var databaseClient
     @Dependency(\.messageClient) private var messageClient
     @Dependency(\.rssClient) private var rssClient
@@ -104,6 +107,11 @@ public struct ShowDetailReducer: ReducerProtocol, Sendable {
                             return true
                         }
                     )
+                }
+            case .copyFeedURLButtonTapped:
+                return .fireAndForget { [feedURL = state.feedURL] in
+                    clipboardClient.copy(feedURL.absoluteString)
+                    messageClient.presentSuccess("Copied")
                 }
             case .databaseShowResponse(let result):
                 switch result {
