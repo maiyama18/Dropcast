@@ -19,6 +19,14 @@ public struct ShowListScreen: View {
                             List {
                                 ForEach(shows) { show in
                                     ShowRowView(show: show)
+                                        .swipeActions(allowsFullSwipe: false) {
+                                            Button(role: .destructive) {
+                                                viewStore.send(.showSwipeToDeleted(feedURL: show.feedURL))
+                                            } label: {
+                                                Image(systemName: "trash")
+                                            }
+                                            .tint(.red)
+                                        }
                                 }
                             }
                             .listStyle(.plain)

@@ -1,5 +1,6 @@
 import ComposableArchitecture
 import Entity
+import Foundation
 
 public struct ShowListReducer: ReducerProtocol, Sendable {
     public struct State: Equatable {
@@ -14,6 +15,7 @@ public struct ShowListReducer: ReducerProtocol, Sendable {
     public enum Action: Equatable, Sendable {
         case task
         case openShowSearchButtonTapped
+        case showSwipeToDeleted(feedURL: URL)
         case showSearchDismissed
 
         case showsResponse(IdentifiedArrayOf<Show>)
@@ -37,6 +39,10 @@ public struct ShowListReducer: ReducerProtocol, Sendable {
             case .openShowSearchButtonTapped:
                 state.showSearchState = ShowSearchReducer.State()
                 return .none
+            case .showSwipeToDeleted(let feedURL):
+                return .fireAndForget {
+                    try databaseClient.unfollowShow(feedURL)
+                }
             case .showSearchDismissed:
                 state.showSearchState = nil
                 return .none
