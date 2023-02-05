@@ -198,7 +198,7 @@ final class ShowDetailReducerTests: XCTestCase {
         store.exhaustivity = .on
 
         await store.send(.toggleFollowButtonTapped)
-        await store.receive(.followResponse(.success(true))) {
+        await store.receive(.toggleFollowResponse(.success(true))) {
             $0.followed = true
         }
 
@@ -238,9 +238,51 @@ final class ShowDetailReducerTests: XCTestCase {
         store.exhaustivity = .on
 
         await store.send(.toggleFollowButtonTapped)
-        await store.receive(.followResponse(.failure(DatabaseError.followError)))
+        await store.receive(.toggleFollowResponse(.failure(DatabaseError.followError)))
 
         XCTAssertEqual(errorMessage.value, "Failed to follow the show")
+    }
+
+    func test_unfollowing_show() async {
+        let databaseClient: DatabaseClient = .live(persistentProvider: InMemoryPersistentProvider())
+        let store = TestStore(
+            initialState: ShowDetailReducer.State(
+                feedURL: ITunesShow.fixtureRebuild.feedURL,
+                imageURL: ITunesShow.fixtureRebuild.artworkLowQualityURL,
+                title: ITunesShow.fixtureRebuild.showName,
+                author: ITunesShow.fixtureRebuild.artistName
+            ),
+            reducer: ShowDetailReducer()
+        ) {
+            $0.databaseClient = databaseClient
+            do {
+                try $0.databaseClient.followShow(.fixtureRebuild)
+            } catch {
+                XCTFail()
+            }
+
+            $0.rssClient.fetch = { url in
+                XCTAssertEqual(url, ITunesShow.fixtureRebuild.feedURL)
+                return Show.fixtureRebuild
+            }
+        }
+
+        XCTAssertEqual(try databaseClient.fetchShow(Show.fixtureRebuild.feedURL), .fixtureRebuild)
+
+        store.exhaustivity = .off
+
+        await store.send(.task)
+        await store.receive(.databaseShowResponse(.success(.fixtureRebuild)))
+        await store.receive(.rssShowResponse(.success(.fixtureRebuild)))
+
+        store.exhaustivity = .on
+
+        await store.send(.toggleFollowButtonTapped)
+        await store.receive(.toggleFollowResponse(.success(true))) {
+            $0.followed = false
+        }
+
+        XCTAssertEqual(try databaseClient.fetchShow(Show.fixtureRebuild.feedURL), nil)
     }
 
     func test_in_flight_rss_request_cancelled_on_disappear() async {
