@@ -53,10 +53,10 @@ struct ShowHeaderView: View {
                             if followed {
                                 Label("Followed", systemImage: "checkmark")
                             } else {
-                                Text("Follow")
+                                Label("Follow", systemImage: "plus")
                             }
                         } else {
-                            Text("Loading")
+                            Label("Loading", systemImage: "circle.dashed")
                         }
                     }
                     .followButtonStyle(followed: followed)
