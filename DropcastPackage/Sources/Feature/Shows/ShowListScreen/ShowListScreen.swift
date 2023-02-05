@@ -87,7 +87,12 @@ struct ShowListScreen_Previews: PreviewProvider {
         ShowListScreen(
             store: StoreOf<ShowListReducer>(
                 initialState: ShowListReducer.State(),
-                reducer: ShowListReducer()
+                reducer: withDependencies({
+                    try? $0.databaseClient.followShow(.fixtureRebuild)
+                    try? $0.databaseClient.followShow(.fixtureSwiftBySundell)
+                }) {
+                    ShowListReducer()
+                }
             )
         )
         .tint(.orange)
