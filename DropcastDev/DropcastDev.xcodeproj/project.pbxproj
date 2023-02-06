@@ -152,7 +152,7 @@
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 			shellPath = /bin/sh;
-			shellScript = "# Type a script or drag a script file from your workspace to insert its path.\nxcrun --sdk macosx /opt/homebrew/bin/mint run swiftlint lint --fix $(git rev-parse --show-toplevel)\n";
+			shellScript = "export PATH=\"$PATH:/opt/homebrew/bin\"\nif which mint > /dev/null; then\n  xcrun --sdk macosx mint run swiftlint lint --fix $(git rev-parse --show-toplevel)\nelse\n  echo \"warning: mint not installed\"\nfi\n";
 		};
 /* End PBXShellScriptBuildPhase section */
 
