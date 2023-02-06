@@ -88,4 +88,37 @@ final class ShowListReducerTests: XCTestCase {
 
         await task.cancel()
     }
+
+    func test_tapping_show_makes_transition() async {
+        let store = TestStore(
+            initialState: ShowListReducer.State(),
+            reducer: ShowListReducer()
+        ) {
+            $0.databaseClient = .live(persistentProvider: InMemoryPersistentProvider())
+            do {
+                try $0.databaseClient.followShow(.fixtureRebuild)
+            } catch {
+                XCTFail()
+            }
+        }
+
+        let task = await store.send(.task)
+        await store.receive(.showsResponse(IdentifiedArrayOf(uniqueElements: [.fixtureRebuild]))) {
+            $0.shows = [.init(show: .fixtureRebuild)]
+        }
+
+        await store.send(.showDetailSelected(feedURL: Show.fixtureRebuild.feedURL)) {
+            $0.selectedShowState = Identified(
+                .init(
+                    feedURL: Show.fixtureRebuild.feedURL,
+                    imageURL: Show.fixtureRebuild.imageURL,
+                    title: Show.fixtureRebuild.title,
+                    author: Show.fixtureRebuild.author
+                ),
+                id: Show.fixtureRebuild.feedURL
+            )
+        }
+
+        await task.cancel()
+    }
 }
