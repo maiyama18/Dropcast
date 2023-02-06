@@ -65,15 +65,17 @@ struct ShowHeaderView: View {
             }
             .frame(maxWidth: .infinity, alignment: .leading)
 
-            Group {
-                if let description {
-                    Text(description)
-                } else if requestInFlight {
-                    Text("Maiores et ad ea perspiciatis. Molestias expedita ab autem ad nihil ipsum sed nihil dolorum inventore debitis distinctio velit. Sint magnam dolorum est.")
-                        .redacted(reason: .placeholder)
+            Text("Maiores et ad ea perspiciatis. Molestias expedita ab autem ad nihil ipsum sed nihil dolorum inventore debitis distinctio velit. Sint magnam dolorum est.")
+                .redacted(reason: .placeholder)
+                .opacity(requestInFlight ? 1 : 0)
+                .overlay(alignment: .topLeading) {
+                    if let description {
+                        ScrollView {
+                            Text(description)
+                        }
+                    }
                 }
-            }
-            .font(.subheadline)
+                .font(.subheadline)
         }
         .frame(maxWidth: .infinity, alignment: .leading)
     }
