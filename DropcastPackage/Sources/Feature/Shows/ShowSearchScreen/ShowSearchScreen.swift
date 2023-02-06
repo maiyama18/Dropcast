@@ -17,31 +17,29 @@ struct ShowSearchScreen: View {
                     case .empty:
                         labelView(title: "No Results")
                     case .loaded(let shows):
-                        ScrollView {
-                            LazyVStack(spacing: 12) {
-                                ForEach(shows) { show in
-                                    NavigationLink(
-                                        destination: IfLetStore(
-                                            self.store.scope(
-                                                state: \.selectedShowState?.value,
-                                                action: { .showDetail($0) }
-                                            )
-                                        ) {
-                                            ShowDetailScreen(store: $0)
-                                        },
-                                        tag: show.feedURL,
-                                        selection: viewStore.binding(
-                                            get: \.selectedShowState?.id,
-                                            send: { .showDetailSelected(feedURL: $0) }
+                        List {
+                            ForEach(shows) { show in
+                                NavigationLink(
+                                    destination: IfLetStore(
+                                        self.store.scope(
+                                            state: \.selectedShowState?.value,
+                                            action: { .showDetail($0) }
                                         )
                                     ) {
-                                        ShowRowView(show: show)
-                                    }
-                                    .tint(.primary)
+                                        ShowDetailScreen(store: $0)
+                                    },
+                                    tag: show.feedURL,
+                                    selection: viewStore.binding(
+                                        get: \.selectedShowState?.id,
+                                        send: { .showDetailSelected(feedURL: $0) }
+                                    )
+                                ) {
+                                    ShowRowView(show: show)
                                 }
+                                .tint(.primary)
                             }
-                            .padding(.horizontal)
                         }
+                        .listStyle(.plain)
                     }
                 }
                 .overlay {
@@ -80,7 +78,6 @@ struct ShowSearchScreen: View {
         .foregroundStyle(.secondary)
         .frame(maxHeight: .infinity, alignment: .center)
     }
-
 }
 
 struct ShowSearchScreen_Previews: PreviewProvider {
