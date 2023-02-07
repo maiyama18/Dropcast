@@ -1,4 +1,5 @@
 import ComposableArchitecture
+import ShowDetailFeature
 import SwiftUI
 
 public struct ShowListScreen: View {
@@ -18,15 +19,7 @@ public struct ShowListScreen: View {
                         } else {
                             List {
                                 ForEach(shows) { show in
-                                    ShowRowView(show: show)
-                                        .swipeActions(allowsFullSwipe: false) {
-                                            Button(role: .destructive) {
-                                                viewStore.send(.showSwipeToDeleted(feedURL: show.feedURL))
-                                            } label: {
-                                                Image(systemName: "trash")
-                                            }
-                                            .tint(.red)
-                                        }
+                                    showRowLink(viewStore: viewStore, show: show)
                                 }
                             }
                             .listStyle(.plain)
@@ -62,6 +55,36 @@ public struct ShowListScreen: View {
                 }
             }
         }
+    }
+
+    @ViewBuilder
+    private func showRowLink(viewStore: ViewStoreOf<ShowListReducer>, show: SimpleShow) -> some View {
+        NavigationLink(
+            destination: IfLetStore(
+                self.store.scope(
+                    state: \.selectedShowState?.value,
+                    action: { .showDetail($0) }
+                )
+            ) {
+                ShowDetailScreen(store: $0)
+            },
+            tag: show.feedURL,
+            selection: viewStore.binding(
+                get: \.selectedShowState?.id,
+                send: { .showDetailSelected(feedURL: $0) }
+            )
+        ) {
+            ShowRowView(show: show)
+                .swipeActions(allowsFullSwipe: false) {
+                    Button(role: .destructive) {
+                        viewStore.send(.showSwipeToDeleted(feedURL: show.feedURL))
+                    } label: {
+                        Image(systemName: "trash")
+                    }
+                    .tint(.red)
+                }
+        }
+        .tint(.primary)
     }
 
     @ViewBuilder

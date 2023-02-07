@@ -102,6 +102,7 @@ let targets: [PackageDescription.Target] = [
         name: "ShowDetailFeature",
         dependencies: [
             .composableArchitecture,
+            "ClipboardClient",
             "DatabaseClient",
             "Entity",
             "MessageClient",
@@ -121,6 +122,11 @@ let targets: [PackageDescription.Target] = [
 
     // Infra module
 
+    .target(
+        name: "ClipboardClient",
+        dependencies: [.dependencies],
+        path: "Sources/Infra/ClipboardClient"
+    ),
     .target(
         name: "DatabaseClient",
         dependencies: [
@@ -248,14 +254,14 @@ var package = Package(
             name: "ShowDetailFeature",
             targets: ["ShowDetailFeature"]),
         .library(
+            name: "DatabaseClient",
+            targets: ["DatabaseClient"]),
+        .library(
             name: "ITunesClient",
             targets: ["ITunesClient"]),
         .library(
             name: "RSSClient",
             targets: ["RSSClient"]),
-        .library(
-            name: "DatabaseClient",
-            targets: ["DatabaseClient"]),
     ],
     dependencies: dependencies,
     targets: targets

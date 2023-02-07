@@ -3,6 +3,8 @@ import Entity
 import SwiftUI
 
 public struct ShowDetailScreen: View {
+    @Environment(\.openURL) var openURL
+
     let store: StoreOf<ShowDetailReducer>
 
     public init(store: StoreOf<ShowDetailReducer>) {
@@ -33,14 +35,16 @@ public struct ShowDetailScreen: View {
                 ToolbarItem(placement: .navigationBarTrailing) {
                     Menu {
                         Button {
-
+                            viewStore.send(.copyFeedURLButtonTapped)
                         } label: {
                             Label("Copy Feed URL", systemImage: "doc")
                         }
-                        Button {
-
-                        } label: {
-                            Label("Open in Browser", systemImage: "globe")
+                        if let linkURL = viewStore.linkURL {
+                            Button {
+                                openURL(linkURL)
+                            } label: {
+                                Label("Open in Browser", systemImage: "globe")
+                            }
                         }
                     } label: {
                         Image(systemName: "ellipsis")

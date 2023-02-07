@@ -1,11 +1,13 @@
 import ComposableArchitecture
 import Entity
 import Foundation
+import ShowDetailFeature
 
 public struct ShowListReducer: ReducerProtocol, Sendable {
     public struct State: Equatable {
         public var shows: IdentifiedArrayOf<SimpleShow>?
         public var showSearchState: ShowSearchReducer.State?
+        public var selectedShowState: Identified<URL, ShowDetailReducer.State>?
 
         public init() {}
 
@@ -17,10 +19,12 @@ public struct ShowListReducer: ReducerProtocol, Sendable {
         case openShowSearchButtonTapped
         case showSwipeToDeleted(feedURL: URL)
         case showSearchDismissed
+        case showDetailSelected(feedURL: URL?)
 
         case showsResponse(IdentifiedArrayOf<Show>)
 
         case showSearch(ShowSearchReducer.Action)
+        case showDetail(ShowDetailReducer.Action)
     }
 
     @Dependency(\.databaseClient) private var databaseClient
@@ -46,15 +50,32 @@ public struct ShowListReducer: ReducerProtocol, Sendable {
             case .showSearchDismissed:
                 state.showSearchState = nil
                 return .none
+            case .showDetailSelected(let feedURL):
+                if let feedURL, let show = state.shows?[id: feedURL] {
+                    state.selectedShowState = Identified(
+                        .init(feedURL: show.feedURL, imageURL: show.imageURL, title: show.title, author: show.author),
+                        id: \.feedURL
+                    )
+                } else {
+                    state.selectedShowState = nil
+                }
+                return .none
             case .showsResponse(let shows):
                 state.shows = IdentifiedArrayOf(uniqueElements: shows.map { SimpleShow(show: $0) })
                 return .none
             case .showSearch:
                 return .none
+            case .showDetail:
+                return .none
             }
         }
         .ifLet(\.showSearchState, action: /Action.showSearch) {
             ShowSearchReducer()
+        }
+        .ifLet(\.selectedShowState, action: /Action.showDetail) {
+            Scope(state: \Identified<URL, ShowDetailReducer.State>.value, action: /.self) {
+                ShowDetailReducer()
+            }
         }
     }
 }
