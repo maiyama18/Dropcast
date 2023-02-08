@@ -13,18 +13,37 @@ public struct ShowDetailScreen: View {
 
     public var body: some View {
         WithViewStore(store, observe: { $0 }) { viewStore in
-            ScrollView {
-                ShowHeaderView(
-                    imageURL: viewStore.imageURL,
-                    title: viewStore.title,
-                    author: viewStore.author,
-                    description: viewStore.description,
-                    followed: viewStore.followed,
-                    requestInFlight: viewStore.taskRequestInFlight,
-                    toggleFollowButtonTapped: { viewStore.send(.toggleFollowButtonTapped) }
-                )
-                .padding()
+            ScrollView(showsIndicators: false) {
+                LazyVStack(spacing: 0) {
+                    ShowHeaderView(
+                        imageURL: viewStore.imageURL,
+                        title: viewStore.title,
+                        author: viewStore.author,
+                        description: viewStore.description,
+                        followed: viewStore.followed,
+                        requestInFlight: viewStore.taskRequestInFlight,
+                        toggleFollowButtonTapped: { viewStore.send(.toggleFollowButtonTapped) }
+                    )
+
+                    divider
+
+                    if viewStore.taskRequestInFlight, viewStore.episodes.isEmpty {
+                        ForEach(0..<10) { _ in
+                            EpisodeRowView(episode: Show.fixtureRebuild.episodes.first!)
+                                .redacted(reason: .placeholder)
+
+                            divider
+                        }
+                    } else {
+                        ForEach(viewStore.episodes) { episode in
+                            EpisodeRowView(episode: episode)
+
+                            divider
+                        }
+                    }
+                }
             }
+            .padding(.horizontal)
             .task {
                 viewStore.send(.task)
             }
@@ -51,9 +70,19 @@ public struct ShowDetailScreen: View {
                     }
                 }
             }
+            .navigationBarTitleDisplayMode(.inline)
+            .navigationTitle(viewStore.title)
         }
-        .navigationBarTitleDisplayMode(.inline)
     }
+
+    @ViewBuilder
+    private var divider: some View {
+        Divider()
+            .frame(height: 0.75)
+            .overlay { Color.secondary }
+            .padding(.vertical, 8)
+    }
+
 }
 
 struct ShowDetailScreen_Previews: PreviewProvider {

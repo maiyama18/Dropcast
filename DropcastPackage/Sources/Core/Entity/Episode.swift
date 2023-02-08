@@ -1,6 +1,6 @@
 import Foundation
 
-public struct Episode: Sendable, Equatable {
+public struct Episode: Sendable, Identifiable, Equatable {
     public var guid: String
     public var title: String
     public var subtitle: String?
@@ -11,6 +11,8 @@ public struct Episode: Sendable, Equatable {
 
     public var showFeedURL: URL
     public var showTitle: String
+
+    public var id: String { guid }
 
     public init(
         guid: String,
