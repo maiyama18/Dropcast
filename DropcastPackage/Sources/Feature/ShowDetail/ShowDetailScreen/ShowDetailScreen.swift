@@ -64,7 +64,8 @@ struct ShowDetailScreen_Previews: PreviewProvider {
                     initialState: .init(
                         feedURL: Show.fixtureRebuild.feedURL,
                         imageURL: Show.fixtureRebuild.imageURL,
-                        title: Show.fixtureRebuild.title
+                        title: Show.fixtureRebuild.title,
+                        episodes: Show.fixtureRebuild.episodes
                     ),
                     reducer: ShowDetailReducer()
                 )

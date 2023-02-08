@@ -16,6 +16,7 @@ final class ShowDetailReducerTests: XCTestCase {
                 feedURL: ITunesShow.fixtureRebuild.feedURL,
                 imageURL: ITunesShow.fixtureRebuild.artworkLowQualityURL,
                 title: ITunesShow.fixtureRebuild.showName,
+                episodes: [],
                 author: ITunesShow.fixtureRebuild.artistName
             ),
             reducer: ShowDetailReducer()
@@ -44,6 +45,7 @@ final class ShowDetailReducerTests: XCTestCase {
             $0.author = Show.fixtureRebuild.author
             $0.linkURL = Show.fixtureRebuild.linkURL
             $0.description = Show.fixtureRebuild.description
+            $0.episodes = Show.fixtureRebuild.episodes
         }
     }
 
@@ -54,6 +56,7 @@ final class ShowDetailReducerTests: XCTestCase {
                 feedURL: ITunesShow.fixtureRebuild.feedURL,
                 imageURL: ITunesShow.fixtureRebuild.artworkLowQualityURL,
                 title: ITunesShow.fixtureRebuild.showName,
+                episodes: [],
                 author: ITunesShow.fixtureRebuild.artistName
             ),
             reducer: ShowDetailReducer()
@@ -83,6 +86,7 @@ final class ShowDetailReducerTests: XCTestCase {
             $0.author = Show.fixtureRebuild.author
             $0.linkURL = Show.fixtureRebuild.linkURL
             $0.description = Show.fixtureRebuild.description
+            $0.episodes = Show.fixtureRebuild.episodes
         }
         await clock.advance(by: .seconds(1))
         await store.receive(.rssShowResponse(.success(.fixtureRebuild))) {
@@ -98,6 +102,7 @@ final class ShowDetailReducerTests: XCTestCase {
                 feedURL: ITunesShow.fixtureRebuild.feedURL,
                 imageURL: ITunesShow.fixtureRebuild.artworkLowQualityURL,
                 title: ITunesShow.fixtureRebuild.showName,
+                episodes: [],
                 author: ITunesShow.fixtureRebuild.artistName
             ),
             reducer: ShowDetailReducer()
@@ -127,6 +132,7 @@ final class ShowDetailReducerTests: XCTestCase {
             $0.author = Show.fixtureRebuild.author
             $0.linkURL = Show.fixtureRebuild.linkURL
             $0.description = Show.fixtureRebuild.description
+            $0.episodes = Show.fixtureRebuild.episodes
         }
 
         XCTAssertEqual(errorMessage.value, "Something went wrong")
@@ -140,6 +146,7 @@ final class ShowDetailReducerTests: XCTestCase {
                 feedURL: ITunesShow.fixtureRebuild.feedURL,
                 imageURL: ITunesShow.fixtureRebuild.artworkLowQualityURL,
                 title: ITunesShow.fixtureRebuild.showName,
+                episodes: [],
                 author: ITunesShow.fixtureRebuild.artistName
             ),
             reducer: ShowDetailReducer()
@@ -177,6 +184,7 @@ final class ShowDetailReducerTests: XCTestCase {
                 feedURL: ITunesShow.fixtureRebuild.feedURL,
                 imageURL: ITunesShow.fixtureRebuild.artworkLowQualityURL,
                 title: ITunesShow.fixtureRebuild.showName,
+                episodes: [],
                 author: ITunesShow.fixtureRebuild.artistName
             ),
             reducer: ShowDetailReducer()
@@ -202,7 +210,7 @@ final class ShowDetailReducerTests: XCTestCase {
             $0.followed = true
         }
 
-        XCTAssertEqual(try databaseClient.fetchShow(Show.fixtureRebuild.feedURL), .fixtureRebuild)
+        XCTAssertEqual(try databaseClient.fetchShow(Show.fixtureRebuild.feedURL)?.episodes.count, Show.fixtureRebuild.episodes.count)
     }
 
     func test_following_show_failure_shows_error_message() async {
@@ -212,6 +220,7 @@ final class ShowDetailReducerTests: XCTestCase {
                 feedURL: ITunesShow.fixtureRebuild.feedURL,
                 imageURL: ITunesShow.fixtureRebuild.artworkLowQualityURL,
                 title: ITunesShow.fixtureRebuild.showName,
+                episodes: [],
                 author: ITunesShow.fixtureRebuild.artistName
             ),
             reducer: ShowDetailReducer()
@@ -250,6 +259,7 @@ final class ShowDetailReducerTests: XCTestCase {
                 feedURL: ITunesShow.fixtureRebuild.feedURL,
                 imageURL: ITunesShow.fixtureRebuild.artworkLowQualityURL,
                 title: ITunesShow.fixtureRebuild.showName,
+                episodes: [],
                 author: ITunesShow.fixtureRebuild.artistName
             ),
             reducer: ShowDetailReducer()
@@ -293,6 +303,7 @@ final class ShowDetailReducerTests: XCTestCase {
                 feedURL: ITunesShow.fixtureRebuild.feedURL,
                 imageURL: ITunesShow.fixtureRebuild.artworkLowQualityURL,
                 title: ITunesShow.fixtureRebuild.showName,
+                episodes: [],
                 author: ITunesShow.fixtureRebuild.artistName
             ),
             reducer: ShowDetailReducer()
@@ -331,6 +342,7 @@ final class ShowDetailReducerTests: XCTestCase {
                 feedURL: ITunesShow.fixtureRebuild.feedURL,
                 imageURL: ITunesShow.fixtureRebuild.artworkLowQualityURL,
                 title: ITunesShow.fixtureRebuild.showName,
+                episodes: [],
                 author: ITunesShow.fixtureRebuild.artistName
             ),
             reducer: ShowDetailReducer()

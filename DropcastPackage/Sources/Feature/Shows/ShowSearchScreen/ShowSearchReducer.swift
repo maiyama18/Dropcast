@@ -80,7 +80,7 @@ public struct ShowSearchReducer: ReducerProtocol, Sendable {
             case .showDetailSelected(let feedURL):
                 if let feedURL, let show = state.showsState.currentShows[id: feedURL] {
                     state.selectedShowState = Identified(
-                        .init(feedURL: show.feedURL, imageURL: show.imageURL, title: show.title, author: show.author),
+                        .init(feedURL: show.feedURL, imageURL: show.imageURL, title: show.title, episodes: [], author: show.author),
                         id: \.feedURL
                     )
                 } else {

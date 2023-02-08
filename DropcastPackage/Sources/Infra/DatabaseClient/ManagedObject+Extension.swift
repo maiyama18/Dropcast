@@ -30,7 +30,7 @@ extension ShowRecord {
             feedURL: feedURL,
             imageURL: imageURL,
             linkURL: linkURL,
-            episodes: episodes?.compactMap { ($0 as? EpisodeRecord)?.toEpisode() } ?? []
+            episodes: episodes?.compactMap { ($0 as? EpisodeRecord)?.toEpisode() }.sorted(by: { $0.publishedAt > $1.publishedAt }) ?? []
         )
     }
 }
@@ -45,6 +45,7 @@ extension EpisodeRecord {
         episodeDescription = episode.description
         duration = episode.duration
         soundURL = episode.soundURL
+        publishedAt = episode.publishedAt
     }
 
     func toEpisode() -> Episode? {

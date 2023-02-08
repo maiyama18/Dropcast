@@ -113,6 +113,7 @@ final class ShowListReducerTests: XCTestCase {
                     feedURL: Show.fixtureRebuild.feedURL,
                     imageURL: Show.fixtureRebuild.imageURL,
                     title: Show.fixtureRebuild.title,
+                    episodes: [],
                     author: Show.fixtureRebuild.author
                 ),
                 id: Show.fixtureRebuild.feedURL

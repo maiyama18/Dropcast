@@ -319,6 +319,7 @@ final class ShowSearchReducerTests: XCTestCase {
                     feedURL: ITunesShow.fixtureStacktrace.feedURL,
                     imageURL: ITunesShow.fixtureStacktrace.artworkLowQualityURL,
                     title: ITunesShow.fixtureStacktrace.showName,
+                    episodes: [],
                     author: ITunesShow.fixtureStacktrace.artistName
                 ),
                 id: ITunesShow.fixtureStacktrace.feedURL
