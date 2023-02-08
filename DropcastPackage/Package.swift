@@ -203,7 +203,7 @@ let targets: [PackageDescription.Target] = [
 
     .target(
         name: "Entity",
-        dependencies: [],
+        dependencies: ["Formatter"],
         path: "Sources/Core/Entity"
     ),
     .target(

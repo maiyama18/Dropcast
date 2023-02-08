@@ -7,6 +7,7 @@ public struct Episode: Sendable, Equatable {
     public var description: String?
     public var duration: TimeInterval
     public var soundURL: URL
+    public var publishedAt: Date
 
     public var showFeedURL: URL
     public var showTitle: String
@@ -18,6 +19,7 @@ public struct Episode: Sendable, Equatable {
         description: String?,
         duration: TimeInterval,
         soundURL: URL,
+        publishedAt: Date,
         showFeedURL: URL,
         showTitle: String
     ) {
@@ -27,6 +29,7 @@ public struct Episode: Sendable, Equatable {
         self.description = description
         self.duration = duration
         self.soundURL = soundURL
+        self.publishedAt = publishedAt
 
         self.showFeedURL = showFeedURL
         self.showTitle = showTitle

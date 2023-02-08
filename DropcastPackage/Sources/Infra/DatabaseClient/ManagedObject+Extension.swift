@@ -51,6 +51,7 @@ extension EpisodeRecord {
         guard let guid,
               let title,
               let soundURL,
+              let publishedAt,
               let showFeedURL = show?.feedURL,
               let showTitle = show?.title else { return nil }
 
@@ -61,6 +62,7 @@ extension EpisodeRecord {
             description: episodeDescription,
             duration: duration,
             soundURL: soundURL,
+            publishedAt: publishedAt,
             showFeedURL: showFeedURL,
             showTitle: showTitle
         )

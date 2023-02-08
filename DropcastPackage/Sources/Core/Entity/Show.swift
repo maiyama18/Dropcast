@@ -1,3 +1,4 @@
+import Formatter
 import Foundation
 
 public struct Show: Sendable, Equatable, Identifiable {
@@ -49,6 +50,7 @@ extension Show {
                 description: rebuild352Description,
                 duration: 7907,
                 soundURL: URL(string: "https://cache.rebuild.fm/podcast-ep352.mp3")!,
+                publishedAt: rssDateFormatter.date(from: "Tue, 03 Jan 2023 20:00:00 -0800")!,
                 showFeedURL: URL(string: "https://feeds.rebuild.fm/rebuildfm")!,
                 showTitle: "Rebuild"
             ),
@@ -59,6 +61,7 @@ extension Show {
                 description: rebuild351Description,
                 duration: 9015,
                 soundURL: URL(string: "https://cache.rebuild.fm/podcast-ep351.mp3")!,
+                publishedAt: rssDateFormatter.date(from: "Tue, 06 Dec 2022 23:00:00 -0800")!,
                 showFeedURL: URL(string: "https://feeds.rebuild.fm/rebuildfm")!,
                 showTitle: "Rebuild"
             ),
@@ -69,6 +72,7 @@ extension Show {
                 description: rebuild350Description,
                 duration: 7500,
                 soundURL: URL(string: "https://cache.rebuild.fm/podcast-ep350.mp3")!,
+                publishedAt: rssDateFormatter.date(from: "Mon, 21 Nov 2022 22:00:00 -0800")!,
                 showFeedURL: URL(string: "https://feeds.rebuild.fm/rebuildfm")!,
                 showTitle: "Rebuild"
             ),
@@ -103,6 +107,7 @@ extension Show {
                 description: "<p>自分のやってる事が大したこと無いと気づく結果ろくでもないおっさんになってしまう、という新発見。</p>",
                 duration: 2307,
                 soundURL: URL(string: "https://anchor.fm/s/68ce140/podcast/play/63943153/https%3A%2F%2Fd3ctxlq1ktw2nl.cloudfront.net%2Fproduction%2F2023-0-24%2F309067843-44100-1-c25d646c3be96.m4a")!,
+                publishedAt: rssDateFormatter.date(from: "Wed, 25 Jan 2023 11:00:14 GMT")!,
                 showFeedURL: URL(string: "https://anchor.fm/s/68ce140/podcast/rss")!,
                 showTitle: "プログラム雑談"
             ),
