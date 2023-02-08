@@ -212,6 +212,16 @@ let targets: [PackageDescription.Target] = [
         path: "Sources/Core/Error"
     ),
     .target(
+        name: "Formatter",
+        dependencies: [],
+        path: "Sources/Core/Formatter"
+    ),
+    .testTarget(
+        name: "FormatterTests",
+        dependencies: ["Formatter"],
+        path: "Tests/Core/FormatterTests"
+    ),
+    .target(
         name: "TestHelper",
         dependencies: [
             .asyncAlgorithms,
@@ -262,6 +272,9 @@ var package = Package(
         .library(
             name: "RSSClient",
             targets: ["RSSClient"]),
+        .library(
+            name: "Formatter",
+            targets: ["Formatter"]),
     ],
     dependencies: dependencies,
     targets: targets

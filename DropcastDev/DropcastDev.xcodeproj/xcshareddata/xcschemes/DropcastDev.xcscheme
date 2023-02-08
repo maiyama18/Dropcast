@@ -88,6 +88,16 @@
                ReferencedContainer = "container:../DropcastPackage">
             </BuildableReference>
          </TestableReference>
+         <TestableReference
+            skipped = "NO">
+            <BuildableReference
+               BuildableIdentifier = "primary"
+               BlueprintIdentifier = "FormatterTests"
+               BuildableName = "FormatterTests"
+               BlueprintName = "FormatterTests"
+               ReferencedContainer = "container:../DropcastPackage">
+            </BuildableReference>
+         </TestableReference>
       </Testables>
    </TestAction>
    <LaunchAction
