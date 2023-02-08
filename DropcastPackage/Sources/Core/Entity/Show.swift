@@ -48,7 +48,9 @@ extension Show {
                 subtitle: "Naoya Ito さんをゲストに迎えて、MacBook Pro, キーボード、競技プログラミング、レイオフ、ゲームなどについて話しました。",
                 description: rebuild352Description,
                 duration: 7907,
-                soundURL: URL(string: "https://cache.rebuild.fm/podcast-ep352.mp3")!
+                soundURL: URL(string: "https://cache.rebuild.fm/podcast-ep352.mp3")!,
+                showFeedURL: URL(string: "https://feeds.rebuild.fm/rebuildfm")!,
+                showTitle: "Rebuild"
             ),
             .init(
                 guid: "https://rebuild.fm/351/",
@@ -56,7 +58,9 @@ extension Show {
                 subtitle: "Hakuro Matsuda さんをゲストに迎えて、CES, VR, Apple TV, Twitter などについて話しました。",
                 description: rebuild351Description,
                 duration: 9015,
-                soundURL: URL(string: "https://cache.rebuild.fm/podcast-ep351.mp3")!
+                soundURL: URL(string: "https://cache.rebuild.fm/podcast-ep351.mp3")!,
+                showFeedURL: URL(string: "https://feeds.rebuild.fm/rebuildfm")!,
+                showTitle: "Rebuild"
             ),
             .init(
                 guid: "https://rebuild.fm/350/",
@@ -64,7 +68,9 @@ extension Show {
                 subtitle: "Naoki Hiroshima さん、Kazuho Okui さんをゲストに迎えて、近況、Twitter, USB-C, ChatGPT などについて話しました。",
                 description: rebuild350Description,
                 duration: 7500,
-                soundURL: URL(string: "https://cache.rebuild.fm/podcast-ep350.mp3")!
+                soundURL: URL(string: "https://cache.rebuild.fm/podcast-ep350.mp3")!,
+                showFeedURL: URL(string: "https://feeds.rebuild.fm/rebuildfm")!,
+                showTitle: "Rebuild"
             ),
         ]
     )
@@ -96,7 +102,9 @@ extension Show {
                 subtitle: "&lt;p&gt;自分のやってる事が大したこと無いと気づく結果ろくでもないおっさんになってしまう、という新発見。&lt;/p&gt;",
                 description: "<p>自分のやってる事が大したこと無いと気づく結果ろくでもないおっさんになってしまう、という新発見。</p>",
                 duration: 2307,
-                soundURL: URL(string: "https://anchor.fm/s/68ce140/podcast/play/63943153/https%3A%2F%2Fd3ctxlq1ktw2nl.cloudfront.net%2Fproduction%2F2023-0-24%2F309067843-44100-1-c25d646c3be96.m4a")!
+                soundURL: URL(string: "https://anchor.fm/s/68ce140/podcast/play/63943153/https%3A%2F%2Fd3ctxlq1ktw2nl.cloudfront.net%2Fproduction%2F2023-0-24%2F309067843-44100-1-c25d646c3be96.m4a")!,
+                showFeedURL: URL(string: "https://anchor.fm/s/68ce140/podcast/rss")!,
+                showTitle: "プログラム雑談"
             ),
         ]
     )
