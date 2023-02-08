@@ -5,7 +5,7 @@ import ShowDetailFeature
 
 public struct ShowListReducer: ReducerProtocol, Sendable {
     public struct State: Equatable {
-        public var shows: IdentifiedArrayOf<SimpleShow>?
+        public var shows: IdentifiedArrayOf<Show>?
         public var showSearchState: ShowSearchReducer.State?
         public var selectedShowState: Identified<URL, ShowDetailReducer.State>?
 
@@ -57,9 +57,10 @@ public struct ShowListReducer: ReducerProtocol, Sendable {
                             feedURL: show.feedURL,
                             imageURL: show.imageURL,
                             title: show.title,
-                            // FIXME: fill episodes
-                            episodes: [],
-                            author: show.author
+                            episodes: show.episodes,
+                            author: show.author,
+                            description: show.description,
+                            linkURL: show.linkURL
                         ),
                         id: \.feedURL
                     )
@@ -68,7 +69,7 @@ public struct ShowListReducer: ReducerProtocol, Sendable {
                 }
                 return .none
             case .showsResponse(let shows):
-                state.shows = IdentifiedArrayOf(uniqueElements: shows.map { SimpleShow(show: $0) })
+                state.shows = shows
                 return .none
             case .showSearch:
                 return .none

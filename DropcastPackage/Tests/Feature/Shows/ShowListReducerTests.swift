@@ -24,7 +24,7 @@ final class ShowListReducerTests: XCTestCase {
 
         let task = await store.send(.task)
         await store.receive(.showsResponse(IdentifiedArrayOf(uniqueElements: [.fixtureRebuild]))) {
-            $0.shows = [.init(show: .fixtureRebuild)]
+            $0.shows = [.fixtureRebuild]
         }
 
         await task.cancel()
@@ -46,7 +46,7 @@ final class ShowListReducerTests: XCTestCase {
 
         let task = await store.send(.task)
         await store.receive(.showsResponse(IdentifiedArrayOf(uniqueElements: [.fixtureRebuild]))) {
-            $0.shows = [.init(show: .fixtureRebuild)]
+            $0.shows = [.fixtureRebuild]
         }
 
         try databaseClient.followShow(.fixtureSwiftBySundell)
@@ -56,7 +56,7 @@ final class ShowListReducerTests: XCTestCase {
                 IdentifiedArrayOf(uniqueElements: [.fixtureRebuild, .fixtureSwiftBySundell])
             )
         ) {
-            $0.shows = [.init(show: .fixtureRebuild), .init(show: .fixtureSwiftBySundell)]
+            $0.shows = [.fixtureRebuild, .fixtureSwiftBySundell]
         }
 
         await task.cancel()
@@ -78,7 +78,7 @@ final class ShowListReducerTests: XCTestCase {
 
         let task = await store.send(.task)
         await store.receive(.showsResponse(IdentifiedArrayOf(uniqueElements: [.fixtureRebuild]))) {
-            $0.shows = [.init(show: .fixtureRebuild)]
+            $0.shows = [.fixtureRebuild]
         }
 
         await store.send(.showSwipeToDeleted(feedURL: Show.fixtureRebuild.feedURL))
@@ -104,7 +104,7 @@ final class ShowListReducerTests: XCTestCase {
 
         let task = await store.send(.task)
         await store.receive(.showsResponse(IdentifiedArrayOf(uniqueElements: [.fixtureRebuild]))) {
-            $0.shows = [.init(show: .fixtureRebuild)]
+            $0.shows = [.fixtureRebuild]
         }
 
         await store.send(.showDetailSelected(feedURL: Show.fixtureRebuild.feedURL)) {
@@ -113,8 +113,10 @@ final class ShowListReducerTests: XCTestCase {
                     feedURL: Show.fixtureRebuild.feedURL,
                     imageURL: Show.fixtureRebuild.imageURL,
                     title: Show.fixtureRebuild.title,
-                    episodes: [],
-                    author: Show.fixtureRebuild.author
+                    episodes: Show.fixtureRebuild.episodes,
+                    author: Show.fixtureRebuild.author,
+                    description: Show.fixtureRebuild.description,
+                    linkURL: Show.fixtureRebuild.linkURL
                 ),
                 id: Show.fixtureRebuild.feedURL
             )
