@@ -14,16 +14,21 @@ extension RSSFeed {
             guard let guid = item.guid?.value,
                   let title = item.title,
                   let duration = item.iTunes?.iTunesDuration,
+                  let publishedAt = item.pubDate,
                   let soundURL = URL(string: item.enclosure?.attributes?.url ?? "") else {
                 return nil
             }
+
             return Episode(
                 guid: guid,
                 title: title,
                 subtitle: (item.iTunes?.iTunesSubtitle ?? item.iTunes?.iTunesSummary)?.trimmingCharacters(in: .newlines).trimmingCharacters(in: .whitespaces),
                 description: (item.content?.contentEncoded ?? item.description)?.trimmingCharacters(in: .newlines).trimmingCharacters(in: .whitespaces),
                 duration: duration,
-                soundURL: soundURL
+                soundURL: soundURL,
+                publishedAt: publishedAt,
+                showFeedURL: feedURL,
+                showTitle: title
             )
         }
 

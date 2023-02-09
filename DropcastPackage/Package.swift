@@ -70,7 +70,7 @@ let targets: [PackageDescription.Target] = [
     .testTarget(
         name: "AppFeatureTests",
         dependencies: ["AppFeature"],
-        path: "Tests/Feature/App"
+        path: "Tests/Feature/AppTests"
     ),
     .target(
         name: "FeedFeature",
@@ -96,7 +96,7 @@ let targets: [PackageDescription.Target] = [
             "ShowsFeature",
             "TestHelper",
         ],
-        path: "Tests/Feature/Shows"
+        path: "Tests/Feature/ShowsTests"
     ),
     .target(
         name: "ShowDetailFeature",
@@ -117,7 +117,7 @@ let targets: [PackageDescription.Target] = [
             "ShowDetailFeature",
             "TestHelper",
         ],
-        path: "Tests/Feature/ShowDetail"
+        path: "Tests/Feature/ShowDetailTests"
     ),
 
     // Infra module
@@ -203,13 +203,23 @@ let targets: [PackageDescription.Target] = [
 
     .target(
         name: "Entity",
-        dependencies: [],
+        dependencies: ["Formatter"],
         path: "Sources/Core/Entity"
     ),
     .target(
         name: "Error",
         dependencies: [],
         path: "Sources/Core/Error"
+    ),
+    .target(
+        name: "Formatter",
+        dependencies: [],
+        path: "Sources/Core/Formatter"
+    ),
+    .testTarget(
+        name: "FormatterTests",
+        dependencies: ["Formatter"],
+        path: "Tests/Core/FormatterTests"
     ),
     .target(
         name: "TestHelper",
@@ -262,6 +272,9 @@ var package = Package(
         .library(
             name: "RSSClient",
             targets: ["RSSClient"]),
+        .library(
+            name: "Formatter",
+            targets: ["Formatter"]),
     ],
     dependencies: dependencies,
     targets: targets

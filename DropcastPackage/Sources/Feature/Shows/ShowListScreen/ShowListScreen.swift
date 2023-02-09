@@ -19,7 +19,7 @@ public struct ShowListScreen: View {
                         } else {
                             List {
                                 ForEach(shows) { show in
-                                    showRowLink(viewStore: viewStore, show: show)
+                                    showRowLink(viewStore: viewStore, show: SimpleShow(show: show))
                                 }
                             }
                             .listStyle(.plain)

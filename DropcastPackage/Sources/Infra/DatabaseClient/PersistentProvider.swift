@@ -18,8 +18,7 @@ final class CloudKitPersistentProvider: PersistentProvider {
             let model = NSManagedObjectModel(contentsOf: Bundle.module.url(forResource: "Model", withExtension: "momd")!)!
             let container = NSPersistentCloudKitContainer(name: "Model", managedObjectModel: model)
 
-            let storeDirectory = NSPersistentCloudKitContainer.defaultDirectoryURL()
-            let storeURL = storeDirectory.appendingPathComponent("Synced.sqlite")
+            let storeURL = Self.storeURL()
             let description = NSPersistentStoreDescription(url: storeURL)
             description.cloudKitContainerOptions = NSPersistentCloudKitContainerOptions(containerIdentifier: containerIdentifier)
             description.setOption(true as NSNumber, forKey: NSPersistentHistoryTrackingKey)
@@ -39,6 +38,11 @@ final class CloudKitPersistentProvider: PersistentProvider {
                 }
             }
         }
+    }
+
+    private static func storeURL() -> URL {
+        let storeDirectory = NSPersistentCloudKitContainer.defaultDirectoryURL()
+        return storeDirectory.appendingPathComponent("Synced.sqlite")
     }
 
     func executeInBackground<T: Sendable>(operation: (NSManagedObjectContext) throws -> T) rethrows -> T {

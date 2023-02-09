@@ -5,7 +5,7 @@ import ShowDetailFeature
 
 public struct ShowListReducer: ReducerProtocol, Sendable {
     public struct State: Equatable {
-        public var shows: IdentifiedArrayOf<SimpleShow>?
+        public var shows: IdentifiedArrayOf<Show>?
         public var showSearchState: ShowSearchReducer.State?
         public var selectedShowState: Identified<URL, ShowDetailReducer.State>?
 
@@ -53,7 +53,15 @@ public struct ShowListReducer: ReducerProtocol, Sendable {
             case .showDetailSelected(let feedURL):
                 if let feedURL, let show = state.shows?[id: feedURL] {
                     state.selectedShowState = Identified(
-                        .init(feedURL: show.feedURL, imageURL: show.imageURL, title: show.title, author: show.author),
+                        .init(
+                            feedURL: show.feedURL,
+                            imageURL: show.imageURL,
+                            title: show.title,
+                            episodes: show.episodes,
+                            author: show.author,
+                            description: show.description,
+                            linkURL: show.linkURL
+                        ),
                         id: \.feedURL
                     )
                 } else {
@@ -61,7 +69,7 @@ public struct ShowListReducer: ReducerProtocol, Sendable {
                 }
                 return .none
             case .showsResponse(let shows):
-                state.shows = IdentifiedArrayOf(uniqueElements: shows.map { SimpleShow(show: $0) })
+                state.shows = shows
                 return .none
             case .showSearch:
                 return .none

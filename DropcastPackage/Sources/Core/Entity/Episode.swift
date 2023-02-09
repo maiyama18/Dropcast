@@ -1,12 +1,18 @@
 import Foundation
 
-public struct Episode: Sendable, Equatable {
+public struct Episode: Sendable, Identifiable, Equatable {
     public var guid: String
     public var title: String
     public var subtitle: String?
     public var description: String?
     public var duration: TimeInterval
     public var soundURL: URL
+    public var publishedAt: Date
+
+    public var showFeedURL: URL
+    public var showTitle: String
+
+    public var id: String { guid }
 
     public init(
         guid: String,
@@ -14,7 +20,10 @@ public struct Episode: Sendable, Equatable {
         subtitle: String?,
         description: String?,
         duration: TimeInterval,
-        soundURL: URL
+        soundURL: URL,
+        publishedAt: Date,
+        showFeedURL: URL,
+        showTitle: String
     ) {
         self.guid = guid
         self.title = title
@@ -22,5 +31,9 @@ public struct Episode: Sendable, Equatable {
         self.description = description
         self.duration = duration
         self.soundURL = soundURL
+        self.publishedAt = publishedAt
+
+        self.showFeedURL = showFeedURL
+        self.showTitle = showTitle
     }
 }

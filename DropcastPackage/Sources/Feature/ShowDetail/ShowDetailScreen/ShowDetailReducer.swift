@@ -11,6 +11,7 @@ public struct ShowDetailReducer: ReducerProtocol, Sendable {
         public var feedURL: URL
         public var imageURL: URL
         public var title: String
+        public var episodes: [Episode]
         public var author: String?
         public var description: String?
         public var linkURL: URL?
@@ -22,6 +23,7 @@ public struct ShowDetailReducer: ReducerProtocol, Sendable {
             feedURL: URL,
             imageURL: URL,
             title: String,
+            episodes: [Episode],
             author: String? = nil,
             description: String? = nil,
             linkURL: URL? = nil,
@@ -31,6 +33,7 @@ public struct ShowDetailReducer: ReducerProtocol, Sendable {
             self.feedURL = feedURL
             self.imageURL = imageURL
             self.title = title
+            self.episodes = episodes
             self.author = author
             self.description = description
             self.linkURL = linkURL
@@ -93,7 +96,7 @@ public struct ShowDetailReducer: ReducerProtocol, Sendable {
                     feedURL: state.feedURL,
                     imageURL: state.imageURL,
                     linkURL: state.linkURL,
-                    episodes: []
+                    episodes: state.episodes
                 )
 
                 return .task {
@@ -157,5 +160,6 @@ public struct ShowDetailReducer: ReducerProtocol, Sendable {
         state.author = show.author
         state.linkURL = show.linkURL
         state.description = show.description
+        state.episodes = show.episodes
     }
 }
