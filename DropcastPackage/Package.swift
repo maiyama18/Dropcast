@@ -15,6 +15,10 @@ extension PackageDescription.Target.Dependency {
         name: "ComposableArchitecture",
         package: "swift-composable-architecture"
     )
+    static let customDump: Self = .product(
+        name: "CustomDump",
+        package: "swift-custom-dump"
+    )
     static let dependencies: Self = .product(
         name: "Dependencies",
         package: "swift-dependencies"
@@ -39,6 +43,7 @@ let dependencies: [PackageDescription.Package.Dependency] = [
     .package(url: "https://github.com/nmdias/FeedKit", exact: "9.1.2"),
     .package(url: "https://github.com/omaralbeik/Drops", exact: "1.6.1"),
     .package(url: "https://github.com/pointfreeco/swift-composable-architecture", exact: "0.49.2"),
+    .package(url: "https://github.com/pointfreeco/swift-custom-dump", exact: "0.8.0"),
     .package(url: "https://github.com/pointfreeco/swift-dependencies", exact: "0.1.4"),
     .package(url: "https://github.com/pointfreeco/swift-identified-collections", exact: "0.6.0"),
 ]
@@ -225,6 +230,7 @@ let targets: [PackageDescription.Target] = [
         name: "TestHelper",
         dependencies: [
             .asyncAlgorithms,
+            .customDump,
             .dependencies,
         ],
         path: "Sources/Core/TestHelper"
