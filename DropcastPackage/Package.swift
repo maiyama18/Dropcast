@@ -70,7 +70,7 @@ let targets: [PackageDescription.Target] = [
     .testTarget(
         name: "AppFeatureTests",
         dependencies: ["AppFeature"],
-        path: "Tests/Feature/App"
+        path: "Tests/Feature/AppTests"
     ),
     .target(
         name: "FeedFeature",
@@ -96,7 +96,7 @@ let targets: [PackageDescription.Target] = [
             "ShowsFeature",
             "TestHelper",
         ],
-        path: "Tests/Feature/Shows"
+        path: "Tests/Feature/ShowsTests"
     ),
     .target(
         name: "ShowDetailFeature",
@@ -117,7 +117,7 @@ let targets: [PackageDescription.Target] = [
             "ShowDetailFeature",
             "TestHelper",
         ],
-        path: "Tests/Feature/ShowDetail"
+        path: "Tests/Feature/ShowDetailTests"
     ),
 
     // Infra module
