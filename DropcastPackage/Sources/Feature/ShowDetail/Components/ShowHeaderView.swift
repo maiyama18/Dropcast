@@ -67,7 +67,7 @@ struct ShowHeaderView: View {
 
             Text("Maiores et ad ea perspiciatis. Molestias expedita ab autem ad nihil ipsum sed nihil dolorum inventore debitis distinctio velit. Sint magnam dolorum est.")
                 .redacted(reason: .placeholder)
-                .opacity(requestInFlight ? 1 : 0)
+                .opacity(requestInFlight && description == nil ? 1 : 0)
                 .overlay(alignment: .topLeading) {
                     if let description {
                         ScrollView {
