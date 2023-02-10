@@ -9,7 +9,6 @@ import ShowDetailFeature
 
 public struct ShowSearchReducer: ReducerProtocol, Sendable {
     public struct State: Equatable {
-
         public enum ShowsState: Equatable {
             case prompt
             case empty
@@ -24,6 +23,8 @@ public struct ShowSearchReducer: ReducerProtocol, Sendable {
                 }
             }
         }
+
+        public init() {}
 
         public var query: String = ""
         public var showsState: ShowsState = .prompt

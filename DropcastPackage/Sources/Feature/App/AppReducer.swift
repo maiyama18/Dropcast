@@ -30,8 +30,15 @@ struct AppReducer: ReducerProtocol {
             case .activeTabChanged(let tab):
                 state.activeTab = tab
                 return .none
-            case .feed:
-                return .none
+            case .feed(let feedAction):
+                switch feedAction {
+                case .followShowsButtonTapped:
+                    state.activeTab = .shows
+                    state.showsState.showSearchState = .init()
+                    return .none
+                default:
+                    return .none
+                }
             case .shows:
                 return .none
             }
