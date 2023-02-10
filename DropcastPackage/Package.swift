@@ -79,8 +79,20 @@ let targets: [PackageDescription.Target] = [
     ),
     .target(
         name: "FeedFeature",
-        dependencies: [.composableArchitecture],
+        dependencies: [
+            .composableArchitecture,
+            "DatabaseClient",
+            "Entity",
+        ],
         path: "Sources/Feature/Feed"
+    ),
+    .testTarget(
+        name: "FeedFeatureTests",
+        dependencies: [
+            "FeedFeature",
+            "TestHelper",
+        ],
+        path: "Tests/Feature/FeedTests"
     ),
     .target(
         name: "ShowsFeature",
