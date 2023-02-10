@@ -15,6 +15,10 @@ extension PackageDescription.Target.Dependency {
         name: "ComposableArchitecture",
         package: "swift-composable-architecture"
     )
+    static let customDump: Self = .product(
+        name: "CustomDump",
+        package: "swift-custom-dump"
+    )
     static let dependencies: Self = .product(
         name: "Dependencies",
         package: "swift-dependencies"
@@ -31,14 +35,20 @@ extension PackageDescription.Target.Dependency {
         name: "IdentifiedCollections",
         package: "swift-identified-collections"
     )
+    static let nukeUI: Self = .product(
+        name: "NukeUI",
+        package: "Nuke"
+    )
 }
 
 let dependencies: [PackageDescription.Package.Dependency] = [
     .package(url: "https://github.com/apple/swift-algorithms", exact: "1.0.0"),
     .package(url: "https://github.com/apple/swift-async-algorithms", exact: "0.0.4"),
+    .package(url: "https://github.com/kean/Nuke", exact: "11.6.2"),
     .package(url: "https://github.com/nmdias/FeedKit", exact: "9.1.2"),
     .package(url: "https://github.com/omaralbeik/Drops", exact: "1.6.1"),
     .package(url: "https://github.com/pointfreeco/swift-composable-architecture", exact: "0.49.2"),
+    .package(url: "https://github.com/pointfreeco/swift-custom-dump", exact: "0.8.0"),
     .package(url: "https://github.com/pointfreeco/swift-dependencies", exact: "0.1.4"),
     .package(url: "https://github.com/pointfreeco/swift-identified-collections", exact: "0.6.0"),
 ]
@@ -74,13 +84,27 @@ let targets: [PackageDescription.Target] = [
     ),
     .target(
         name: "FeedFeature",
-        dependencies: [.composableArchitecture],
+        dependencies: [
+            .composableArchitecture,
+            "Components",
+            "DatabaseClient",
+            "Entity",
+        ],
         path: "Sources/Feature/Feed"
+    ),
+    .testTarget(
+        name: "FeedFeatureTests",
+        dependencies: [
+            "FeedFeature",
+            "TestHelper",
+        ],
+        path: "Tests/Feature/FeedTests"
     ),
     .target(
         name: "ShowsFeature",
         dependencies: [
             .composableArchitecture,
+            .nukeUI,
             "Entity",
             "Error",
             "ITunesClient",
@@ -102,6 +126,8 @@ let targets: [PackageDescription.Target] = [
         name: "ShowDetailFeature",
         dependencies: [
             .composableArchitecture,
+            .nukeUI,
+            "Components",
             "ClipboardClient",
             "DatabaseClient",
             "Entity",
@@ -118,6 +144,18 @@ let targets: [PackageDescription.Target] = [
             "TestHelper",
         ],
         path: "Tests/Feature/ShowDetailTests"
+    ),
+
+    // UI module
+
+    .target(
+        name: "Components",
+        dependencies: [
+            .nukeUI,
+            "Entity",
+            "Formatter",
+        ],
+        path: "Sources/UI/Components"
     ),
 
     // Infra module
@@ -225,6 +263,7 @@ let targets: [PackageDescription.Target] = [
         name: "TestHelper",
         dependencies: [
             .asyncAlgorithms,
+            .customDump,
             .dependencies,
         ],
         path: "Sources/Core/TestHelper"
@@ -263,6 +302,9 @@ var package = Package(
         .library(
             name: "ShowDetailFeature",
             targets: ["ShowDetailFeature"]),
+        .library(
+            name: "Components",
+            targets: ["Components"]),
         .library(
             name: "DatabaseClient",
             targets: ["DatabaseClient"]),

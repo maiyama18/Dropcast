@@ -54,7 +54,8 @@ extension EpisodeRecord {
               let soundURL,
               let publishedAt,
               let showFeedURL = show?.feedURL,
-              let showTitle = show?.title else { return nil }
+              let showTitle = show?.title,
+              let showImageURL = show?.imageURL else { return nil }
 
         return Episode(
             guid: guid,
@@ -65,7 +66,8 @@ extension EpisodeRecord {
             soundURL: soundURL,
             publishedAt: publishedAt,
             showFeedURL: showFeedURL,
-            showTitle: showTitle
+            showTitle: showTitle,
+            showImageURL: showImageURL
         )
     }
 }

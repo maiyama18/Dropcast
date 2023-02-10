@@ -1,4 +1,5 @@
 import AsyncAlgorithms
+import CustomDump
 import XCTest
 
 extension XCTestCase {
@@ -18,7 +19,7 @@ extension XCTestCase {
             group.addTask {
                 let value1 = try await expression1()
                 let value2 = try await expression2()
-                XCTAssertEqual(value1, value2, message(), file: file, line: line)
+                XCTAssertNoDifference(value1, value2, message(), file: file, line: line)
             }
 
             _ = try await group.next()!
@@ -43,7 +44,7 @@ extension XCTestCase {
                 var iterator = sequence.makeAsyncIterator()
                 let actual = await iterator.next()
                 let expected = expectedValue()
-                XCTAssertEqual(actual, expected, message(), file: file, line: line)
+                XCTAssertNoDifference(actual, expected, message(), file: file, line: line)
             }
 
             _ = try await group.next()!

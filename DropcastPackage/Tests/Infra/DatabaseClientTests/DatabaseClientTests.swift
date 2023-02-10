@@ -77,4 +77,84 @@ final class DatabaseClientTests: XCTestCase {
 
         try await XCTAssertNoReceive(from: followedShowsSequence)
     }
+
+    func test_episodes_of_followed_shows_are_received_from_stream_and_ordered_by_published_at() async throws {
+        let followedEpisodesSequence = client.followedEpisodesStream()
+
+        try await XCTAssertReceive(from: followedEpisodesSequence, [])
+
+        try client.followShow(.fixtureSwiftBySundell)
+        try await XCTAssertReceive(
+            from: followedEpisodesSequence,
+            [
+                .fixtureSwiftBySundell123,
+                .fixtureSwiftBySundell122,
+                .fixtureSwiftBySundell121,
+            ]
+        )
+
+        try client.followShow(.fixtureRebuild)
+        try await XCTAssertReceive(
+            from: followedEpisodesSequence,
+            [
+                .fixtureRebuild352,
+                .fixtureSwiftBySundell123,
+                .fixtureRebuild351,
+                .fixtureRebuild350,
+                .fixtureSwiftBySundell122,
+                .fixtureSwiftBySundell121,
+            ]
+        )
+
+        try client.followShow(.fixtureプログラム雑談)
+        try await XCTAssertReceive(
+            from: followedEpisodesSequence,
+            [
+                .fixtureプログラム雑談225,
+                .fixtureRebuild352,
+                .fixtureプログラム雑談224,
+                .fixtureプログラム雑談223,
+                .fixtureSwiftBySundell123,
+                .fixtureRebuild351,
+                .fixtureRebuild350,
+                .fixtureSwiftBySundell122,
+                .fixtureSwiftBySundell121,
+            ]
+        )
+    }
+
+    func test_episodes_of_unfollowed_shows_are_removed_from_stream() async throws {
+        try client.followShow(.fixtureSwiftBySundell)
+        try client.followShow(.fixtureRebuild)
+        try client.followShow(.fixtureプログラム雑談)
+
+        let followedEpisodesSequence = client.followedEpisodesStream()
+        try await XCTAssertReceive(
+            from: followedEpisodesSequence,
+            [
+                .fixtureプログラム雑談225,
+                .fixtureRebuild352,
+                .fixtureプログラム雑談224,
+                .fixtureプログラム雑談223,
+                .fixtureSwiftBySundell123,
+                .fixtureRebuild351,
+                .fixtureRebuild350,
+                .fixtureSwiftBySundell122,
+                .fixtureSwiftBySundell121,
+            ]
+        )
+
+        try client.unfollowShow(Show.fixtureSwiftBySundell.feedURL)
+        try await XCTAssertReceive(
+            from: followedEpisodesSequence,
+            [
+                .fixtureプログラム雑談225,
+                .fixtureRebuild352,
+                .fixtureプログラム雑談224,
+                .fixtureプログラム雑談223,
+                .fixtureRebuild351,
+                .fixtureRebuild350,
+            ]
+        )
+    }
 }
