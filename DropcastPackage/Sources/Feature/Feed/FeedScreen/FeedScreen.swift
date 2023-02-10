@@ -22,7 +22,7 @@ public struct FeedScreen: View {
                             ScrollView(showsIndicators: false) {
                                 LazyVStack(spacing: 0) {
                                     ForEach(episodes) { episode in
-                                        EpisodeRowView(episode: episode)
+                                        EpisodeRowView(episode: episode, showsImage: true)
 
                                         EpisodeDivider()
                                     }
