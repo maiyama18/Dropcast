@@ -2,10 +2,14 @@ import Entity
 import Formatter
 import SwiftUI
 
-struct EpisodeRowView: View {
+public struct EpisodeRowView: View {
     var episode: Episode
 
-    var body: some View {
+    public init(episode: Episode) {
+        self.episode = episode
+    }
+
+    public var body: some View {
         VStack(alignment: .leading, spacing: 4) {
             HStack(spacing: 0) {
                 Text(episode.publishedAt.formatted(date: .numeric, time: .omitted))
@@ -54,15 +58,18 @@ struct EpisodeRowView: View {
 
 struct EpisodeRowView_Previews: PreviewProvider {
     static var previews: some View {
-        List {
-            ForEach(Show.fixtureRebuild.episodes) { episode in
-                EpisodeRowView(episode: episode)
-            }
+        ScrollView {
+            LazyVStack {
+                ForEach(Show.fixtureRebuild.episodes) { episode in
+                    EpisodeRowView(episode: episode)
+                }
 
-            ForEach(Show.fixtureプログラム雑談.episodes) { episode in
-                EpisodeRowView(episode: episode)
+                ForEach(Show.fixtureプログラム雑談.episodes) { episode in
+                    EpisodeRowView(episode: episode)
+                }
             }
+            .padding(.horizontal)
+            .tint(.orange)
         }
-        .listStyle(.plain)
     }
 }

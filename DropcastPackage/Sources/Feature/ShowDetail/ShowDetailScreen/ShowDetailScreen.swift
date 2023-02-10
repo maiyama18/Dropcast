@@ -1,3 +1,4 @@
+import Components
 import ComposableArchitecture
 import Entity
 import SwiftUI
@@ -29,7 +30,7 @@ public struct ShowDetailScreen: View {
 
                     if viewStore.taskRequestInFlight, viewStore.episodes.isEmpty {
                         ForEach(0..<10) { _ in
-                            EpisodeRowView(episode: Show.fixtureRebuild.episodes.first!)
+                            EpisodeRowView(episode: .fixtureRebuild352)
                                 .redacted(reason: .placeholder)
 
                             divider

@@ -119,6 +119,7 @@ let targets: [PackageDescription.Target] = [
         name: "ShowDetailFeature",
         dependencies: [
             .composableArchitecture,
+            "Components",
             "ClipboardClient",
             "DatabaseClient",
             "Entity",
@@ -135,6 +136,17 @@ let targets: [PackageDescription.Target] = [
             "TestHelper",
         ],
         path: "Tests/Feature/ShowDetailTests"
+    ),
+
+    // UI module
+
+    .target(
+        name: "Components",
+        dependencies: [
+            "Entity",
+            "Formatter",
+        ],
+        path: "Sources/UI/Components"
     ),
 
     // Infra module
@@ -281,6 +293,9 @@ var package = Package(
         .library(
             name: "ShowDetailFeature",
             targets: ["ShowDetailFeature"]),
+        .library(
+            name: "Components",
+            targets: ["Components"]),
         .library(
             name: "DatabaseClient",
             targets: ["DatabaseClient"]),
