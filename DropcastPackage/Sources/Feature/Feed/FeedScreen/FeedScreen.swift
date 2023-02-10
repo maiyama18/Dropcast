@@ -1,3 +1,4 @@
+import Components
 import ComposableArchitecture
 import DatabaseClient
 import Entity
@@ -18,12 +19,16 @@ public struct FeedScreen: View {
                         if episodes.isEmpty {
                             Text("Empty")
                         } else {
-                            List {
-                                ForEach(episodes) { episode in
-                                    Text(episode.title)
+                            ScrollView(showsIndicators: false) {
+                                LazyVStack(spacing: 0) {
+                                    ForEach(episodes) { episode in
+                                        EpisodeRowView(episode: episode)
+
+                                        EpisodeDivider()
+                                    }
                                 }
                             }
-                            .listStyle(.plain)
+                            .padding(.horizontal)
                         }
                     } else {
                         ProgressView()
@@ -52,5 +57,6 @@ struct FeedScreen_Previews: PreviewProvider {
                 }
             )
         )
+        .tint(.orange)
     }
 }

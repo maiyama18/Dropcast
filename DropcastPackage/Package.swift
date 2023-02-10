@@ -81,6 +81,7 @@ let targets: [PackageDescription.Target] = [
         name: "FeedFeature",
         dependencies: [
             .composableArchitecture,
+            "Components",
             "DatabaseClient",
             "Entity",
         ],
