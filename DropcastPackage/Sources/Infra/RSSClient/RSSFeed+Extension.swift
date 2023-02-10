@@ -28,7 +28,8 @@ extension RSSFeed {
                 soundURL: soundURL,
                 publishedAt: publishedAt,
                 showFeedURL: feedURL,
-                showTitle: title
+                showTitle: title,
+                showImageURL: imageURL
             )
         }
 

@@ -12,6 +12,7 @@ public struct Episode: Sendable, Identifiable, Equatable {
 
     public var showFeedURL: URL
     public var showTitle: String
+    public var showImageURL: URL
 
     public var id: String { guid }
 
@@ -24,7 +25,8 @@ public struct Episode: Sendable, Identifiable, Equatable {
         soundURL: URL,
         publishedAt: Date,
         showFeedURL: URL,
-        showTitle: String
+        showTitle: String,
+        showImageURL: URL
     ) {
         self.guid = guid
         self.title = title
@@ -36,6 +38,7 @@ public struct Episode: Sendable, Identifiable, Equatable {
 
         self.showFeedURL = showFeedURL
         self.showTitle = showTitle
+        self.showImageURL = showImageURL
     }
 }
 
@@ -58,7 +61,8 @@ extension Episode {
         soundURL: URL(string: "https://cache.rebuild.fm/podcast-ep352.mp3")!,
         publishedAt: rssDateFormatter.date(from: "Tue, 03 Jan 2023 20:00:00 -0800")!,
         showFeedURL: URL(string: "https://feeds.rebuild.fm/rebuildfm")!,
-        showTitle: "Rebuild"
+        showTitle: "Rebuild",
+        showImageURL: URL(string: "https://cdn.rebuild.fm/images/icon1400.jpg")!
     )
     public static let fixtureRebuild351 = Episode(
         guid: "https://rebuild.fm/351/",
@@ -75,7 +79,8 @@ extension Episode {
         soundURL: URL(string: "https://cache.rebuild.fm/podcast-ep351.mp3")!,
         publishedAt: rssDateFormatter.date(from: "Tue, 06 Dec 2022 23:00:00 -0800")!,
         showFeedURL: URL(string: "https://feeds.rebuild.fm/rebuildfm")!,
-        showTitle: "Rebuild"
+        showTitle: "Rebuild",
+        showImageURL: URL(string: "https://cdn.rebuild.fm/images/icon1400.jpg")!
     )
     public static let fixtureRebuild350 = Episode(
         guid: "https://rebuild.fm/350/",
@@ -91,7 +96,8 @@ extension Episode {
         soundURL: URL(string: "https://cache.rebuild.fm/podcast-ep350.mp3")!,
         publishedAt: rssDateFormatter.date(from: "Mon, 21 Nov 2022 22:00:00 -0800")!,
         showFeedURL: URL(string: "https://feeds.rebuild.fm/rebuildfm")!,
-        showTitle: "Rebuild"
+        showTitle: "Rebuild",
+        showImageURL: URL(string: "https://cdn.rebuild.fm/images/icon1400.jpg")!
     )
 
     public static let fixtureSwiftBySundell123 = Episode(
@@ -103,7 +109,8 @@ extension Episode {
         soundURL: URL(string: "https://traffic.libsyn.com/swiftbysundell/SwiftBySundell123.mp3")!,
         publishedAt: rssDateFormatter.date(from: "Mon, 19 Dec 2022 16:05:00 +0100")!,
         showFeedURL: URL(string: "https://www.swiftbysundell.com/podcast/feed.rss")!,
-        showTitle: "Swift by Sundell"
+        showTitle: "Swift by Sundell",
+        showImageURL: URL(string: "https://www.swiftbysundell.com/images/podcastArtwork.png")!
     )
     public static let fixtureSwiftBySundell122 = Episode(
         guid: "https://www.swiftbysundell.com/podcast/122",
@@ -114,7 +121,8 @@ extension Episode {
         soundURL: URL(string: "https://traffic.libsyn.com/swiftbysundell/SwiftBySundell122.mp3")!,
         publishedAt: rssDateFormatter.date(from: "Fri, 18 Nov 2022 20:30:00 +0100")!,
         showFeedURL: URL(string: "https://www.swiftbysundell.com/podcast/feed.rss")!,
-        showTitle: "Swift by Sundell"
+        showTitle: "Swift by Sundell",
+        showImageURL: URL(string: "https://www.swiftbysundell.com/images/podcastArtwork.png")!
     )
     public static let fixtureSwiftBySundell121 = Episode(
         guid: "https://www.swiftbysundell.com/podcast/121",
@@ -125,7 +133,8 @@ extension Episode {
         soundURL: URL(string: "https://traffic.libsyn.com/swiftbysundell/SwiftBySundell121.mp3")!,
         publishedAt: rssDateFormatter.date(from: "Mon, 31 Oct 2022 18:45:00 +0100")!,
         showFeedURL: URL(string: "https://www.swiftbysundell.com/podcast/feed.rss")!,
-        showTitle: "Swift by Sundell"
+        showTitle: "Swift by Sundell",
+        showImageURL: URL(string: "https://www.swiftbysundell.com/images/podcastArtwork.png")!
     )
 
     public static let fixtureプログラム雑談225 = Episode(
@@ -137,7 +146,8 @@ extension Episode {
         soundURL: URL(string: "https://anchor.fm/s/68ce140/podcast/play/63000195/https%3A%2F%2Fd3ctxlq1ktw2nl.cloudfront.net%2Fproduction%2F2023-0-3%2F305764900-44100-1-cb235f2dd11b.m4a")!,
         publishedAt: rssDateFormatter.date(from: "Wed, 04 Jan 2023 11:00:20 GMT")!,
         showFeedURL: URL(string: "https://anchor.fm/s/68ce140/podcast/rss")!,
-        showTitle: "プログラム雑談"
+        showTitle: "プログラム雑談",
+        showImageURL: URL(string: "https://d3t3ozftmdmh3i.cloudfront.net/production/podcast_uploaded/998960/998960-1535212397504-93ed2911e3e38.jpg")!
     )
     public static let fixtureプログラム雑談224 = Episode(
         guid: "f64a0aaf-0baa-4257-b78e-b0b01e53cf60",
@@ -154,7 +164,8 @@ extension Episode {
         soundURL: URL(string: "https://anchor.fm/s/68ce140/podcast/play/62764464/https%3A%2F%2Fd3ctxlq1ktw2nl.cloudfront.net%2Fproduction%2F2022-11-28%2F305017337-22050-1-aee208b57ad35.m4a")!,
         publishedAt: rssDateFormatter.date(from: "Wed, 28 Dec 2022 11:00:54 GMT")!,
         showFeedURL: URL(string: "https://anchor.fm/s/68ce140/podcast/rss")!,
-        showTitle: "プログラム雑談"
+        showTitle: "プログラム雑談",
+        showImageURL: URL(string: "https://d3t3ozftmdmh3i.cloudfront.net/production/podcast_uploaded/998960/998960-1535212397504-93ed2911e3e38.jpg")!
     )
     public static let fixtureプログラム雑談223 = Episode(
         guid: "7cb976f8-660a-414e-bfd1-aefe3ef82f34",
@@ -165,7 +176,8 @@ extension Episode {
         soundURL: URL(string: "https://anchor.fm/s/68ce140/podcast/play/62498064/https%3A%2F%2Fd3ctxlq1ktw2nl.cloudfront.net%2Fproduction%2F2022-11-21%2F304198620-44100-1-df2e9b1f1f99.m4a")!,
         publishedAt: rssDateFormatter.date(from: "Wed, 21 Dec 2022 11:01:00 GMT")!,
         showFeedURL: URL(string: "https://anchor.fm/s/68ce140/podcast/rss")!,
-        showTitle: "プログラム雑談"
+        showTitle: "プログラム雑談",
+        showImageURL: URL(string: "https://d3t3ozftmdmh3i.cloudfront.net/production/podcast_uploaded/998960/998960-1535212397504-93ed2911e3e38.jpg")!
     )
 }
 #endif
