@@ -19,7 +19,7 @@ public struct FeedScreen: View {
                         if episodes.isEmpty {
                             Text("Empty")
                         } else {
-                            ScrollView(showsIndicators: false) {
+                            ScrollView {
                                 LazyVStack(spacing: 0) {
                                     ForEach(episodes) { episode in
                                         EpisodeRowView(episode: episode, showsImage: true)
@@ -27,8 +27,8 @@ public struct FeedScreen: View {
                                         EpisodeDivider()
                                     }
                                 }
+                                .padding(.horizontal)
                             }
-                            .padding(.horizontal)
                         }
                     } else {
                         ProgressView()
