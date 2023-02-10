@@ -1,5 +1,6 @@
 import Entity
 import Formatter
+import NukeUI
 import SwiftUI
 
 public struct EpisodeRowView: View {
@@ -14,13 +15,13 @@ public struct EpisodeRowView: View {
     public var body: some View {
         HStack(alignment: .top) {
             if showsImage {
-                AsyncImage(url: episode.showImageURL) { image in
-                    image
-                        .resizable()
-                        .aspectRatio(contentMode: .fit)
-                } placeholder: {
-                    Color.secondary
-                        .opacity(0.3)
+                LazyImage(url: episode.showImageURL) { state in
+                    if let image = state.image {
+                        image
+                    } else {
+                        Color.secondary
+                            .opacity(0.3)
+                    }
                 }
                 .frame(width: 64, height: 64)
                 .cornerRadius(8)

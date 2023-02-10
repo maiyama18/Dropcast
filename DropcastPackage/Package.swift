@@ -35,11 +35,16 @@ extension PackageDescription.Target.Dependency {
         name: "IdentifiedCollections",
         package: "swift-identified-collections"
     )
+    static let nukeUI: Self = .product(
+        name: "NukeUI",
+        package: "Nuke"
+    )
 }
 
 let dependencies: [PackageDescription.Package.Dependency] = [
     .package(url: "https://github.com/apple/swift-algorithms", exact: "1.0.0"),
     .package(url: "https://github.com/apple/swift-async-algorithms", exact: "0.0.4"),
+    .package(url: "https://github.com/kean/Nuke", exact: "11.6.2"),
     .package(url: "https://github.com/nmdias/FeedKit", exact: "9.1.2"),
     .package(url: "https://github.com/omaralbeik/Drops", exact: "1.6.1"),
     .package(url: "https://github.com/pointfreeco/swift-composable-architecture", exact: "0.49.2"),
@@ -99,6 +104,7 @@ let targets: [PackageDescription.Target] = [
         name: "ShowsFeature",
         dependencies: [
             .composableArchitecture,
+            .nukeUI,
             "Entity",
             "Error",
             "ITunesClient",
@@ -120,6 +126,7 @@ let targets: [PackageDescription.Target] = [
         name: "ShowDetailFeature",
         dependencies: [
             .composableArchitecture,
+            .nukeUI,
             "Components",
             "ClipboardClient",
             "DatabaseClient",
@@ -144,6 +151,7 @@ let targets: [PackageDescription.Target] = [
     .target(
         name: "Components",
         dependencies: [
+            .nukeUI,
             "Entity",
             "Formatter",
         ],

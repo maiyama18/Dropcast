@@ -1,4 +1,5 @@
 import Entity
+import NukeUI
 import SwiftUI
 
 struct ShowRowView: View {
@@ -6,13 +7,13 @@ struct ShowRowView: View {
 
     var body: some View {
         HStack(spacing: 12) {
-            AsyncImage(url: show.imageURL) { image in
-                image
-                    .resizable()
-                    .aspectRatio(contentMode: .fit)
-            } placeholder: {
-                Color.secondary
-                    .opacity(0.3)
+            LazyImage(url: show.imageURL) { state in
+                if let image = state.image {
+                    image
+                } else {
+                    Color.secondary
+                        .opacity(0.3)
+                }
             }
             .frame(width: 72, height: 72)
             .cornerRadius(12)

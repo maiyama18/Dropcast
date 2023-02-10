@@ -1,3 +1,4 @@
+import NukeUI
 import SwiftUI
 
 struct ShowHeaderView: View {
@@ -12,13 +13,13 @@ struct ShowHeaderView: View {
     var body: some View {
         VStack(alignment: .leading, spacing: 12) {
             HStack(spacing: 12) {
-                AsyncImage(url: imageURL) { image in
-                    image
-                        .resizable()
-                        .aspectRatio(contentMode: .fit)
-                } placeholder: {
-                    Color.secondary
-                        .opacity(0.3)
+                LazyImage(url: imageURL) { state in
+                    if let image = state.image {
+                        image
+                    } else {
+                        Color.secondary
+                            .opacity(0.3)
+                    }
                 }
                 .frame(width: 120, height: 120)
                 .cornerRadius(12)
