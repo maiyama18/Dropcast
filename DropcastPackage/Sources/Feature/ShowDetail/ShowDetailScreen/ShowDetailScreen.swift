@@ -26,20 +26,20 @@ public struct ShowDetailScreen: View {
                         toggleFollowButtonTapped: { viewStore.send(.toggleFollowButtonTapped) }
                     )
 
-                    divider
+                    EpisodeDivider()
 
                     if viewStore.taskRequestInFlight, viewStore.episodes.isEmpty {
                         ForEach(0..<10) { _ in
                             EpisodeRowView(episode: .fixtureRebuild352)
                                 .redacted(reason: .placeholder)
 
-                            divider
+                            EpisodeDivider()
                         }
                     } else {
                         ForEach(viewStore.episodes) { episode in
                             EpisodeRowView(episode: episode)
 
-                            divider
+                            EpisodeDivider()
                         }
                     }
                 }
@@ -75,15 +75,6 @@ public struct ShowDetailScreen: View {
             .navigationTitle(viewStore.title)
         }
     }
-
-    @ViewBuilder
-    private var divider: some View {
-        Divider()
-            .frame(height: 0.75)
-            .overlay { Color.secondary }
-            .padding(.vertical, 8)
-    }
-
 }
 
 struct ShowDetailScreen_Previews: PreviewProvider {
