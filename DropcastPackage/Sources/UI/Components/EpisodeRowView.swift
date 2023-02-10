@@ -20,6 +20,7 @@ public struct EpisodeRowView: View {
 
             Text(episode.title)
                 .font(.body.bold())
+                .lineLimit(2)
 
             if let subtitle = episode.subtitle {
                 Text(subtitle)
@@ -62,10 +63,14 @@ struct EpisodeRowView_Previews: PreviewProvider {
             LazyVStack {
                 ForEach(Show.fixtureRebuild.episodes) { episode in
                     EpisodeRowView(episode: episode)
+
+                    EpisodeDivider()
                 }
 
                 ForEach(Show.fixtureプログラム雑談.episodes) { episode in
                     EpisodeRowView(episode: episode)
+
+                    EpisodeDivider()
                 }
             }
             .padding(.horizontal)
