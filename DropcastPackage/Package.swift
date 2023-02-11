@@ -51,6 +51,7 @@ let dependencies: [PackageDescription.Package.Dependency] = [
     .package(url: "https://github.com/pointfreeco/swift-custom-dump", exact: "0.8.0"),
     .package(url: "https://github.com/pointfreeco/swift-dependencies", exact: "0.1.4"),
     .package(url: "https://github.com/pointfreeco/swift-identified-collections", exact: "0.6.0"),
+    .package(url: "https://github.com/realm/SwiftLint", branch: "main"),
 ]
 
 let targets: [PackageDescription.Target] = [
@@ -280,6 +281,13 @@ let targets: [PackageDescription.Target] = [
         )
     )
     target.swiftSettings = swiftSettings
+    
+    var plugins = target.plugins ?? []
+    plugins.append(
+        .plugin(name: "SwiftLintPlugin", package: "SwiftLint")
+    )
+    target.plugins = plugins
+    
     return target
 }
 
