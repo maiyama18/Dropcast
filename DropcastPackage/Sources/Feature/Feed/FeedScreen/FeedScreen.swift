@@ -17,7 +17,9 @@ public struct FeedScreen: View {
                 Group {
                     if let episodes = viewStore.episodes {
                         if episodes.isEmpty {
-                            Text("Empty")
+                            emptyView(onButtonTapped: {
+                                viewStore.send(.followShowsButtonTapped)
+                            })
                         } else {
                             ScrollView {
                                 LazyVStack(spacing: 0) {
@@ -41,6 +43,31 @@ public struct FeedScreen: View {
                 viewStore.send(.task)
             }
         }
+    }
+
+    @ViewBuilder
+    private func emptyView(onButtonTapped: @escaping () -> Void) -> some View {
+        VStack(spacing: 0) {
+            Image(systemName: "face.dashed")
+                .font(.largeTitle)
+                .foregroundStyle(.secondary)
+
+            Spacer()
+                .frame(height: 8)
+
+            Text("No feed")
+                .font(.title2)
+                .foregroundStyle(.secondary)
+
+            Spacer()
+                .frame(height: 16)
+
+            Button("Follow your favorite shows!") {
+                onButtonTapped()
+            }
+            .tint(.orange)
+        }
+        .frame(maxHeight: .infinity, alignment: .center)
     }
 }
 

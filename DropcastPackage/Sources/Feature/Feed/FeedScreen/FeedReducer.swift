@@ -10,6 +10,7 @@ public struct FeedReducer: ReducerProtocol, Sendable {
 
     public enum Action: Equatable, Sendable {
         case task
+        case followShowsButtonTapped
 
         case episodesResponse(IdentifiedArrayOf<Episode>)
     }
@@ -27,6 +28,8 @@ public struct FeedReducer: ReducerProtocol, Sendable {
                         await send(.episodesResponse(episodes))
                     }
                 }
+            case .followShowsButtonTapped:
+                return .none
             case .episodesResponse(let episodes):
                 state.episodes = episodes
                 return .none

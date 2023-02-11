@@ -104,7 +104,7 @@ public struct ShowListScreen: View {
             Spacer()
                 .frame(height: 16)
 
-            Button("Follow your favorite show!") {
+            Button("Follow your favorite shows!") {
                 onButtonTapped()
             }
             .tint(.orange)
