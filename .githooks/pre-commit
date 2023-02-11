@@ -1,1 +1,2 @@
+git diff --diff-filter=d --name-only '*.swift' | xargs -I{} mint run swiftlint lint --fix {} && git add {}
 mint run swiftlint lint --strict
