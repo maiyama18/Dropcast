@@ -6,14 +6,16 @@ import SwiftUI
 public struct EpisodeRowView: View {
     var episode: Episode
     var showsImage: Bool
+    var onDownloadButtonTapped: () -> Void
 
-    public init(episode: Episode, showsImage: Bool) {
+    public init(episode: Episode, showsImage: Bool, onDownloadButtonTapped: @escaping () -> Void) {
         self.episode = episode
         self.showsImage = showsImage
+        self.onDownloadButtonTapped = onDownloadButtonTapped
     }
 
     public var body: some View {
-        HStack(alignment: .top) {
+        HStack(alignment: .top, spacing: 8) {
             if showsImage {
                 LazyImage(url: episode.showImageURL) { state in
                     if let image = state.image {
@@ -48,25 +50,25 @@ public struct EpisodeRowView: View {
 
                 HStack(spacing: 12) {
                     Button {
-                        print("play")
+                        onDownloadButtonTapped()
                     } label: {
-                        Image(systemName: "play.circle")
+                        Image(systemName: "arrow.down.to.line.circle")
                             .font(.title)
                     }
-
+                    
                     Spacer()
-
+                    
                     Button {
-                        print("mark as played")
-                    } label: {
-                        Image(systemName: "checkmark.circle")
-                            .font(.title)
-                    }
-
-                    Button {
-                        print("add to playlist")
+                        print("misc")
                     } label: {
                         Image(systemName: "plus.circle")
+                            .font(.title)
+                    }
+
+                    Button {
+                        print("misc")
+                    } label: {
+                        Image(systemName: "ellipsis.circle")
                             .font(.title)
                     }
                 }
@@ -80,13 +82,21 @@ struct EpisodeRowView_Previews: PreviewProvider {
         ScrollView {
             LazyVStack {
                 ForEach(Show.fixtureRebuild.episodes) { episode in
-                    EpisodeRowView(episode: episode, showsImage: true)
+                    EpisodeRowView(
+                        episode: episode,
+                        showsImage: true,
+                        onDownloadButtonTapped: {}
+                    )
 
                     EpisodeDivider()
                 }
 
                 ForEach(Show.fixtureプログラム雑談.episodes) { episode in
-                    EpisodeRowView(episode: episode, showsImage: false)
+                    EpisodeRowView(
+                        episode: episode,
+                        showsImage: false,
+                        onDownloadButtonTapped: {}
+                    )
 
                     EpisodeDivider()
                 }

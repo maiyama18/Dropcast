@@ -90,6 +90,7 @@ let targets: [PackageDescription.Target] = [
             "Components",
             "DatabaseClient",
             "Entity",
+            "SoundFileClient",
         ],
         path: "Sources/Feature/Feed"
     ),
@@ -241,6 +242,7 @@ let targets: [PackageDescription.Target] = [
         name: "SoundFileClient",
         dependencies: [
             .dependencies,
+            "Error",
             "Entity",
         ],
         path: "Sources/Infra/SoundFileClient"

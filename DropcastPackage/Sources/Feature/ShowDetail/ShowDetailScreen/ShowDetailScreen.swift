@@ -30,14 +30,15 @@ public struct ShowDetailScreen: View {
 
                     if viewStore.taskRequestInFlight, viewStore.episodes.isEmpty {
                         ForEach(0..<10) { _ in
-                            EpisodeRowView(episode: .fixtureRebuild352, showsImage: false)
+                            EpisodeRowView(episode: .fixtureRebuild352, showsImage: false, onDownloadButtonTapped: {})
                                 .redacted(reason: .placeholder)
 
                             EpisodeDivider()
                         }
                     } else {
                         ForEach(viewStore.episodes) { episode in
-                            EpisodeRowView(episode: episode, showsImage: false)
+                            // FIXME
+                            EpisodeRowView(episode: episode, showsImage: false, onDownloadButtonTapped: {})
 
                             EpisodeDivider()
                         }

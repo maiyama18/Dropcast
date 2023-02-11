@@ -24,7 +24,11 @@ public struct FeedScreen: View {
                             ScrollView {
                                 LazyVStack(spacing: 0) {
                                     ForEach(episodes) { episode in
-                                        EpisodeRowView(episode: episode, showsImage: true)
+                                        EpisodeRowView(
+                                            episode: episode,
+                                            showsImage: true,
+                                            onDownloadButtonTapped: { viewStore.send(.downloadEpisodeButtonTapped(episode: episode)) }
+                                        )
 
                                         EpisodeDivider()
                                     }
