@@ -237,6 +237,14 @@ let targets: [PackageDescription.Target] = [
         ],
         path: "Sources/Infra/MessageClientLive"
     ),
+    .target(
+        name: "SoundFileClient",
+        dependencies: [
+            .dependencies,
+            "Entity",
+        ],
+        path: "Sources/Infra/SoundFileClient"
+    ),
 
     // Core module
 
