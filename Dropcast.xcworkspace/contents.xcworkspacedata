@@ -10,4 +10,11 @@
    <FileRef
       location = "group:Dropcast/Dropcast.xcodeproj">
    </FileRef>
+   <Group
+      location = "group:Dropcast/../ci_scripts"
+      name = "ci_scripts">
+      <FileRef
+         location = "group:ci_post_clone.sh">
+      </FileRef>
+   </Group>
 </Workspace>
