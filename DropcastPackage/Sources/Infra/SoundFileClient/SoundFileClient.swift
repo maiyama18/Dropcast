@@ -55,6 +55,18 @@ actor SoundFileClientLive: SoundFileClient {
             self.onErrorOccurred = onErrorOccurred
         }
         
+        func urlSession(_ session: URLSession, task: URLSessionTask, didCompleteWithError error: Error?) {
+            if let error {
+                Task { await handleDelegateError(session: session, error: error) }
+            }
+        }
+        
+        func urlSession(_ session: URLSession, didBecomeInvalidWithError error: Error?) {
+            if let error {
+                Task { await handleDelegateError(session: session, error: error) }
+            }
+        }
+        
         func urlSession(_ session: URLSession, downloadTask: URLSessionDownloadTask, didFinishDownloadingTo location: URL) {
             guard let identifierString = session.configuration.identifier,
                   let identifier = TaskIdentifier(string: identifierString),
@@ -83,6 +95,15 @@ actor SoundFileClientLive: SoundFileClient {
             Task {
                 await onProgressUpdated(identifier, progress)
             }
+        }
+        
+        private func handleDelegateError(session: URLSession, error: Error?) async {
+            var identifier: TaskIdentifier?
+            if let identifierString = session.configuration.identifier {
+               identifier = TaskIdentifier(string: identifierString)
+            }
+            
+            await onErrorOccurred(identifier, SoundFileClientError.downloadError)
         }
     }
     
