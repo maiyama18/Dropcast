@@ -26,8 +26,11 @@ public struct FeedScreen: View {
                                     ForEach(episodes) { episode in
                                         EpisodeRowView(
                                             episode: episode,
+                                            downloadState: viewStore.state.downloadState(guid: episode.guid),
                                             showsImage: true,
-                                            onDownloadButtonTapped: { viewStore.send(.downloadEpisodeButtonTapped(episode: episode)) }
+                                            onDownloadButtonTapped: {
+                                                viewStore.send(.downloadEpisodeButtonTapped(episode: episode))
+                                            }
                                         )
 
                                         EpisodeDivider()

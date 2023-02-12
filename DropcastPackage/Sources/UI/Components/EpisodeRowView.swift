@@ -5,11 +5,18 @@ import SwiftUI
 
 public struct EpisodeRowView: View {
     var episode: Episode
+    var downloadState: EpisodeDownloadState
     var showsImage: Bool
     var onDownloadButtonTapped: () -> Void
 
-    public init(episode: Episode, showsImage: Bool, onDownloadButtonTapped: @escaping () -> Void) {
+    public init(
+        episode: Episode,
+        downloadState: EpisodeDownloadState,
+        showsImage: Bool,
+        onDownloadButtonTapped: @escaping () -> Void
+    ) {
         self.episode = episode
+        self.downloadState = downloadState
         self.showsImage = showsImage
         self.onDownloadButtonTapped = onDownloadButtonTapped
     }
@@ -52,9 +59,24 @@ public struct EpisodeRowView: View {
                     Button {
                         onDownloadButtonTapped()
                     } label: {
-                        Image(systemName: "arrow.down.to.line.circle")
-                            .font(.title)
+                        switch downloadState {
+                        case .notDownloaded:
+                            Image(systemName: "arrow.down.to.line.circle")
+                        case .pushedToDownloadQueue:
+                            Image(systemName: "arrow.clockwise.circle")
+                                .tint(.gray.opacity(0.5))
+                        case .downloading(let progress):
+                            ProgressSystemImage(
+                                systemName: "stop.circle",
+                                progress: progress,
+                                onColor: .orange,
+                                offColor: .gray.opacity(0.5)
+                            )
+                        case .downloaded:
+                            Image(systemName: "play.circle")
+                        }
                     }
+                    .font(.title)
                     
                     Spacer()
                     
@@ -80,26 +102,34 @@ public struct EpisodeRowView: View {
 struct EpisodeRowView_Previews: PreviewProvider {
     static var previews: some View {
         ScrollView {
-            LazyVStack {
-                ForEach(Show.fixtureRebuild.episodes) { episode in
-                    EpisodeRowView(
-                        episode: episode,
-                        showsImage: true,
-                        onDownloadButtonTapped: {}
-                    )
-
-                    EpisodeDivider()
-                }
-
-                ForEach(Show.fixtureプログラム雑談.episodes) { episode in
-                    EpisodeRowView(
-                        episode: episode,
-                        showsImage: false,
-                        onDownloadButtonTapped: {}
-                    )
-
-                    EpisodeDivider()
-                }
+            LazyVStack(spacing: 8) {
+                EpisodeRowView(
+                    episode: .fixtureRebuild352,
+                    downloadState: .notDownloaded,
+                    showsImage: true,
+                    onDownloadButtonTapped: {}
+                )
+                
+                EpisodeRowView(
+                    episode: .fixtureRebuild351,
+                    downloadState: .pushedToDownloadQueue,
+                    showsImage: true,
+                    onDownloadButtonTapped: {}
+                )
+                
+                EpisodeRowView(
+                    episode: .fixtureRebuild351,
+                    downloadState: .downloading(progress: 0.4),
+                    showsImage: true,
+                    onDownloadButtonTapped: {}
+                )
+                
+                EpisodeRowView(
+                    episode: .fixtureRebuild350,
+                    downloadState: .downloaded,
+                    showsImage: true,
+                    onDownloadButtonTapped: {}
+                )
             }
             .padding(.horizontal)
             .tint(.orange)
