@@ -10,7 +10,7 @@ jobs:
       - uses: actions/checkout@v2
       - name: Test
         run: |
-          xcodebuild -scheme DropcastDev -sdk iphonesimulator -destination "platform=iOS Simulator,name=iPhone 14" test
+          xcodebuild -scheme DropcastDev -sdk iphonesimulator -destination "platform=iOS Simulator,name=iPhone 14" -resultBundlePath TestResults -skipPackagePluginValidation test
 
       - uses: kishikawakatsumi/xcresulttool@v1
         with:

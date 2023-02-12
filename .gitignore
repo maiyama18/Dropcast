@@ -3,4 +3,4 @@
 xcuserdata
 .build
 DropcastPackage/Package.resolved
-DropcastPackage/TestResults/**
+TestResults/**
