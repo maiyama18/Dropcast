@@ -8,6 +8,7 @@ public protocol SoundFileClient: Sendable {
     var downloadStatesPublisher: AnyPublisher<[String: EpisodeDownloadState], Never> { get }
     
     func download(_ episode: Episode) async throws
+    func cancelDownload(_ episode: Episode) async throws
 }
 
 actor SoundFileClientLive: SoundFileClient {
@@ -149,6 +150,15 @@ actor SoundFileClientLive: SoundFileClient {
         let task = session.downloadTask(with: episode.soundURL)
         tasks[identifier] = task
         task.resume()
+    }
+    
+    func cancelDownload(_ episode: Episode) async throws {
+        guard let identifier = TaskIdentifier(episode: episode) else {
+            throw SoundFileClientError.unexpectedError
+        }
+        
+        updateDownloadState(identifier: identifier, downloadState: .notDownloaded)
+        tasks[identifier]?.cancel()
     }
     
     private func initializeDownloadStates() {

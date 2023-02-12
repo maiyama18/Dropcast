@@ -29,10 +29,6 @@ public struct FeedReducer: ReducerProtocol, Sendable {
 
     public init() {}
     
-    private struct DownloadID: Hashable {
-        var guid: String
-    }
-
     public var body: some ReducerProtocol<State, Action> {
         Reduce { state, action in
             switch action {
@@ -53,10 +49,19 @@ public struct FeedReducer: ReducerProtocol, Sendable {
                 // handled by parent reducer
                 return .none
             case .downloadEpisodeButtonTapped(let episode):
-                return .fireAndForget {
-                    try await soundFileClient.download(episode)
+                return .fireAndForget { [downloadState = state.downloadState(guid: episode.guid)] in
+                    switch downloadState {
+                    case .notDownloaded:
+                        try await soundFileClient.download(episode)
+                    case .pushedToDownloadQueue:
+                        break
+                    case .downloading:
+                        try await soundFileClient.cancelDownload(episode)
+                    case .downloaded:
+                        // FIXME: play sound
+                        break
+                    }
                 }
-                .cancellable(id: AnyHashable(DownloadID(guid: episode.guid)))
             case .downloadStatesResponse(let downloadStates):
                 state.downloadStates = downloadStates
                 return .none
