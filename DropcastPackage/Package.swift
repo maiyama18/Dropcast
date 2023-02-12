@@ -247,6 +247,14 @@ let targets: [PackageDescription.Target] = [
         ],
         path: "Sources/Infra/SoundFileClient"
     ),
+    .testTarget(
+        name: "SoundFileClientTests",
+        dependencies: [
+            "SoundFileClient",
+            "TestHelper",
+        ],
+        path: "Tests/Infra/SoundFileClientTests"
+    ),
 
     // Core module
 
@@ -332,6 +340,9 @@ var package = Package(
         .library(
             name: "RSSClient",
             targets: ["RSSClient"]),
+        .library(
+            name: "SoundFileClient",
+            targets: ["SoundFileClient"]),
         .library(
             name: "Formatter",
             targets: ["Formatter"]),

@@ -108,6 +108,16 @@
                ReferencedContainer = "container:../DropcastPackage">
             </BuildableReference>
          </TestableReference>
+         <TestableReference
+            skipped = "NO">
+            <BuildableReference
+               BuildableIdentifier = "primary"
+               BlueprintIdentifier = "SoundFileClientTests"
+               BuildableName = "SoundFileClientTests"
+               BlueprintName = "SoundFileClientTests"
+               ReferencedContainer = "container:../DropcastPackage">
+            </BuildableReference>
+         </TestableReference>
       </Testables>
    </TestAction>
    <LaunchAction

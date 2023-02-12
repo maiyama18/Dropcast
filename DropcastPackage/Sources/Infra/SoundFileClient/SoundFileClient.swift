@@ -2,7 +2,7 @@
 import Dependencies
 import Entity
 import Error
-@preconcurrency import Foundation
+import Foundation
 
 public protocol SoundFileClient: Sendable {
     var downloadStatesPublisher: AnyPublisher<[String: EpisodeDownloadState], Never> { get }
@@ -109,7 +109,8 @@ actor SoundFileClientLive: SoundFileClient {
     
     static let shared: SoundFileClientLive = .init()
     
-    private static let soundFilesDirectoryURL: URL = .documentsDirectory.appendingPathComponent("SoundFiles")
+    private let documentDirectoryURL: URL
+    private let sessionProvider: @Sendable (_ configuration: URLSessionConfiguration, _ delegate: URLSessionDownloadDelegate) -> URLSession
     
     nonisolated public var downloadStatesPublisher: AnyPublisher<[String: EpisodeDownloadState], Never> {
         downloadStatesSubject.eraseToAnyPublisher()
@@ -117,8 +118,11 @@ actor SoundFileClientLive: SoundFileClient {
     private let downloadStatesSubject: CurrentValueSubject<[String: EpisodeDownloadState], Never> = .init([:])
     
     private lazy var delegate = Delegate(
-        onDownloadFinished: { identifier, data in
-            let directoryURL = Self.soundFilesDirectoryURL
+        onDownloadFinished: { [weak self] identifier, data in
+            guard let self else { return }
+            
+            let directoryURL = self.documentDirectoryURL
+                .appendingPathComponent("SoundFiles")
                 .appendingPathComponent(identifier.feedURLBase64)
                 .appendingPathComponent(identifier.guidBase64)
             print("[D] directoryURL", directoryURL)
@@ -154,7 +158,18 @@ actor SoundFileClientLive: SoundFileClient {
     
     private var tasks: [TaskIdentifier: URLSessionDownloadTask] = [:]
     
-    init() {
+    init(
+        documentDirectoryURL: URL = .documentsDirectory,
+        sessionProvider: @escaping @Sendable (
+            _ configuration: URLSessionConfiguration,
+            _ delegate: URLSessionDownloadDelegate
+        ) -> URLSession = {
+            URLSession(configuration: $0, delegate: $1, delegateQueue: nil)
+        }
+    ) {
+        self.documentDirectoryURL = documentDirectoryURL
+        self.sessionProvider = sessionProvider
+        
         Task { await initializeDownloadStates() }
     }
     
@@ -167,7 +182,7 @@ actor SoundFileClientLive: SoundFileClient {
         self.updateDownloadState(identifier: identifier, downloadState: .pushedToDownloadQueue)
 
         let configuration = URLSessionConfiguration.background(withIdentifier: identifierString)
-        let session = URLSession(configuration: configuration, delegate: delegate, delegateQueue: nil)
+        let session = sessionProvider(configuration, delegate)
         let task = session.downloadTask(with: episode.soundURL)
         tasks[identifier] = task
         task.resume()
@@ -184,7 +199,7 @@ actor SoundFileClientLive: SoundFileClient {
     
     private func initializeDownloadStates() {
         guard let enumerator = FileManager.default.enumerator(
-            at: Self.soundFilesDirectoryURL,
+            at: self.documentDirectoryURL.appendingPathComponent("SoundFiles"),
             includingPropertiesForKeys: [.isRegularFileKey],
             options: [.skipsHiddenFiles, .skipsPackageDescendants]
         ) else {

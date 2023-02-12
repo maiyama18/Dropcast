@@ -1,4 +1,5 @@
 import AsyncAlgorithms
+import Combine
 import CustomDump
 import XCTest
 
@@ -73,5 +74,26 @@ extension XCTestCase {
             _ = try await group.next()!
             group.cancelAll()
         }
+    }
+    
+    public func XCTAssertReceive<E: Equatable, P: Publisher<E, Never>>(
+        from publisher: P,
+        _ expectedValue: @Sendable @escaping @autoclosure () -> E,
+        timeout: TimeInterval = 0.2,
+        _ message: @Sendable @escaping @autoclosure () -> String = "",
+        file: StaticString = #filePath,
+        line: UInt = #line
+    ) throws {
+        let expectation = expectation(description: "value should be received")
+        var actuals: [E] = []
+        let cancellable = publisher
+            .sink { value in
+                actuals.append(value)
+                expectation.fulfill()
+            }
+        
+        wait(for: [expectation], timeout: timeout)
+        XCTAssertNoDifference(actuals.first, expectedValue(), message(), file: file, line: line)
+        _ = cancellable
     }
 }
