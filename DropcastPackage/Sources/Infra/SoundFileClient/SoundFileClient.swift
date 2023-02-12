@@ -125,12 +125,10 @@ actor SoundFileClientLive: SoundFileClient {
                 .appendingPathComponent("SoundFiles")
                 .appendingPathComponent(identifier.feedURLBase64)
                 .appendingPathComponent(identifier.guidBase64)
-            print("[D] directoryURL", directoryURL)
             do {
                 try FileManager.default.createDirectory(at: directoryURL, withIntermediateDirectories: true)
             } catch {
                 guard (error as? CocoaError)?.code == CocoaError.fileWriteFileExists else {
-                    print("[D] error", error)
                     throw SoundFileClientError.downloadError
                 }
             }
@@ -140,7 +138,6 @@ actor SoundFileClientLive: SoundFileClient {
                 try data.write(to: fileURL)
                 await self.updateDownloadState(identifier: identifier, downloadState: .downloaded)
             } catch {
-                print("[D] error", error)
                 throw SoundFileClientError.downloadError
             }
         },
@@ -148,9 +145,8 @@ actor SoundFileClientLive: SoundFileClient {
             guard let self else { return }
             await self.updateDownloadState(identifier: identifier, downloadState: .downloading(progress: progress))
         },
-        onErrorOccurred: { [weak self] identifier, error in
+        onErrorOccurred: { [weak self] identifier, _ in
             guard let self else { return }
-            print("[D] error", error)
             guard let identifier else { return }
             await self.updateDownloadState(identifier: identifier, downloadState: .notDownloaded)
         }
@@ -217,7 +213,6 @@ actor SoundFileClientLive: SoundFileClient {
             
             downloadStates[guid] = .downloaded
         }
-        print("[D] downloadStates", downloadStates)
         
         downloadStatesSubject.send(downloadStates)
     }
