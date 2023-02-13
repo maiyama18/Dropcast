@@ -1,5 +1,7 @@
 # Dropcast
 
+A simple podcast client for iOS / macOS. This app is still under development.
+
 ## Setup
 
 ```sh
