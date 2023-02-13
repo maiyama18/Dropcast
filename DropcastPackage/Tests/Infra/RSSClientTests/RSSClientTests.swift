@@ -73,7 +73,7 @@ final class RSSClientTests: XCTestCase {
     }
 
     func testプログラム雑談() async throws {
-        let url = try XCTUnwrap(Bundle.module.url(forResource: "プログラム雑談", withExtension: "xml"))
+        let url = try XCTUnwrap(Bundle.module.url(forResource: "ProgramChat", withExtension: "xml"))
         let data = try Data(contentsOf: url)
 
         let feedURL = URL(string: "https://anchor.fm/s/68ce140/podcast/rss")!
