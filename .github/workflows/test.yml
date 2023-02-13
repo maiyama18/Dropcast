@@ -1,0 +1,23 @@
+name: test
+on:
+  pull_request
+
+jobs:
+  test:
+    runs-on: macos-12
+    name: Test
+    steps:
+      - uses: actions/checkout@v2
+      - uses: mikehardy/buildcache-action@v2
+      - name: SwiftPM Cache
+        uses: actions/cache@v3
+        with:
+          path: SourcePackages
+          key: ${{ runner.os }}-swiftpm-${{ hashFiles('**/Package.resolved') }}
+      - name: Test
+        run: |
+          xcodebuild -scheme DropcastDev -sdk iphonesimulator -destination "platform=iOS Simulator,name=iPhone 14" -resultBundlePath TestResults -skipPackagePluginValidation test
+      - uses: kishikawakatsumi/xcresulttool@v1
+        with:
+          path: TestResults.xcresult
+        if: always()
