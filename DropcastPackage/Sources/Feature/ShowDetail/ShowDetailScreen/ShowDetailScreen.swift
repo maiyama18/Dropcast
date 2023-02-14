@@ -42,12 +42,13 @@ public struct ShowDetailScreen: View {
                         }
                     } else {
                         ForEach(viewStore.episodes) { episode in
-                            // FIXME: fill downloadState and onDownloadButtonTapped
                             EpisodeRowView(
                                 episode: episode,
-                                downloadState: .notDownloaded,
+                                downloadState: viewStore.state.downloadState(guid: episode.guid),
                                 showsImage: false,
-                                onDownloadButtonTapped: {}
+                                onDownloadButtonTapped: {
+                                    viewStore.send(.downloadEpisodeButtonTapped(episode: episode))
+                                }
                             )
 
                             EpisodeDivider()

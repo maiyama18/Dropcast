@@ -2,9 +2,11 @@ import ClipboardClient
 import ComposableArchitecture
 import DatabaseClient
 import Entity
+import Error
 import Foundation
 import MessageClient
 import RSSClient
+import SoundFileClient
 
 public struct ShowDetailReducer: ReducerProtocol, Sendable {
     public struct State: Equatable {
@@ -19,6 +21,13 @@ public struct ShowDetailReducer: ReducerProtocol, Sendable {
 
         public var taskRequestInFlight: Bool = false
 
+        var downloadStates: [String: EpisodeDownloadState]?
+        
+        public func downloadState(guid: String) -> EpisodeDownloadState {
+            guard let downloadStates else { return .notDownloaded }
+            return downloadStates[guid] ?? .notDownloaded
+        }
+        
         public init(
             feedURL: URL,
             imageURL: URL,
@@ -47,8 +56,11 @@ public struct ShowDetailReducer: ReducerProtocol, Sendable {
         case disappear
         case toggleFollowButtonTapped
         case copyFeedURLButtonTapped
+        case downloadEpisodeButtonTapped(episode: Episode)
 
         case databaseShowResponse(TaskResult<Show?>)
+        case downloadStatesResponse([String: EpisodeDownloadState])
+        case downloadErrorResponse(SoundFileClientError)
         case rssShowResponse(TaskResult<Show>)
         case toggleFollowResponse(TaskResult<Bool>)
     }
@@ -57,6 +69,7 @@ public struct ShowDetailReducer: ReducerProtocol, Sendable {
     @Dependency(\.databaseClient) private var databaseClient
     @Dependency(\.messageClient) private var messageClient
     @Dependency(\.rssClient) private var rssClient
+    @Dependency(\.soundFileClient) private var soundFileClient
 
     public init() {}
 
@@ -67,22 +80,34 @@ public struct ShowDetailReducer: ReducerProtocol, Sendable {
             switch action {
             case .task:
                 state.taskRequestInFlight = true
-                return .concatenate(
-                    .task { [feedURL = state.feedURL] in
-                        await .databaseShowResponse(
-                            TaskResult {
-                                try databaseClient.fetchShow(feedURL)
-                            }
-                        )
+                return .merge(
+                    .concatenate(
+                        .task { [feedURL = state.feedURL] in
+                            await .databaseShowResponse(
+                                TaskResult {
+                                    try databaseClient.fetchShow(feedURL)
+                                }
+                            )
+                        },
+                        .task { [feedURL = state.feedURL] in
+                            await .rssShowResponse(
+                                TaskResult {
+                                    try await rssClient.fetch(feedURL)
+                                }
+                            )
+                        }
+                            .cancellable(id: RSSRequestID.self)
+                    ),
+                    .run { send in
+                        for await downloadStates in soundFileClient.downloadStatesPublisher.values {
+                            await send(.downloadStatesResponse(downloadStates))
+                        }
                     },
-                    .task { [feedURL = state.feedURL] in
-                        await .rssShowResponse(
-                            TaskResult {
-                                try await rssClient.fetch(feedURL)
-                            }
-                        )
+                    .run { send in
+                        for await downloadError in soundFileClient.downloadErrorPublisher.values {
+                            await send(.downloadErrorResponse(downloadError))
+                        }
                     }
-                    .cancellable(id: RSSRequestID.self)
                 )
             case .disappear:
                 return .cancel(id: RSSRequestID.self)
@@ -115,6 +140,20 @@ public struct ShowDetailReducer: ReducerProtocol, Sendable {
                 return .fireAndForget { [feedURL = state.feedURL] in
                     clipboardClient.copy(feedURL.absoluteString)
                     messageClient.presentSuccess("Copied")
+                }
+            case .downloadEpisodeButtonTapped(let episode):
+                return .fireAndForget { [downloadState = state.downloadState(guid: episode.guid)] in
+                    switch downloadState {
+                    case .notDownloaded:
+                        try await soundFileClient.download(episode)
+                    case .pushedToDownloadQueue:
+                        break
+                    case .downloading:
+                        try await soundFileClient.cancelDownload(episode)
+                    case .downloaded:
+                        // FIXME: play sound
+                        break
+                    }
                 }
             case .databaseShowResponse(let result):
                 switch result {
@@ -149,6 +188,13 @@ public struct ShowDetailReducer: ReducerProtocol, Sendable {
                     return .fireAndForget {
                         messageClient.presentError(error.userMessage)
                     }
+                }
+            case .downloadStatesResponse(let downloadStates):
+                state.downloadStates = downloadStates
+                return .none
+            case .downloadErrorResponse(let error):
+                return .fireAndForget {
+                    messageClient.presentError(error.userMessage)
                 }
             }
         }
