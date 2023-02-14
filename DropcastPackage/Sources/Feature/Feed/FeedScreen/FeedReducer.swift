@@ -1,5 +1,7 @@
 import ComposableArchitecture
 import Entity
+import Error
+import MessageClient
 import SoundFileClient
 
 public struct FeedReducer: ReducerProtocol, Sendable {
@@ -22,9 +24,11 @@ public struct FeedReducer: ReducerProtocol, Sendable {
 
         case episodesResponse(IdentifiedArrayOf<Episode>)
         case downloadStatesResponse([String: EpisodeDownloadState])
+        case downloadErrorResponse(SoundFileClientError)
     }
 
     @Dependency(\.databaseClient) private var databaseClient
+    @Dependency(\.messageClient) private var messageClient
     @Dependency(\.soundFileClient) private var soundFileClient
 
     public init() {}
@@ -42,6 +46,11 @@ public struct FeedReducer: ReducerProtocol, Sendable {
                     .run { send in
                         for await downloadStates in soundFileClient.downloadStatesPublisher.values {
                             await send(.downloadStatesResponse(downloadStates))
+                        }
+                    },
+                    .run { send in
+                        for await downloadError in soundFileClient.downloadErrorPublisher.values {
+                            await send(.downloadErrorResponse(downloadError))
                         }
                     }
                 )
@@ -65,6 +74,10 @@ public struct FeedReducer: ReducerProtocol, Sendable {
             case .downloadStatesResponse(let downloadStates):
                 state.downloadStates = downloadStates
                 return .none
+            case .downloadErrorResponse(let error):
+                return .fireAndForget {
+                    messageClient.presentError(error.userMessage)
+                }
             case .episodesResponse(let episodes):
                 state.episodes = episodes
                 return .none

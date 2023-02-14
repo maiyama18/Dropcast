@@ -96,4 +96,26 @@ extension XCTestCase {
         XCTAssertNoDifference(actuals.first, expectedValue(), message(), file: file, line: line)
         _ = cancellable
     }
+    
+    public func XCTAssertReceive<E, P: Publisher<E, Never>>(
+        from publisher: P,
+        _ assertion: @Sendable @escaping (E) -> Void,
+        timeout: TimeInterval = 0.2,
+        _ message: @Sendable @escaping @autoclosure () -> String = "",
+        file: StaticString = #filePath,
+        line: UInt = #line
+    ) throws {
+        let expectation = expectation(description: "value should be received")
+        var actuals: [E] = []
+        let cancellable = publisher
+            .sink { value in
+                actuals.append(value)
+                expectation.fulfill()
+            }
+        
+        wait(for: [expectation], timeout: timeout)
+        let actual = try XCTUnwrap(actuals.first, file: file, line: line)
+        assertion(actual)
+        _ = cancellable
+    }
 }

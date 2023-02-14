@@ -6,6 +6,7 @@ import Foundation
 
 public protocol SoundFileClient: Sendable {
     var downloadStatesPublisher: AnyPublisher<[String: EpisodeDownloadState], Never> { get }
+    var downloadErrorPublisher: AnyPublisher<SoundFileClientError, Never> { get }
     
     func download(_ episode: Episode) async throws
     func cancelDownload(_ episode: Episode) async throws
@@ -117,6 +118,11 @@ actor SoundFileClientLive: SoundFileClient {
     }
     private let downloadStatesSubject: CurrentValueSubject<[String: EpisodeDownloadState], Never> = .init([:])
     
+    nonisolated public var downloadErrorPublisher: AnyPublisher<SoundFileClientError, Never> {
+        downloadErrorSubject.eraseToAnyPublisher()
+    }
+    private let downloadErrorSubject: PassthroughSubject<SoundFileClientError, Never> = .init()
+    
     private lazy var delegate = Delegate(
         onDownloadFinished: { [weak self] identifier, data in
             guard let self else { return }
@@ -149,6 +155,9 @@ actor SoundFileClientLive: SoundFileClient {
             guard let self else { return }
             guard let identifier else { return }
             await self.updateDownloadState(identifier: identifier, downloadState: .notDownloaded)
+            
+            guard let guid = String(base64Encoded: identifier.guidBase64) else { return }
+            self.downloadErrorSubject.send(.downloadError)
         }
     )
     
@@ -243,13 +252,23 @@ public actor SoundFileClientMock: SoundFileClient {
     
     private var tasks: [String: Task<Void, Error>] = [:]
     
-    private let downloadStatesSubject: CurrentValueSubject<[String: EpisodeDownloadState], Never> = .init([:])
-    
     nonisolated public var downloadStatesPublisher: AnyPublisher<[String: EpisodeDownloadState], Never> {
         downloadStatesSubject.eraseToAnyPublisher()
     }
+    private let downloadStatesSubject: CurrentValueSubject<[String: EpisodeDownloadState], Never> = .init([:])
+    
+    nonisolated public var downloadErrorPublisher: AnyPublisher<SoundFileClientError, Never> {
+        downloadErrorSubject.eraseToAnyPublisher()
+    }
+    private let downloadErrorSubject: PassthroughSubject<SoundFileClientError, Never> = .init()
+    
+    public var error: SoundFileClientError?
     
     public init() {}
+    
+    public func setError(error: SoundFileClientError?) {
+        self.error = error
+    }
     
     public func download(_ episode: Episode) async throws {
         let task = Task {
@@ -260,6 +279,13 @@ public actor SoundFileClientMock: SoundFileClient {
             updateDownloadState(guid: episode.guid, downloadState: .downloading(progress: 0))
             
             try await clock.sleep(for: .seconds(5))
+            
+            if let error {
+                downloadErrorSubject.send(error)
+                self.error = nil
+                updateDownloadState(guid: episode.guid, downloadState: .notDownloaded)
+                return
+            }
             
             updateDownloadState(guid: episode.guid, downloadState: .downloading(progress: 0.5))
             

@@ -90,6 +90,7 @@ let targets: [PackageDescription.Target] = [
             "Components",
             "DatabaseClient",
             "Entity",
+            "MessageClient",
             "SoundFileClient",
         ],
         path: "Sources/Feature/Feed"

@@ -112,7 +112,7 @@ final class SoundFileClientTests: XCTestCase {
                     delegate.urlSession?(
                         dummySession,
                         task: dummyTask,
-                        didCompleteWithError: NSError(domain: "", code: 0)
+                        didCompleteWithError: NSError(domain: "download", code: 0)
                     )
                 }
             }
@@ -136,5 +136,12 @@ final class SoundFileClientTests: XCTestCase {
             from: client.downloadStatesPublisher,
             [Episode.fixtureRebuild350.guid: .notDownloaded]
         )
+        
+        try XCTAssertReceive(from: client.downloadErrorPublisher) { (guid, error) in
+            XCTAssertEqual(guid, Episode.fixtureRebuild350.guid)
+            let nsError = error as NSError
+            XCTAssertEqual(nsError.domain, "download")
+            XCTAssertEqual(nsError.code, 0)
+        }
     }
 }
