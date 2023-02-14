@@ -16,6 +16,7 @@
 		3819E7E8297D19B80074B17C /* Dropcast.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = Dropcast.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		3819E7EB297D19B80074B17C /* DropcastApp.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DropcastApp.swift; sourceTree = "<group>"; };
 		3819E7EF297D19B90074B17C /* Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Assets.xcassets; sourceTree = "<group>"; };
+		38B83C442998CA8600B71AEB /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist; path = Info.plist; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -51,6 +52,7 @@
 		3819E7EA297D19B80074B17C /* Dropcast */ = {
 			isa = PBXGroup;
 			children = (
+				38B83C442998CA8600B71AEB /* Info.plist */,
 				3819E7EB297D19B80074B17C /* DropcastApp.swift */,
 			);
 			path = Dropcast;
@@ -267,6 +269,7 @@
 				DEVELOPMENT_TEAM = 56T4RFDKJR;
 				ENABLE_PREVIEWS = YES;
 				GENERATE_INFOPLIST_FILE = YES;
+				INFOPLIST_FILE = Dropcast/Info.plist;
 				INFOPLIST_KEY_UIApplicationSceneManifest_Generation = YES;
 				INFOPLIST_KEY_UIApplicationSupportsIndirectInputEvents = YES;
 				INFOPLIST_KEY_UILaunchScreen_Generation = YES;
@@ -297,6 +300,7 @@
 				DEVELOPMENT_TEAM = 56T4RFDKJR;
 				ENABLE_PREVIEWS = YES;
 				GENERATE_INFOPLIST_FILE = YES;
+				INFOPLIST_FILE = Dropcast/Info.plist;
 				INFOPLIST_KEY_UIApplicationSceneManifest_Generation = YES;
 				INFOPLIST_KEY_UIApplicationSupportsIndirectInputEvents = YES;
 				INFOPLIST_KEY_UILaunchScreen_Generation = YES;

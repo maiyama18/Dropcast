@@ -90,6 +90,8 @@ let targets: [PackageDescription.Target] = [
             "Components",
             "DatabaseClient",
             "Entity",
+            "MessageClient",
+            "SoundFileClient",
         ],
         path: "Sources/Feature/Feed"
     ),
@@ -134,6 +136,7 @@ let targets: [PackageDescription.Target] = [
             "Entity",
             "MessageClient",
             "RSSClient",
+            "SoundFileClient",
         ],
         path: "Sources/Feature/ShowDetail"
     ),
@@ -237,6 +240,23 @@ let targets: [PackageDescription.Target] = [
         ],
         path: "Sources/Infra/MessageClientLive"
     ),
+    .target(
+        name: "SoundFileClient",
+        dependencies: [
+            .dependencies,
+            "Error",
+            "Entity",
+        ],
+        path: "Sources/Infra/SoundFileClient"
+    ),
+    .testTarget(
+        name: "SoundFileClientTests",
+        dependencies: [
+            "SoundFileClient",
+            "TestHelper",
+        ],
+        path: "Tests/Infra/SoundFileClientTests"
+    ),
 
     // Core module
 
@@ -322,6 +342,9 @@ var package = Package(
         .library(
             name: "RSSClient",
             targets: ["RSSClient"]),
+        .library(
+            name: "SoundFileClient",
+            targets: ["SoundFileClient"]),
         .library(
             name: "Formatter",
             targets: ["Formatter"]),

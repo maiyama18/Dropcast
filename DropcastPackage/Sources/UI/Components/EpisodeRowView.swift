@@ -5,15 +5,24 @@ import SwiftUI
 
 public struct EpisodeRowView: View {
     var episode: Episode
+    var downloadState: EpisodeDownloadState
     var showsImage: Bool
+    var onDownloadButtonTapped: () -> Void
 
-    public init(episode: Episode, showsImage: Bool) {
+    public init(
+        episode: Episode,
+        downloadState: EpisodeDownloadState,
+        showsImage: Bool,
+        onDownloadButtonTapped: @escaping () -> Void
+    ) {
         self.episode = episode
+        self.downloadState = downloadState
         self.showsImage = showsImage
+        self.onDownloadButtonTapped = onDownloadButtonTapped
     }
 
     public var body: some View {
-        HStack(alignment: .top) {
+        HStack(alignment: .top, spacing: 8) {
             if showsImage {
                 LazyImage(url: episode.showImageURL) { state in
                     if let image = state.image {
@@ -48,25 +57,40 @@ public struct EpisodeRowView: View {
 
                 HStack(spacing: 12) {
                     Button {
-                        print("play")
+                        onDownloadButtonTapped()
                     } label: {
-                        Image(systemName: "play.circle")
-                            .font(.title)
+                        switch downloadState {
+                        case .notDownloaded:
+                            Image(systemName: "arrow.down.to.line.circle")
+                        case .pushedToDownloadQueue:
+                            Image(systemName: "arrow.clockwise.circle")
+                                .tint(.gray.opacity(0.5))
+                        case .downloading(let progress):
+                            ProgressSystemImage(
+                                systemName: "stop.circle",
+                                progress: progress,
+                                onColor: .orange,
+                                offColor: .gray.opacity(0.5)
+                            )
+                        case .downloaded:
+                            Image(systemName: "play.circle")
+                        }
                     }
-
+                    .font(.title)
+                    
                     Spacer()
-
+                    
                     Button {
-                        print("mark as played")
-                    } label: {
-                        Image(systemName: "checkmark.circle")
-                            .font(.title)
-                    }
-
-                    Button {
-                        print("add to playlist")
+                        print("misc")
                     } label: {
                         Image(systemName: "plus.circle")
+                            .font(.title)
+                    }
+
+                    Button {
+                        print("misc")
+                    } label: {
+                        Image(systemName: "ellipsis.circle")
                             .font(.title)
                     }
                 }
@@ -78,18 +102,34 @@ public struct EpisodeRowView: View {
 struct EpisodeRowView_Previews: PreviewProvider {
     static var previews: some View {
         ScrollView {
-            LazyVStack {
-                ForEach(Show.fixtureRebuild.episodes) { episode in
-                    EpisodeRowView(episode: episode, showsImage: true)
-
-                    EpisodeDivider()
-                }
-
-                ForEach(Show.fixtureプログラム雑談.episodes) { episode in
-                    EpisodeRowView(episode: episode, showsImage: false)
-
-                    EpisodeDivider()
-                }
+            LazyVStack(spacing: 8) {
+                EpisodeRowView(
+                    episode: .fixtureRebuild352,
+                    downloadState: .notDownloaded,
+                    showsImage: true,
+                    onDownloadButtonTapped: {}
+                )
+                
+                EpisodeRowView(
+                    episode: .fixtureRebuild351,
+                    downloadState: .pushedToDownloadQueue,
+                    showsImage: true,
+                    onDownloadButtonTapped: {}
+                )
+                
+                EpisodeRowView(
+                    episode: .fixtureRebuild351,
+                    downloadState: .downloading(progress: 0.4),
+                    showsImage: true,
+                    onDownloadButtonTapped: {}
+                )
+                
+                EpisodeRowView(
+                    episode: .fixtureRebuild350,
+                    downloadState: .downloaded,
+                    showsImage: true,
+                    onDownloadButtonTapped: {}
+                )
             }
             .padding(.horizontal)
             .tint(.orange)

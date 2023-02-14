@@ -45,3 +45,17 @@ public enum DatabaseError: Error, Equatable, HasMessage {
         }
     }
 }
+
+public enum SoundFileClientError: Error, Equatable, HasMessage {
+    case unexpectedError
+    case downloadError
+
+    var message: String {
+        switch self {
+        case .unexpectedError:
+            return "Unexpected error occurred"
+        case .downloadError:
+            return "Failed to download the episode"
+        }
+    }
+}
