@@ -153,11 +153,10 @@ actor SoundFileClientLive: SoundFileClient {
         },
         onErrorOccurred: { [weak self] identifier, _ in
             guard let self else { return }
+            self.downloadErrorSubject.send(.downloadError)
+            
             guard let identifier else { return }
             await self.updateDownloadState(identifier: identifier, downloadState: .notDownloaded)
-            
-            guard let guid = String(base64Encoded: identifier.guidBase64) else { return }
-            self.downloadErrorSubject.send(.downloadError)
         }
     )
     

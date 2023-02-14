@@ -131,17 +131,16 @@ final class SoundFileClientTests: XCTestCase {
             [Episode.fixtureRebuild350.guid: .downloading(progress: 0.5)]
         )
         
-        await clock.advance(by: .seconds(1))
+        await XCTAssertReceive(
+            from: client.downloadErrorPublisher,
+            .downloadError
+        ) {
+            await clock.advance(by: .seconds(1))
+        }
+        
         try XCTAssertReceive(
             from: client.downloadStatesPublisher,
             [Episode.fixtureRebuild350.guid: .notDownloaded]
         )
-        
-        try XCTAssertReceive(from: client.downloadErrorPublisher) { (guid, error) in
-            XCTAssertEqual(guid, Episode.fixtureRebuild350.guid)
-            let nsError = error as NSError
-            XCTAssertEqual(nsError.domain, "download")
-            XCTAssertEqual(nsError.code, 0)
-        }
     }
 }
