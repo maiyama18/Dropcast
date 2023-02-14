@@ -227,12 +227,58 @@ actor SoundFileClientLive: SoundFileClient {
 }
 
 public enum SoundFileClientKey: DependencyKey {
-    public static let liveValue: any SoundFileClient = SoundFileClientLive.shared
+    public static let liveValue: SoundFileClient = SoundFileClientLive.shared
+    public static let testValue: SoundFileClient = SoundFileClientMock()
 }
 
 extension DependencyValues {
     public var soundFileClient: any SoundFileClient {
         get { self[SoundFileClientKey.self] }
         set { self[SoundFileClientKey.self] = newValue }
+    }
+}
+
+public actor SoundFileClientMock: SoundFileClient {
+    @Dependency(\.continuousClock) var clock
+    
+    private var tasks: [String: Task<Void, Error>] = [:]
+    
+    private let downloadStatesSubject: CurrentValueSubject<[String: EpisodeDownloadState], Never> = .init([:])
+    
+    nonisolated public var downloadStatesPublisher: AnyPublisher<[String: EpisodeDownloadState], Never> {
+        downloadStatesSubject.eraseToAnyPublisher()
+    }
+    
+    public init() {}
+    
+    public func download(_ episode: Episode) async throws {
+        let task = Task {
+            updateDownloadState(guid: episode.guid, downloadState: .pushedToDownloadQueue)
+            
+            try await clock.sleep(for: .seconds(1))
+            
+            updateDownloadState(guid: episode.guid, downloadState: .downloading(progress: 0))
+            
+            try await clock.sleep(for: .seconds(5))
+            
+            updateDownloadState(guid: episode.guid, downloadState: .downloading(progress: 0.5))
+            
+            try await clock.sleep(for: .seconds(5))
+            
+            updateDownloadState(guid: episode.guid, downloadState: .downloaded)
+        }
+        tasks[episode.guid] = task
+        try await task.value
+    }
+    
+    public func cancelDownload(_ episode: Episode) async throws {
+        tasks[episode.guid]?.cancel()
+        updateDownloadState(guid: episode.guid, downloadState: .notDownloaded)
+    }
+    
+    private func updateDownloadState(guid: String, downloadState: EpisodeDownloadState) {
+        var downloadStates = downloadStatesSubject.value
+        downloadStates[guid] = downloadState
+        downloadStatesSubject.send(downloadStates)
     }
 }
