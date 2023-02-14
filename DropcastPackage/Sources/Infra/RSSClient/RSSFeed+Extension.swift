@@ -4,7 +4,7 @@ import Foundation
 
 extension RSSFeed {
     func toShow(feedURL: URL) -> Show? {
-        guard let title = title,
+        guard let title = title?.trimmingCharacters(in: .whitespacesAndNewlines),
               let imageURL = URL(string: image?.url ?? "") ?? URL(string: iTunes?.iTunesImage?.attributes?.href ?? ""),
               let items else {
             return nil
@@ -12,7 +12,7 @@ extension RSSFeed {
 
         let episodes: [Episode] = items.compactMap { item -> Episode? in
             guard let guid = item.guid?.value,
-                  let title = item.title,
+                  let title = item.title?.trimmingCharacters(in: .whitespacesAndNewlines),
                   let duration = item.iTunes?.iTunesDuration,
                   let publishedAt = item.pubDate,
                   let soundURL = URL(string: item.enclosure?.attributes?.url ?? "") else {
@@ -22,8 +22,8 @@ extension RSSFeed {
             return Episode(
                 guid: guid,
                 title: title,
-                subtitle: (item.iTunes?.iTunesSubtitle ?? item.iTunes?.iTunesSummary)?.trimmingCharacters(in: .newlines).trimmingCharacters(in: .whitespaces),
-                description: (item.content?.contentEncoded ?? item.description)?.trimmingCharacters(in: .newlines).trimmingCharacters(in: .whitespaces),
+                subtitle: (item.iTunes?.iTunesSubtitle ?? item.iTunes?.iTunesSummary)?.trimmingCharacters(in: .newlines).trimmingCharacters(in: .whitespacesAndNewlines),
+                description: (item.content?.contentEncoded ?? item.description)?.trimmingCharacters(in: .newlines).trimmingCharacters(in: .whitespacesAndNewlines),
                 duration: duration,
                 soundURL: soundURL,
                 publishedAt: publishedAt,
