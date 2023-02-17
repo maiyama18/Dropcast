@@ -20,7 +20,7 @@ extension RSSFeed {
             }
 
             return Episode(
-                guid: guid,
+                id: guid,
                 title: title,
                 subtitle: (item.iTunes?.iTunesSubtitle ?? item.iTunes?.iTunesSummary)?.trimmingCharacters(in: .newlines).trimmingCharacters(in: .whitespacesAndNewlines),
                 description: (item.content?.contentEncoded ?? item.description)?.trimmingCharacters(in: .newlines).trimmingCharacters(in: .whitespacesAndNewlines),

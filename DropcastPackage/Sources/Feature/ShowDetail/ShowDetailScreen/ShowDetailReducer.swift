@@ -21,11 +21,11 @@ public struct ShowDetailReducer: ReducerProtocol, Sendable {
 
         public var taskRequestInFlight: Bool = false
 
-        var downloadStates: [String: EpisodeDownloadState]?
+        var downloadStates: [Episode.ID: EpisodeDownloadState]?
         
-        public func downloadState(guid: String) -> EpisodeDownloadState {
+        public func downloadState(id: Episode.ID) -> EpisodeDownloadState {
             guard let downloadStates else { return .notDownloaded }
-            return downloadStates[guid] ?? .notDownloaded
+            return downloadStates[id] ?? .notDownloaded
         }
         
         public init(
@@ -142,7 +142,7 @@ public struct ShowDetailReducer: ReducerProtocol, Sendable {
                     messageClient.presentSuccess("Copied")
                 }
             case .downloadEpisodeButtonTapped(let episode):
-                return .fireAndForget { [downloadState = state.downloadState(guid: episode.guid)] in
+                return .fireAndForget { [downloadState = state.downloadState(id: episode.id)] in
                     switch downloadState {
                     case .notDownloaded:
                         try await soundFileClient.download(episode)

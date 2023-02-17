@@ -15,15 +15,15 @@ public protocol SoundFileClient: Sendable {
 actor SoundFileClientLive: SoundFileClient {
     struct TaskIdentifier: Codable, Hashable {
         var feedURLBase64: String
-        var guidBase64: String
+        var idBase64: String
         var soundFileName: String
         
         init?(episode: Episode) {
             guard let feedURLBase64 = episode.showFeedURL.absoluteString.base64Encoded(),
-                  let guidBase64 = episode.guid.base64Encoded() else { return nil }
+                  let idBase64 = episode.id.base64Encoded() else { return nil }
                   
             self.feedURLBase64 = feedURLBase64
-            self.guidBase64 = guidBase64
+            self.idBase64 = idBase64
             self.soundFileName = episode.soundURL.lastPathComponent
         }
         
@@ -130,7 +130,7 @@ actor SoundFileClientLive: SoundFileClient {
             let directoryURL = self.documentDirectoryURL
                 .appendingPathComponent("SoundFiles")
                 .appendingPathComponent(identifier.feedURLBase64)
-                .appendingPathComponent(identifier.guidBase64)
+                .appendingPathComponent(identifier.idBase64)
             do {
                 try FileManager.default.createDirectory(at: directoryURL, withIntermediateDirectories: true)
             } catch {
@@ -215,21 +215,21 @@ actor SoundFileClientLive: SoundFileClient {
         for case let fileURL as URL in enumerator {
             guard (try? fileURL.resourceValues(forKeys: [.isRegularFileKey]).isRegularFile) == true else { continue }
             
-            let guidIndex = fileURL.pathComponents.count - 2
-            guard guidIndex >= 0,
-                  let guid = String(base64Encoded: fileURL.pathComponents[guidIndex]) else { continue }
+            let idIndex = fileURL.pathComponents.count - 2
+            guard idIndex >= 0,
+                  let id = String(base64Encoded: fileURL.pathComponents[idIndex]) else { continue }
             
-            downloadStates[guid] = .downloaded
+            downloadStates[id] = .downloaded
         }
         
         downloadStatesSubject.send(downloadStates)
     }
     
     private func updateDownloadState(identifier: TaskIdentifier, downloadState: EpisodeDownloadState) {
-        guard let guid = String(base64Encoded: identifier.guidBase64) else { return }
+        guard let id = String(base64Encoded: identifier.idBase64) else { return }
         
         var downloadStates = downloadStatesSubject.value
-        downloadStates[guid] = downloadState
+        downloadStates[id] = downloadState
         downloadStatesSubject.send(downloadStates)
     }
 }
@@ -271,39 +271,39 @@ public actor SoundFileClientMock: SoundFileClient {
     
     public func download(_ episode: Episode) async throws {
         let task = Task {
-            updateDownloadState(guid: episode.guid, downloadState: .pushedToDownloadQueue)
+            updateDownloadState(id: episode.id, downloadState: .pushedToDownloadQueue)
             
             try await clock.sleep(for: .seconds(1))
             
-            updateDownloadState(guid: episode.guid, downloadState: .downloading(progress: 0))
+            updateDownloadState(id: episode.id, downloadState: .downloading(progress: 0))
             
             try await clock.sleep(for: .seconds(5))
             
             if let error {
                 downloadErrorSubject.send(error)
                 self.error = nil
-                updateDownloadState(guid: episode.guid, downloadState: .notDownloaded)
+                updateDownloadState(id: episode.id, downloadState: .notDownloaded)
                 return
             }
             
-            updateDownloadState(guid: episode.guid, downloadState: .downloading(progress: 0.5))
+            updateDownloadState(id: episode.id, downloadState: .downloading(progress: 0.5))
             
             try await clock.sleep(for: .seconds(5))
             
-            updateDownloadState(guid: episode.guid, downloadState: .downloaded)
+            updateDownloadState(id: episode.id, downloadState: .downloaded)
         }
-        tasks[episode.guid] = task
+        tasks[episode.id] = task
         try await task.value
     }
     
     public func cancelDownload(_ episode: Episode) async throws {
-        tasks[episode.guid]?.cancel()
-        updateDownloadState(guid: episode.guid, downloadState: .notDownloaded)
+        tasks[episode.id]?.cancel()
+        updateDownloadState(id: episode.id, downloadState: .notDownloaded)
     }
     
-    private func updateDownloadState(guid: String, downloadState: EpisodeDownloadState) {
+    private func updateDownloadState(id: Episode.ID, downloadState: EpisodeDownloadState) {
         var downloadStates = downloadStatesSubject.value
-        downloadStates[guid] = downloadState
+        downloadStates[id] = downloadState
         downloadStatesSubject.send(downloadStates)
     }
 }

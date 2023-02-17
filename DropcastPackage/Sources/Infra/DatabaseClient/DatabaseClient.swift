@@ -68,7 +68,7 @@ extension DatabaseClient {
 
             private func sendFetchedEpisodeRecords(_ records: [EpisodeRecord]) {
                 let episodes = records.compactMap { $0.toEpisode() }
-                let uniquedEpisodes = episodes.uniqued(on: { $0.guid })
+                let uniquedEpisodes = episodes.uniqued(on: { $0.id })
                 let identifiedEpisodes = IdentifiedArrayOf(uniqueElements: uniquedEpisodes)
                 Task {
                     await episodesStream.send(identifiedEpisodes)

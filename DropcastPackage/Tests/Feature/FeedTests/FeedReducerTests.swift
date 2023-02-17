@@ -168,20 +168,20 @@ final class FeedReducerTests: XCTestCase {
         }
 
         await store.send(.downloadEpisodeButtonTapped(episode: .fixtureRebuild352))
-        await store.receive(.downloadStatesResponse([Episode.fixtureRebuild352.guid: .pushedToDownloadQueue])) {
-            $0.downloadStates = [Episode.fixtureRebuild352.guid: .pushedToDownloadQueue]
+        await store.receive(.downloadStatesResponse([Episode.fixtureRebuild352.id: .pushedToDownloadQueue])) {
+            $0.downloadStates = [Episode.fixtureRebuild352.id: .pushedToDownloadQueue]
         }
         await clock.advance(by: .seconds(1))
-        await store.receive(.downloadStatesResponse([Episode.fixtureRebuild352.guid: .downloading(progress: 0)])) {
-            $0.downloadStates = [Episode.fixtureRebuild352.guid: .downloading(progress: 0)]
+        await store.receive(.downloadStatesResponse([Episode.fixtureRebuild352.id: .downloading(progress: 0)])) {
+            $0.downloadStates = [Episode.fixtureRebuild352.id: .downloading(progress: 0)]
         }
         await clock.advance(by: .seconds(5))
-        await store.receive(.downloadStatesResponse([Episode.fixtureRebuild352.guid: .downloading(progress: 0.5)])) {
-            $0.downloadStates = [Episode.fixtureRebuild352.guid: .downloading(progress: 0.5)]
+        await store.receive(.downloadStatesResponse([Episode.fixtureRebuild352.id: .downloading(progress: 0.5)])) {
+            $0.downloadStates = [Episode.fixtureRebuild352.id: .downloading(progress: 0.5)]
         }
         await clock.advance(by: .seconds(5))
-        await store.receive(.downloadStatesResponse([Episode.fixtureRebuild352.guid: .downloaded])) {
-            $0.downloadStates = [Episode.fixtureRebuild352.guid: .downloaded]
+        await store.receive(.downloadStatesResponse([Episode.fixtureRebuild352.id: .downloaded])) {
+            $0.downloadStates = [Episode.fixtureRebuild352.id: .downloaded]
         }
 
         await task.cancel()
@@ -229,20 +229,20 @@ final class FeedReducerTests: XCTestCase {
         }
 
         await store.send(.downloadEpisodeButtonTapped(episode: .fixtureRebuild352))
-        await store.receive(.downloadStatesResponse([Episode.fixtureRebuild352.guid: .pushedToDownloadQueue])) {
-            $0.downloadStates = [Episode.fixtureRebuild352.guid: .pushedToDownloadQueue]
+        await store.receive(.downloadStatesResponse([Episode.fixtureRebuild352.id: .pushedToDownloadQueue])) {
+            $0.downloadStates = [Episode.fixtureRebuild352.id: .pushedToDownloadQueue]
         }
         
         // has no effect
         await store.send(.downloadEpisodeButtonTapped(episode: .fixtureRebuild352))
         
         await clock.advance(by: .seconds(1))
-        await store.receive(.downloadStatesResponse([Episode.fixtureRebuild352.guid: .downloading(progress: 0)])) {
-            $0.downloadStates = [Episode.fixtureRebuild352.guid: .downloading(progress: 0)]
+        await store.receive(.downloadStatesResponse([Episode.fixtureRebuild352.id: .downloading(progress: 0)])) {
+            $0.downloadStates = [Episode.fixtureRebuild352.id: .downloading(progress: 0)]
         }
         await store.send(.downloadEpisodeButtonTapped(episode: .fixtureRebuild352))
-        await store.receive(.downloadStatesResponse([Episode.fixtureRebuild352.guid: .notDownloaded])) {
-            $0.downloadStates = [Episode.fixtureRebuild352.guid: .notDownloaded]
+        await store.receive(.downloadStatesResponse([Episode.fixtureRebuild352.id: .notDownloaded])) {
+            $0.downloadStates = [Episode.fixtureRebuild352.id: .notDownloaded]
         }
 
         await task.cancel()
@@ -298,17 +298,17 @@ final class FeedReducerTests: XCTestCase {
         }
 
         await store.send(.downloadEpisodeButtonTapped(episode: .fixtureRebuild352))
-        await store.receive(.downloadStatesResponse([Episode.fixtureRebuild352.guid: .pushedToDownloadQueue])) {
-            $0.downloadStates = [Episode.fixtureRebuild352.guid: .pushedToDownloadQueue]
+        await store.receive(.downloadStatesResponse([Episode.fixtureRebuild352.id: .pushedToDownloadQueue])) {
+            $0.downloadStates = [Episode.fixtureRebuild352.id: .pushedToDownloadQueue]
         }
         await clock.advance(by: .seconds(1))
-        await store.receive(.downloadStatesResponse([Episode.fixtureRebuild352.guid: .downloading(progress: 0)])) {
-            $0.downloadStates = [Episode.fixtureRebuild352.guid: .downloading(progress: 0)]
+        await store.receive(.downloadStatesResponse([Episode.fixtureRebuild352.id: .downloading(progress: 0)])) {
+            $0.downloadStates = [Episode.fixtureRebuild352.id: .downloading(progress: 0)]
         }
         await clock.advance(by: .seconds(5))
         await store.receive(.downloadErrorResponse(.downloadError))
-        await store.receive(.downloadStatesResponse([Episode.fixtureRebuild352.guid: .notDownloaded])) {
-            $0.downloadStates = [Episode.fixtureRebuild352.guid: .notDownloaded]
+        await store.receive(.downloadStatesResponse([Episode.fixtureRebuild352.id: .notDownloaded])) {
+            $0.downloadStates = [Episode.fixtureRebuild352.id: .notDownloaded]
         }
         
         XCTAssertEqual(errorMessage.value, "Failed to download the episode")
