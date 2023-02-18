@@ -1,11 +1,13 @@
 import Algorithms
 import AsyncAlgorithms
 @preconcurrency import CoreData
+import CustomDump
 import Dependencies
 import Entity
 import Error
 import Foundation
 import IdentifiedCollections
+import Logger
 
 public struct DatabaseClient: Sendable {
     public var fetchShow: @Sendable (URL) -> Result<Show?, DatabaseError>
@@ -31,6 +33,8 @@ public struct DatabaseClient: Sendable {
 
 extension DatabaseClient {
     public static func live(persistentProvider: PersistentProvider) -> DatabaseClient {
+        @Dependency(\.logger[.database]) var logger
+        
         final class Delegate: NSObject, NSFetchedResultsControllerDelegate, Sendable {
             let showsStream: AsyncChannel<IdentifiedArrayOf<Show>> = .init()
             let episodesStream: AsyncChannel<IdentifiedArrayOf<Episode>> = .init()
@@ -58,33 +62,43 @@ extension DatabaseClient {
             }
 
             private func sendFetchedShowRecords(_ records: [ShowRecord]) {
+                @Dependency(\.logger[.database]) var logger
+                
                 let shows = records.compactMap { $0.toShow() }
                 let uniquedShows = shows.uniqued(on: { $0.feedURL })
                 let identifiedShows = IdentifiedArrayOf(uniqueElements: uniquedShows)
+                logger.notice("sending fetched shows:\n\(customDump(identifiedShows))")
                 Task {
                     await showsStream.send(identifiedShows)
                 }
             }
 
             private func sendFetchedEpisodeRecords(_ records: [EpisodeRecord]) {
+                @Dependency(\.logger[.database]) var logger
+                
                 let episodes = records.compactMap { $0.toEpisode() }
                 let uniquedEpisodes = episodes.uniqued(on: { $0.id })
                 let identifiedEpisodes = IdentifiedArrayOf(uniqueElements: uniquedEpisodes)
+                logger.notice("sending fetched episodes:\n\(customDump(identifiedEpisodes))")
                 Task {
                     await episodesStream.send(identifiedEpisodes)
                 }
             }
         }
-
+        
         @Sendable
         func fetchShow(feedURL: URL) -> Result<Show?, DatabaseError> {
             persistentProvider.executeInBackground { context in
                 let request = ShowRecord.fetchRequest()
                 request.predicate = NSPredicate(format: "%K = %@", #keyPath(ShowRecord.feedURL), feedURL as NSURL)
+                logger.notice("fetching show: \(feedURL, privacy: .public)")
                 do {
                     let records = try context.fetch(request)
-                    return .success(records.first?.toShow())
+                    let show = records.first?.toShow()
+                    logger.notice("show response:\n\(customDump(show), privacy: .public)")
+                    return .success(show)
                 } catch {
+                    logger.error("failed to fetch show: \(error, privacy: .public)")
                     return .failure(.databaseError)
                 }
             }
@@ -125,10 +139,12 @@ extension DatabaseClient {
         return DatabaseClient(
             fetchShow: fetchShow(feedURL:),
             followShow: { show in
+                logger.notice("following show: \(show.feedURL, privacy: .public)")
                 switch fetchShow(feedURL: show.feedURL) {
                 case .success(let show):
                     guard show == nil else {
                         // returns no error because show is already followed
+                        logger.warning("show is already followed")
                         return .success(())
                     }
                 case .failure(let error):
@@ -139,15 +155,18 @@ extension DatabaseClient {
                     _ = ShowRecord(context: context, show: show)
                     do {
                         try context.save()
+                        logger.notice("followed show: \(customDump(show), privacy: .public)")
                         return .success(())
                     } catch {
                         context.rollback()
+                        logger.error("failed to follow show: \(error, privacy: .public)")
                         return .failure(.databaseError)
                     }
                 }
             },
             unfollowShow: { feedURL in
                 persistentProvider.executeInBackground { context in
+                    logger.notice("unfollowing show: \(feedURL, privacy: .public)")
                     let request = ShowRecord.fetchRequest()
                     request.predicate = NSPredicate(format: "%K = %@", #keyPath(ShowRecord.feedURL), feedURL as NSURL)
                     
@@ -156,19 +175,23 @@ extension DatabaseClient {
                         let records = try context.fetch(request)
                         guard let firstRecord = records.first else {
                             // returns no error because show is not followed
+                            logger.warning("show is not followed")
                             return .success(())
                         }
                         record = firstRecord
                     } catch {
+                        logger.error("failed to fetch show to unfollow: \(error, privacy: .public)")
                         return .failure(.databaseError)
                     }
                     
                     context.delete(record)
                     do {
                         try context.save()
+                        logger.notice("unfollowed show: \(feedURL, privacy: .public)")
                         return .success(())
                     } catch {
                         context.rollback()
+                        logger.error("failed to follow show: \(error, privacy: .public)")
                         return .failure(.databaseError)
                     }
                 }

@@ -1,4 +1,5 @@
 public enum LogCategory: String, Sendable {
-    case rss
+    case database
     case iTunes
+    case rss
 }

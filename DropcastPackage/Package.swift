@@ -178,6 +178,7 @@ let targets: [PackageDescription.Target] = [
             .identifiedCollections,
             "Entity",
             "Error",
+            "Logger",
         ],
         path: "Sources/Infra/DatabaseClient"
     ),
