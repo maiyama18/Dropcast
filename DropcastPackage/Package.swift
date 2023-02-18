@@ -251,6 +251,7 @@ let targets: [PackageDescription.Target] = [
             .dependencies,
             "Error",
             "Entity",
+            "Logger",
         ],
         path: "Sources/Infra/SoundFileClient"
     ),
