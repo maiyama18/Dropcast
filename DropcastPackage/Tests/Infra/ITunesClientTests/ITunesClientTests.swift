@@ -23,7 +23,7 @@ final class ITunesClientTests: XCTestCase {
             ]
         )
 
-        let shows = try await client.searchShows("rebuild")
+        let shows = try await client.searchShows("rebuild").get()
         XCTAssertEqual(shows.count, 50)
         for show in shows {
             XCTAssertEqual(show.feedURL.scheme, "https")
@@ -52,7 +52,7 @@ final class ITunesClientTests: XCTestCase {
             ]
         )
 
-        let shows = try await client.searchShows("empty")
+        let shows = try await client.searchShows("empty").get()
         XCTAssertEqual(shows.count, 0)
     }
 
@@ -66,10 +66,7 @@ final class ITunesClientTests: XCTestCase {
             ]
         )
 
-        let shows = try await client.searchShows("バイリンガル")
-        XCTAssertEqual(shows.count, 19) // search results include 22 shows, but 3 is removed due to there http scheme
-        for show in shows {
-            XCTAssertEqual(show.feedURL.scheme, "https")
-        }
+        let shows = try await client.searchShows("バイリンガル").get()
+        XCTAssertEqual(shows.count, 22)
     }
 }

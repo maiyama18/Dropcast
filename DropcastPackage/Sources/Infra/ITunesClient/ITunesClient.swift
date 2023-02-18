@@ -6,7 +6,7 @@ import Network
 import XCTestDynamicOverlay
 
 public struct ITunesClient: Sendable {
-    public var searchShows: @Sendable (_ query: String) async throws -> [ITunesShow]
+    public var searchShows: @Sendable (_ query: String) async -> Result<[ITunesShow], ITunesError>
 }
 
 extension ITunesClient {
@@ -15,16 +15,20 @@ extension ITunesClient {
             searchShows: { query in
                 guard let encodedQuery = query.addingPercentEncoding(withAllowedCharacters: .urlQueryAllowed),
                       let url = URL(string: "https://itunes.apple.com/search?media=podcast&term=\(encodedQuery)") else {
-                    throw ITunesError.invalidQuery
+                    return .failure(ITunesError.invalidQuery)
                 }
 
                 let result = await request(session: urlSession, url: url)
                 switch result {
                 case .success(let data):
-                    let response = try JSONDecoder().decode(SearchShowsResponse.self, from: data)
-                    return response.results.compactMap { $0.toShow() }
+                    do {
+                        let response = try JSONDecoder().decode(SearchShowsResponse.self, from: data)
+                        return .success(response.results.compactMap { $0.toShow() })
+                    } catch {
+                        return .failure(.parseError)
+                    }
                 case .failure(let error):
-                    throw error
+                    return .failure(.networkError(reason: error))
                 }
             }
         )

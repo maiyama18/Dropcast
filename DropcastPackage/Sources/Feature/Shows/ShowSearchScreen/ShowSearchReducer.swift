@@ -38,7 +38,7 @@ public struct ShowSearchReducer: ReducerProtocol, Sendable {
         case queryChangeDebounced
         case showDetailSelected(feedURL: URL?)
 
-        case querySearchResponse(TaskResult<[ITunesShow]>)
+        case querySearchResponse(Result<[ITunesShow], ITunesError>)
         case urlSearchResponse(TaskResult<Entity.Show>)
 
         case showDetail(ShowDetailReducer.Action)
@@ -71,10 +71,11 @@ public struct ShowSearchReducer: ReducerProtocol, Sendable {
 
                 state.searchRequestInFlight = true
                 return .task {
-                    if let url = URL(string: query), url.scheme == "https" {
+                    if let url = URL(string: query), (url.scheme == "https" || url.scheme == "http") {
                         return await .urlSearchResponse(TaskResult { try await rssClient.fetch(url) })
                     } else {
-                        return await .querySearchResponse(TaskResult { try await self.iTunesClient.searchShows(query) })
+                        let result = await self.iTunesClient.searchShows(query)
+                        return .querySearchResponse(result)
                     }
                 }
                 .cancellable(id: SearchID.self)
@@ -106,8 +107,18 @@ public struct ShowSearchReducer: ReducerProtocol, Sendable {
                 case .failure(let error):
                     let currentShows = state.showsState.currentShows
                     state.showsState = currentShows.isEmpty ? .prompt : .loaded(shows: currentShows)
+                    
+                    let message: String
+                    switch error {
+                    case .parseError:
+                        message = "Invalid server response"
+                    case .invalidQuery:
+                        message = "Invalid query"
+                    case .networkError(reason: let error):
+                        message = error.localizedDescription
+                    }
                     return .fireAndForget {
-                        messageClient.presentError(error.userMessage)
+                        messageClient.presentError(message)
                     }
                 }
             case .urlSearchResponse(let result):
