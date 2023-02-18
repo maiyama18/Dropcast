@@ -61,8 +61,10 @@ let targets: [PackageDescription.Target] = [
     .target(
         name: "App",
         dependencies: [
+            .dependencies,
             "AppFeature",
             "MessageClientLive",
+            "Logger",
         ],
         path: "Sources/App/App"
     ),
