@@ -58,11 +58,11 @@ public struct ShowDetailReducer: ReducerProtocol, Sendable {
         case copyFeedURLButtonTapped
         case downloadEpisodeButtonTapped(episode: Episode)
 
-        case databaseShowResponse(TaskResult<Show?>)
+        case databaseShowResponse(Result<Show?, DatabaseError>)
         case downloadStatesResponse([String: EpisodeDownloadState])
         case downloadErrorResponse(SoundFileClientError)
         case rssShowResponse(TaskResult<Show>)
-        case toggleFollowResponse(TaskResult<Bool>)
+        case toggleFollowResponse(Result<Bool, DatabaseError>)
     }
 
     @Dependency(\.clipboardClient) private var clipboardClient
@@ -83,11 +83,8 @@ public struct ShowDetailReducer: ReducerProtocol, Sendable {
                 return .merge(
                     .concatenate(
                         .task { [feedURL = state.feedURL] in
-                            await .databaseShowResponse(
-                                TaskResult {
-                                    try databaseClient.fetchShow(feedURL)
-                                }
-                            )
+                            let result = databaseClient.fetchShow(feedURL)
+                            return .databaseShowResponse(result)
                         },
                         .task { [feedURL = state.feedURL] in
                             await .rssShowResponse(
@@ -125,15 +122,10 @@ public struct ShowDetailReducer: ReducerProtocol, Sendable {
                 )
 
                 return .task {
-                    await .toggleFollowResponse(
-                        TaskResult {
-                            if followed {
-                                try databaseClient.unfollowShow(show.feedURL)
-                            } else {
-                                try databaseClient.followShow(show)
-                            }
-                            return true
-                        }
+                    .toggleFollowResponse(
+                        followed
+                        ? databaseClient.unfollowShow(show.feedURL).map { true }
+                        : databaseClient.followShow(show).map { true }
                     )
                 }
             case .copyFeedURLButtonTapped:
@@ -163,9 +155,9 @@ public struct ShowDetailReducer: ReducerProtocol, Sendable {
                         reflectShow(state: &state, show: show)
                     }
                     return .none
-                case .failure(let error):
+                case .failure:
                     return .fireAndForget {
-                        messageClient.presentError(error.userMessage)
+                        messageClient.presentError("Failed to communicate with database")
                     }
                 }
             case .rssShowResponse(let result):
@@ -184,9 +176,12 @@ public struct ShowDetailReducer: ReducerProtocol, Sendable {
                 case .success:
                     state.followed?.toggle()
                     return .none
-                case .failure(let error):
-                    return .fireAndForget {
-                        messageClient.presentError(error.userMessage)
+                case .failure:
+                    return .fireAndForget { [followed = state.followed ?? false] in
+                        let message = followed
+                        ? "Failed to unfollow the show"
+                        : "Failed to follow the show"
+                        messageClient.presentError(message)
                     }
                 }
             case .downloadStatesResponse(let downloadStates):

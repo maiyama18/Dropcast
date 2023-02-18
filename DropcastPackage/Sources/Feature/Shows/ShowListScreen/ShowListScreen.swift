@@ -119,8 +119,8 @@ struct ShowListScreen_Previews: PreviewProvider {
             store: StoreOf<ShowListReducer>(
                 initialState: ShowListReducer.State(),
                 reducer: withDependencies({
-                    try? $0.databaseClient.followShow(.fixtureRebuild)
-                    try? $0.databaseClient.followShow(.fixtureSwiftBySundell)
+                    _ = $0.databaseClient.followShow(.fixtureRebuild)
+                    _ = $0.databaseClient.followShow(.fixtureSwiftBySundell)
                 }) {
                     ShowListReducer()
                 }

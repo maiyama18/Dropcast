@@ -70,7 +70,7 @@ final class ShowDetailReducerTests: XCTestCase {
         ) {
             $0.databaseClient = .live(persistentProvider: InMemoryPersistentProvider())
             do {
-                try $0.databaseClient.followShow(.fixtureRebuild)
+                try $0.databaseClient.followShow(.fixtureRebuild).get()
             } catch {
                 XCTFail()
             }
@@ -113,7 +113,7 @@ final class ShowDetailReducerTests: XCTestCase {
         ) {
             $0.databaseClient = .live(persistentProvider: InMemoryPersistentProvider())
             do {
-                try $0.databaseClient.followShow(.fixtureRebuild)
+                try $0.databaseClient.followShow(.fixtureRebuild).get()
             } catch {
                 XCTFail()
             }
@@ -162,7 +162,7 @@ final class ShowDetailReducerTests: XCTestCase {
             ),
             reducer: ShowDetailReducer()
         ) {
-            $0.databaseClient.fetchShow = { _ in throw TestError.somethingWentWrong }
+            $0.databaseClient.fetchShow = { _ in .failure(.databaseError) }
 
             $0.rssClient.fetch = { url in
                 XCTAssertEqual(url, Show.fixtureRebuild.feedURL)
@@ -177,7 +177,7 @@ final class ShowDetailReducerTests: XCTestCase {
         let task = await store.send(.task) {
             $0.taskRequestInFlight = true
         }
-        await store.receive(.databaseShowResponse(.failure(TestError.somethingWentWrong)))
+        await store.receive(.databaseShowResponse(.failure(.databaseError)))
         await store.receive(.downloadStatesResponse([:])) {
             $0.downloadStates = [:]
         }
@@ -193,7 +193,7 @@ final class ShowDetailReducerTests: XCTestCase {
             $0.episodes = Show.fixtureRebuild.episodes
         }
 
-        XCTAssertEqual(errorMessage.value, "Something went wrong")
+        XCTAssertEqual(errorMessage.value, "Failed to communicate with database")
         
         await task.cancel()
     }
@@ -278,7 +278,7 @@ final class ShowDetailReducerTests: XCTestCase {
             $0.followed = true
         }
 
-        XCTAssertEqual(try databaseClient.fetchShow(Show.fixtureRebuild.feedURL)?.episodes.count, Show.fixtureRebuild.episodes.count)
+        XCTAssertEqual(try databaseClient.fetchShow(Show.fixtureRebuild.feedURL).get()?.episodes.count, Show.fixtureRebuild.episodes.count)
         
         await task.cancel()
     }
@@ -295,8 +295,8 @@ final class ShowDetailReducerTests: XCTestCase {
             ),
             reducer: ShowDetailReducer()
         ) {
-            $0.databaseClient.fetchShow = { _ in nil }
-            $0.databaseClient.followShow = { _ in throw DatabaseError.followError }
+            $0.databaseClient.fetchShow = { _ in .success(nil) }
+            $0.databaseClient.followShow = { _ in .failure(.databaseError) }
 
             $0.rssClient.fetch = { url in
                 XCTAssertEqual(url, ITunesShow.fixtureRebuild.feedURL)
@@ -320,7 +320,7 @@ final class ShowDetailReducerTests: XCTestCase {
         store.exhaustivity = .on
 
         await store.send(.toggleFollowButtonTapped)
-        await store.receive(.toggleFollowResponse(.failure(DatabaseError.followError)))
+        await store.receive(.toggleFollowResponse(.failure(.databaseError)))
 
         XCTAssertEqual(errorMessage.value, "Failed to follow the show")
         
@@ -341,7 +341,7 @@ final class ShowDetailReducerTests: XCTestCase {
         ) {
             $0.databaseClient = databaseClient
             do {
-                try $0.databaseClient.followShow(.fixtureRebuild)
+                try $0.databaseClient.followShow(.fixtureRebuild).get()
             } catch {
                 XCTFail()
             }
@@ -352,7 +352,7 @@ final class ShowDetailReducerTests: XCTestCase {
             }
         }
 
-        XCTAssertEqual(try databaseClient.fetchShow(Show.fixtureRebuild.feedURL), .fixtureRebuild)
+        XCTAssertEqual(databaseClient.fetchShow(Show.fixtureRebuild.feedURL), .success(.fixtureRebuild))
 
         store.exhaustivity = .off
 
@@ -367,7 +367,7 @@ final class ShowDetailReducerTests: XCTestCase {
             $0.followed = false
         }
 
-        XCTAssertEqual(try databaseClient.fetchShow(Show.fixtureRebuild.feedURL), nil)
+        XCTAssertEqual(databaseClient.fetchShow(Show.fixtureRebuild.feedURL), .success(nil))
         
         await task.cancel()
     }

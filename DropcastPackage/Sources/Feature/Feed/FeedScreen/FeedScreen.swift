@@ -84,8 +84,8 @@ struct FeedScreen_Previews: PreviewProvider {
             store: StoreOf<FeedReducer>(
                 initialState: FeedReducer.State(),
                 reducer: withDependencies({
-                    try? $0.databaseClient.followShow(.fixtureRebuild)
-                    try? $0.databaseClient.followShow(.fixtureSwiftBySundell)
+                    _ = $0.databaseClient.followShow(.fixtureRebuild)
+                    _ = $0.databaseClient.followShow(.fixtureSwiftBySundell)
                 }) {
                     FeedReducer()
                 }

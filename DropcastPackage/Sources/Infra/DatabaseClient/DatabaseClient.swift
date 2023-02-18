@@ -8,16 +8,16 @@ import Foundation
 import IdentifiedCollections
 
 public struct DatabaseClient: Sendable {
-    public var fetchShow: @Sendable (URL) throws -> Show?
-    public var followShow: @Sendable (Show) throws -> Void
-    public var unfollowShow: @Sendable (URL) throws -> Void
+    public var fetchShow: @Sendable (URL) -> Result<Show?, DatabaseError>
+    public var followShow: @Sendable (Show) -> Result<Void, DatabaseError>
+    public var unfollowShow: @Sendable (URL) -> Result<Void, DatabaseError>
     public var followedShowsStream: @Sendable () -> AsyncChannel<IdentifiedArrayOf<Show>>
     public var followedEpisodesStream: @Sendable () -> AsyncChannel<IdentifiedArrayOf<Episode>>
 
     public init(
-        fetchShow: @escaping @Sendable (URL) throws -> Show?,
-        followShow: @escaping @Sendable (Show) throws -> Void,
-        unfollowShow: @escaping @Sendable (URL) throws -> Void,
+        fetchShow: @escaping @Sendable (URL) -> Result<Show?, DatabaseError>,
+        followShow: @escaping @Sendable (Show) -> Result<Void, DatabaseError>,
+        unfollowShow: @escaping @Sendable (URL) -> Result<Void, DatabaseError>,
         followedShowsStream: @escaping @Sendable () -> AsyncChannel<IdentifiedArrayOf<Show>>,
         followedEpisodesStream: @escaping @Sendable () -> AsyncChannel<IdentifiedArrayOf<Episode>>
     ) {
@@ -77,12 +77,16 @@ extension DatabaseClient {
         }
 
         @Sendable
-        func fetchShow(feedURL: URL) throws -> Show? {
-            try persistentProvider.executeInBackground { context in
+        func fetchShow(feedURL: URL) -> Result<Show?, DatabaseError> {
+            persistentProvider.executeInBackground { context in
                 let request = ShowRecord.fetchRequest()
                 request.predicate = NSPredicate(format: "%K = %@", #keyPath(ShowRecord.feedURL), feedURL as NSURL)
-                let records = try context.fetch(request)
-                return records.first?.toShow()
+                do {
+                    let records = try context.fetch(request)
+                    return .success(records.first?.toShow())
+                } catch {
+                    return .failure(.databaseError)
+                }
             }
         }
 
@@ -121,32 +125,51 @@ extension DatabaseClient {
         return DatabaseClient(
             fetchShow: fetchShow(feedURL:),
             followShow: { show in
-                guard try fetchShow(feedURL: show.feedURL) == nil else {
-                    return
+                switch fetchShow(feedURL: show.feedURL) {
+                case .success(let show):
+                    guard show == nil else {
+                        // returns no error because show is already followed
+                        return .success(())
+                    }
+                case .failure(let error):
+                    return .failure(error)
                 }
 
-                try persistentProvider.executeInBackground { context in
+                return persistentProvider.executeInBackground { context in
                     _ = ShowRecord(context: context, show: show)
                     do {
                         try context.save()
+                        return .success(())
                     } catch {
                         context.rollback()
-                        throw DatabaseError.followError
+                        return .failure(.databaseError)
                     }
                 }
             },
             unfollowShow: { feedURL in
-                try persistentProvider.executeInBackground { context in
+                persistentProvider.executeInBackground { context in
                     let request = ShowRecord.fetchRequest()
                     request.predicate = NSPredicate(format: "%K = %@", #keyPath(ShowRecord.feedURL), feedURL as NSURL)
-                    let records = try context.fetch(request)
-                    guard let record = records.first else { return }
+                    
+                    let record: ShowRecord
+                    do {
+                        let records = try context.fetch(request)
+                        guard let firstRecord = records.first else {
+                            // returns no error because show is not followed
+                            return .success(())
+                        }
+                        record = firstRecord
+                    } catch {
+                        return .failure(.databaseError)
+                    }
+                    
                     context.delete(record)
                     do {
                         try context.save()
+                        return .success(())
                     } catch {
                         context.rollback()
-                        throw DatabaseError.unfollowError
+                        return .failure(.databaseError)
                     }
                 }
             },
