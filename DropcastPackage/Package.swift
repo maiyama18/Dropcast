@@ -197,6 +197,7 @@ let targets: [PackageDescription.Target] = [
             "Entity",
             "Error",
             "Logger",
+            "Network",
         ],
         path: "Sources/Infra/RSSClient"
     ),

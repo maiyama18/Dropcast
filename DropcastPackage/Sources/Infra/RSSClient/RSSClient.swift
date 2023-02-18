@@ -4,6 +4,7 @@ import Error
 import FeedKit
 import Foundation
 import Logger
+import Network
 
 public struct RSSClient: Sendable {
     public var fetch: @Sendable (_ url: URL) async throws -> Show
@@ -17,7 +18,16 @@ extension RSSClient {
             fetch: { url in
                 logger.notice("fetching rss: \(url, privacy: .public)")
                 
-                let (data, _) = try await urlSession.data(from: url)
+                let result = await request(session: urlSession, url: url)
+                
+                let data: Data
+                switch result {
+                case .success(let tmpData):
+                    data = tmpData
+                case .failure(let error):
+                    throw error
+                }
+                
                 let parser = FeedParser(data: data)
                 let rssFeed = try await parser.parseRSS()
 
