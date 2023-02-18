@@ -1,4 +1,5 @@
 import AppFeature
+import DebugFeature
 import Dependencies
 import Logger
 import MessageClientLive
@@ -13,6 +14,7 @@ public struct ContentView: View {
 
     public var body: some View {
         AppScreen()
+            .debugMenu()
             .tint(.orange)
     }
 }
