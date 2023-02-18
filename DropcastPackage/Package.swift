@@ -216,6 +216,7 @@ let targets: [PackageDescription.Target] = [
             .dependencies,
             "Entity",
             "Error",
+            "Logger",
             "Network",
         ],
         path: "Sources/Infra/ITunesClient"
