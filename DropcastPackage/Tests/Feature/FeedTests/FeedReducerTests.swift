@@ -16,7 +16,7 @@ final class FeedReducerTests: XCTestCase {
         ) {
             $0.databaseClient = .live(persistentProvider: InMemoryPersistentProvider())
             do {
-                try $0.databaseClient.followShow(.fixtureRebuild)
+                try $0.databaseClient.followShow(.fixtureRebuild).get()
             } catch {
                 XCTFail()
             }
@@ -41,7 +41,7 @@ final class FeedReducerTests: XCTestCase {
         ) {
             $0.databaseClient = databaseClient
             do {
-                try $0.databaseClient.followShow(.fixtureRebuild)
+                try $0.databaseClient.followShow(.fixtureRebuild).get()
             } catch {
                 XCTFail()
             }
@@ -55,7 +55,7 @@ final class FeedReducerTests: XCTestCase {
             $0.episodes = [.fixtureRebuild352, .fixtureRebuild351, .fixtureRebuild350]
         }
 
-        try databaseClient.followShow(.fixtureSwiftBySundell)
+        try databaseClient.followShow(.fixtureSwiftBySundell).get()
         await store.receive(
             .episodesResponse(IdentifiedArrayOf(uniqueElements: [
                 .fixtureRebuild352,
@@ -87,8 +87,8 @@ final class FeedReducerTests: XCTestCase {
         ) {
             $0.databaseClient = databaseClient
             do {
-                try $0.databaseClient.followShow(.fixtureRebuild)
-                try databaseClient.followShow(.fixtureSwiftBySundell)
+                try $0.databaseClient.followShow(.fixtureRebuild).get()
+                try $0.databaseClient.followShow(.fixtureSwiftBySundell).get()
             } catch {
                 XCTFail()
             }
@@ -118,7 +118,7 @@ final class FeedReducerTests: XCTestCase {
             ]
         }
 
-        try databaseClient.unfollowShow(Show.fixtureSwiftBySundell.feedURL)
+        try databaseClient.unfollowShow(Show.fixtureSwiftBySundell.feedURL).get()
         await store.receive(.episodesResponse(IdentifiedArrayOf(uniqueElements: [.fixtureRebuild352, .fixtureRebuild351, .fixtureRebuild350]))) {
             $0.episodes = [.fixtureRebuild352, .fixtureRebuild351, .fixtureRebuild350]
         }
@@ -143,7 +143,7 @@ final class FeedReducerTests: XCTestCase {
 
             $0.databaseClient = databaseClient
             do {
-                try $0.databaseClient.followShow(.fixtureRebuild)
+                try $0.databaseClient.followShow(.fixtureRebuild).get()
             } catch {
                 XCTFail()
             }
@@ -168,20 +168,20 @@ final class FeedReducerTests: XCTestCase {
         }
 
         await store.send(.downloadEpisodeButtonTapped(episode: .fixtureRebuild352))
-        await store.receive(.downloadStatesResponse([Episode.fixtureRebuild352.guid: .pushedToDownloadQueue])) {
-            $0.downloadStates = [Episode.fixtureRebuild352.guid: .pushedToDownloadQueue]
+        await store.receive(.downloadStatesResponse([Episode.fixtureRebuild352.id: .pushedToDownloadQueue])) {
+            $0.downloadStates = [Episode.fixtureRebuild352.id: .pushedToDownloadQueue]
         }
         await clock.advance(by: .seconds(1))
-        await store.receive(.downloadStatesResponse([Episode.fixtureRebuild352.guid: .downloading(progress: 0)])) {
-            $0.downloadStates = [Episode.fixtureRebuild352.guid: .downloading(progress: 0)]
+        await store.receive(.downloadStatesResponse([Episode.fixtureRebuild352.id: .downloading(progress: 0)])) {
+            $0.downloadStates = [Episode.fixtureRebuild352.id: .downloading(progress: 0)]
         }
         await clock.advance(by: .seconds(5))
-        await store.receive(.downloadStatesResponse([Episode.fixtureRebuild352.guid: .downloading(progress: 0.5)])) {
-            $0.downloadStates = [Episode.fixtureRebuild352.guid: .downloading(progress: 0.5)]
+        await store.receive(.downloadStatesResponse([Episode.fixtureRebuild352.id: .downloading(progress: 0.5)])) {
+            $0.downloadStates = [Episode.fixtureRebuild352.id: .downloading(progress: 0.5)]
         }
         await clock.advance(by: .seconds(5))
-        await store.receive(.downloadStatesResponse([Episode.fixtureRebuild352.guid: .downloaded])) {
-            $0.downloadStates = [Episode.fixtureRebuild352.guid: .downloaded]
+        await store.receive(.downloadStatesResponse([Episode.fixtureRebuild352.id: .downloaded])) {
+            $0.downloadStates = [Episode.fixtureRebuild352.id: .downloaded]
         }
 
         await task.cancel()
@@ -204,7 +204,7 @@ final class FeedReducerTests: XCTestCase {
 
             $0.databaseClient = databaseClient
             do {
-                try $0.databaseClient.followShow(.fixtureRebuild)
+                try $0.databaseClient.followShow(.fixtureRebuild).get()
             } catch {
                 XCTFail()
             }
@@ -229,20 +229,20 @@ final class FeedReducerTests: XCTestCase {
         }
 
         await store.send(.downloadEpisodeButtonTapped(episode: .fixtureRebuild352))
-        await store.receive(.downloadStatesResponse([Episode.fixtureRebuild352.guid: .pushedToDownloadQueue])) {
-            $0.downloadStates = [Episode.fixtureRebuild352.guid: .pushedToDownloadQueue]
+        await store.receive(.downloadStatesResponse([Episode.fixtureRebuild352.id: .pushedToDownloadQueue])) {
+            $0.downloadStates = [Episode.fixtureRebuild352.id: .pushedToDownloadQueue]
         }
         
         // has no effect
         await store.send(.downloadEpisodeButtonTapped(episode: .fixtureRebuild352))
         
         await clock.advance(by: .seconds(1))
-        await store.receive(.downloadStatesResponse([Episode.fixtureRebuild352.guid: .downloading(progress: 0)])) {
-            $0.downloadStates = [Episode.fixtureRebuild352.guid: .downloading(progress: 0)]
+        await store.receive(.downloadStatesResponse([Episode.fixtureRebuild352.id: .downloading(progress: 0)])) {
+            $0.downloadStates = [Episode.fixtureRebuild352.id: .downloading(progress: 0)]
         }
         await store.send(.downloadEpisodeButtonTapped(episode: .fixtureRebuild352))
-        await store.receive(.downloadStatesResponse([Episode.fixtureRebuild352.guid: .notDownloaded])) {
-            $0.downloadStates = [Episode.fixtureRebuild352.guid: .notDownloaded]
+        await store.receive(.downloadStatesResponse([Episode.fixtureRebuild352.id: .notDownloaded])) {
+            $0.downloadStates = [Episode.fixtureRebuild352.id: .notDownloaded]
         }
 
         await task.cancel()
@@ -252,7 +252,7 @@ final class FeedReducerTests: XCTestCase {
         let errorMessage: LockIsolated<String?> = .init(nil)
         
         let clock = TestClock()
-        var soundFileClient: SoundFileClientMock = withDependencies {
+        let soundFileClient: SoundFileClientMock = withDependencies {
             $0.continuousClock = clock
         } operation: {
             SoundFileClientMock()
@@ -269,7 +269,7 @@ final class FeedReducerTests: XCTestCase {
 
             $0.databaseClient = databaseClient
             do {
-                try $0.databaseClient.followShow(.fixtureRebuild)
+                try $0.databaseClient.followShow(.fixtureRebuild).get()
             } catch {
                 XCTFail()
             }
@@ -298,17 +298,17 @@ final class FeedReducerTests: XCTestCase {
         }
 
         await store.send(.downloadEpisodeButtonTapped(episode: .fixtureRebuild352))
-        await store.receive(.downloadStatesResponse([Episode.fixtureRebuild352.guid: .pushedToDownloadQueue])) {
-            $0.downloadStates = [Episode.fixtureRebuild352.guid: .pushedToDownloadQueue]
+        await store.receive(.downloadStatesResponse([Episode.fixtureRebuild352.id: .pushedToDownloadQueue])) {
+            $0.downloadStates = [Episode.fixtureRebuild352.id: .pushedToDownloadQueue]
         }
         await clock.advance(by: .seconds(1))
-        await store.receive(.downloadStatesResponse([Episode.fixtureRebuild352.guid: .downloading(progress: 0)])) {
-            $0.downloadStates = [Episode.fixtureRebuild352.guid: .downloading(progress: 0)]
+        await store.receive(.downloadStatesResponse([Episode.fixtureRebuild352.id: .downloading(progress: 0)])) {
+            $0.downloadStates = [Episode.fixtureRebuild352.id: .downloading(progress: 0)]
         }
         await clock.advance(by: .seconds(5))
         await store.receive(.downloadErrorResponse(.downloadError))
-        await store.receive(.downloadStatesResponse([Episode.fixtureRebuild352.guid: .notDownloaded])) {
-            $0.downloadStates = [Episode.fixtureRebuild352.guid: .notDownloaded]
+        await store.receive(.downloadStatesResponse([Episode.fixtureRebuild352.id: .notDownloaded])) {
+            $0.downloadStates = [Episode.fixtureRebuild352.id: .notDownloaded]
         }
         
         XCTAssertEqual(errorMessage.value, "Failed to download the episode")

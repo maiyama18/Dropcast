@@ -7,11 +7,11 @@ import SoundFileClient
 public struct FeedReducer: ReducerProtocol, Sendable {
     public struct State: Equatable {
         public var episodes: IdentifiedArrayOf<Episode>?
-        var downloadStates: [String: EpisodeDownloadState]?
+        var downloadStates: [Episode.ID: EpisodeDownloadState]?
         
-        public func downloadState(guid: String) -> EpisodeDownloadState {
+        public func downloadState(id: Episode.ID) -> EpisodeDownloadState {
             guard let downloadStates else { return .notDownloaded }
-            return downloadStates[guid] ?? .notDownloaded
+            return downloadStates[id] ?? .notDownloaded
         }
 
         public init() {}
@@ -58,7 +58,7 @@ public struct FeedReducer: ReducerProtocol, Sendable {
                 // handled by parent reducer
                 return .none
             case .downloadEpisodeButtonTapped(let episode):
-                return .fireAndForget { [downloadState = state.downloadState(guid: episode.guid)] in
+                return .fireAndForget { [downloadState = state.downloadState(id: episode.id)] in
                     switch downloadState {
                     case .notDownloaded:
                         try await soundFileClient.download(episode)
@@ -75,8 +75,15 @@ public struct FeedReducer: ReducerProtocol, Sendable {
                 state.downloadStates = downloadStates
                 return .none
             case .downloadErrorResponse(let error):
+                let message: String
+                switch error {
+                case .unexpectedError:
+                    message = "Something went wrong"
+                case .downloadError:
+                    message = "Failed to download the episode"
+                }
                 return .fireAndForget {
-                    messageClient.presentError(error.userMessage)
+                    messageClient.presentError(message)
                 }
             case .episodesResponse(let episodes):
                 state.episodes = episodes

@@ -1,61 +1,49 @@
 import Foundation
 
-protocol HasMessage {
-    var message: String { get }
+public enum NetworkError: LocalizedError, Equatable {
+    case offline
+    case timeout
+    case cancelled
+    case serverError(status: Int)
+    case unknownError
+    
+    public var errorDescription: String? {
+        switch self {
+        case .offline:
+            return "No internet connection"
+        case .timeout:
+            return "Request timed out"
+        case .cancelled:
+            return "Request cancelled"
+        case .serverError(let status):
+            switch status {
+            case 400..<500:
+                return "Invalid request"
+            default:
+                return "Service returns error"
+            }
+        case .unknownError:
+            return "Something went wrong"
+        }
+    }
 }
 
-public enum ITunesError: Error, Equatable, HasMessage {
+public enum ITunesError: Error, Equatable {
     case invalidQuery
-
-    var message: String {
-        switch self {
-        case .invalidQuery:
-            return "Query is invalid"
-        }
-    }
+    case parseError
+    case networkError(reason: NetworkError)
 }
 
-public enum RSSError: Error, Equatable, HasMessage {
-    case fetchError
+public enum RSSError: Error, Equatable {
     case invalidFeed
-
-    var message: String {
-        switch self {
-        case .invalidFeed:
-            return "Something went wrong with this show"
-        case .fetchError:
-            return "Failed to fetch information about this show"
-        }
-    }
+    case networkError(reason: NetworkError)
 }
 
-public enum DatabaseError: Error, Equatable, HasMessage {
-    case followError
-    case alreadyFollowed
-    case unfollowError
-
-    var message: String {
-        switch self {
-        case .followError:
-            return "Failed to follow the show"
-        case .alreadyFollowed:
-            return "This show is already followed"
-        case .unfollowError:
-            return "Failed to unfollow the show"
-        }
-    }
+public enum DatabaseError: Error, Equatable {
+    case databaseError
 }
 
-public enum SoundFileClientError: Error, Equatable, HasMessage {
+public enum SoundFileClientError: Error, Equatable {
     case unexpectedError
     case downloadError
-
-    var message: String {
-        switch self {
-        case .unexpectedError:
-            return "Unexpected error occurred"
-        case .downloadError:
-            return "Failed to download the episode"
-        }
-    }
 }

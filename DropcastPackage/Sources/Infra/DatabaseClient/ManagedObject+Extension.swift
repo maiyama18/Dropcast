@@ -39,7 +39,7 @@ extension EpisodeRecord {
     convenience init(context: NSManagedObjectContext, episode: Episode) {
         self.init(context: context)
 
-        guid = episode.guid
+        id = episode.id
         title = episode.title
         subtitle = episode.subtitle
         episodeDescription = episode.description
@@ -49,7 +49,7 @@ extension EpisodeRecord {
     }
 
     func toEpisode() -> Episode? {
-        guard let guid,
+        guard let id,
               let title,
               let soundURL,
               let publishedAt,
@@ -58,7 +58,7 @@ extension EpisodeRecord {
               let showImageURL = show?.imageURL else { return nil }
 
         return Episode(
-            guid: guid,
+            id: id,
             title: title,
             subtitle: subtitle,
             description: episodeDescription,

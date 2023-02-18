@@ -65,25 +65,25 @@ final class SoundFileClientTests: XCTestCase {
         
         try XCTAssertReceive(
             from: client.downloadStatesPublisher,
-            [Episode.fixtureRebuild350.guid: .pushedToDownloadQueue]
+            [Episode.fixtureRebuild350.id: .pushedToDownloadQueue]
         )
         
         await clock.advance(by: .seconds(1))
         try XCTAssertReceive(
             from: client.downloadStatesPublisher,
-            [Episode.fixtureRebuild350.guid: .downloading(progress: 0.5)]
+            [Episode.fixtureRebuild350.id: .downloading(progress: 0.5)]
         )
         
         await clock.advance(by: .seconds(1))
         try XCTAssertReceive(
             from: client.downloadStatesPublisher,
-            [Episode.fixtureRebuild350.guid: .downloaded]
+            [Episode.fixtureRebuild350.id: .downloaded]
         )
         
         let destinationFileURL = URL.temporaryDirectory
             .appendingPathComponent("SoundFiles")
             .appendingPathComponent(Episode.fixtureRebuild350.showFeedURL.absoluteString.base64Encoded()!)
-            .appendingPathComponent(Episode.fixtureRebuild350.guid.base64Encoded()!)
+            .appendingPathComponent(Episode.fixtureRebuild350.id.base64Encoded()!)
             .appendingPathComponent(Episode.fixtureRebuild350.soundURL.lastPathComponent)
         
         let data = try Data(contentsOf: destinationFileURL)
@@ -122,13 +122,13 @@ final class SoundFileClientTests: XCTestCase {
         
         try XCTAssertReceive(
             from: client.downloadStatesPublisher,
-            [Episode.fixtureRebuild350.guid: .pushedToDownloadQueue]
+            [Episode.fixtureRebuild350.id: .pushedToDownloadQueue]
         )
         
         await clock.advance(by: .seconds(1))
         try XCTAssertReceive(
             from: client.downloadStatesPublisher,
-            [Episode.fixtureRebuild350.guid: .downloading(progress: 0.5)]
+            [Episode.fixtureRebuild350.id: .downloading(progress: 0.5)]
         )
         
         await XCTAssertReceive(
@@ -140,7 +140,7 @@ final class SoundFileClientTests: XCTestCase {
         
         try XCTAssertReceive(
             from: client.downloadStatesPublisher,
-            [Episode.fixtureRebuild350.guid: .notDownloaded]
+            [Episode.fixtureRebuild350.id: .notDownloaded]
         )
     }
 }

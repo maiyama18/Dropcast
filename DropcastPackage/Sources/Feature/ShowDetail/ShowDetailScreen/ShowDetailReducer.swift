@@ -21,11 +21,11 @@ public struct ShowDetailReducer: ReducerProtocol, Sendable {
 
         public var taskRequestInFlight: Bool = false
 
-        var downloadStates: [String: EpisodeDownloadState]?
+        var downloadStates: [Episode.ID: EpisodeDownloadState]?
         
-        public func downloadState(guid: String) -> EpisodeDownloadState {
+        public func downloadState(id: Episode.ID) -> EpisodeDownloadState {
             guard let downloadStates else { return .notDownloaded }
-            return downloadStates[guid] ?? .notDownloaded
+            return downloadStates[id] ?? .notDownloaded
         }
         
         public init(
@@ -58,11 +58,11 @@ public struct ShowDetailReducer: ReducerProtocol, Sendable {
         case copyFeedURLButtonTapped
         case downloadEpisodeButtonTapped(episode: Episode)
 
-        case databaseShowResponse(TaskResult<Show?>)
+        case databaseShowResponse(Result<Show?, DatabaseError>)
         case downloadStatesResponse([String: EpisodeDownloadState])
         case downloadErrorResponse(SoundFileClientError)
-        case rssShowResponse(TaskResult<Show>)
-        case toggleFollowResponse(TaskResult<Bool>)
+        case rssShowResponse(Result<Show, RSSError>)
+        case toggleFollowResponse(Result<Bool, DatabaseError>)
     }
 
     @Dependency(\.clipboardClient) private var clipboardClient
@@ -83,20 +83,14 @@ public struct ShowDetailReducer: ReducerProtocol, Sendable {
                 return .merge(
                     .concatenate(
                         .task { [feedURL = state.feedURL] in
-                            await .databaseShowResponse(
-                                TaskResult {
-                                    try databaseClient.fetchShow(feedURL)
-                                }
-                            )
+                            let result = databaseClient.fetchShow(feedURL)
+                            return .databaseShowResponse(result)
                         },
                         .task { [feedURL = state.feedURL] in
-                            await .rssShowResponse(
-                                TaskResult {
-                                    try await rssClient.fetch(feedURL)
-                                }
-                            )
+                            let result = await rssClient.fetch(feedURL)
+                            return .rssShowResponse(result)
                         }
-                            .cancellable(id: RSSRequestID.self)
+                        .cancellable(id: RSSRequestID.self)
                     ),
                     .run { send in
                         for await downloadStates in soundFileClient.downloadStatesPublisher.values {
@@ -125,15 +119,10 @@ public struct ShowDetailReducer: ReducerProtocol, Sendable {
                 )
 
                 return .task {
-                    await .toggleFollowResponse(
-                        TaskResult {
-                            if followed {
-                                try databaseClient.unfollowShow(show.feedURL)
-                            } else {
-                                try databaseClient.followShow(show)
-                            }
-                            return true
-                        }
+                    .toggleFollowResponse(
+                        followed
+                        ? databaseClient.unfollowShow(show.feedURL).map { true }
+                        : databaseClient.followShow(show).map { true }
                     )
                 }
             case .copyFeedURLButtonTapped:
@@ -142,7 +131,7 @@ public struct ShowDetailReducer: ReducerProtocol, Sendable {
                     messageClient.presentSuccess("Copied")
                 }
             case .downloadEpisodeButtonTapped(let episode):
-                return .fireAndForget { [downloadState = state.downloadState(guid: episode.guid)] in
+                return .fireAndForget { [downloadState = state.downloadState(id: episode.id)] in
                     switch downloadState {
                     case .notDownloaded:
                         try await soundFileClient.download(episode)
@@ -163,9 +152,9 @@ public struct ShowDetailReducer: ReducerProtocol, Sendable {
                         reflectShow(state: &state, show: show)
                     }
                     return .none
-                case .failure(let error):
+                case .failure:
                     return .fireAndForget {
-                        messageClient.presentError(error.userMessage)
+                        messageClient.presentError("Failed to communicate with database")
                     }
                 }
             case .rssShowResponse(let result):
@@ -175,8 +164,15 @@ public struct ShowDetailReducer: ReducerProtocol, Sendable {
                     reflectShow(state: &state, show: show)
                     return .none
                 case .failure(let error):
+                    let message: String
+                    switch error {
+                    case .invalidFeed:
+                        message = "Invalid rss feed"
+                    case .networkError(reason: let error):
+                        message = error.localizedDescription
+                    }
                     return .fireAndForget {
-                        messageClient.presentError(error.userMessage)
+                        messageClient.presentError(message)
                     }
                 }
             case .toggleFollowResponse(let result):
@@ -184,17 +180,27 @@ public struct ShowDetailReducer: ReducerProtocol, Sendable {
                 case .success:
                     state.followed?.toggle()
                     return .none
-                case .failure(let error):
-                    return .fireAndForget {
-                        messageClient.presentError(error.userMessage)
+                case .failure:
+                    return .fireAndForget { [followed = state.followed ?? false] in
+                        let message = followed
+                        ? "Failed to unfollow the show"
+                        : "Failed to follow the show"
+                        messageClient.presentError(message)
                     }
                 }
             case .downloadStatesResponse(let downloadStates):
                 state.downloadStates = downloadStates
                 return .none
             case .downloadErrorResponse(let error):
+                let message: String
+                switch error {
+                case .unexpectedError:
+                    message = "Something went wrong"
+                case .downloadError:
+                    message = "Failed to download the episode"
+                }
                 return .fireAndForget {
-                    messageClient.presentError(error.userMessage)
+                    messageClient.presentError(message)
                 }
             }
         }

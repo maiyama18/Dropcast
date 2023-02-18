@@ -14,11 +14,8 @@ final class ShowSearchReducerTests: XCTestCase {
             reducer: ShowSearchReducer()
         ) {
             $0.iTunesClient.searchShows = { query in
-                guard query == "stack" else {
-                    XCTFail()
-                    throw TestError.somethingWentWrong
-                }
-                return [.fixtureStacktrace, .fixtureStackOverflow]
+                XCTAssertNoDifference(query, "stack")
+                return .success([.fixtureStacktrace, .fixtureStackOverflow])
             }
         }
 
@@ -63,11 +60,8 @@ final class ShowSearchReducerTests: XCTestCase {
             reducer: ShowSearchReducer()
         ) {
             $0.iTunesClient.searchShows = { query in
-                guard query == "stack" else {
-                    XCTFail()
-                    throw TestError.somethingWentWrong
-                }
-                return []
+                XCTAssertNoDifference(query, "stack")
+                return .success([])
             }
         }
 
@@ -91,7 +85,7 @@ final class ShowSearchReducerTests: XCTestCase {
             reducer: ShowSearchReducer()
         ) {
             $0.iTunesClient.searchShows = { _ in
-                throw TestError.somethingWentWrong
+                return .failure(.networkError(reason: .timeout))
             }
             $0.messageClient.presentError = { message in
                 errorMessage.withValue { $0 = message }
@@ -104,12 +98,12 @@ final class ShowSearchReducerTests: XCTestCase {
         await store.send(.queryChangeDebounced) {
             $0.searchRequestInFlight = true
         }
-        await store.receive(.querySearchResponse(.failure(TestError.somethingWentWrong))) {
+        await store.receive(.querySearchResponse(.failure(.networkError(reason: .timeout)))) {
             $0.searchRequestInFlight = false
             $0.showsState = .prompt
         }
 
-        XCTAssertEqual(errorMessage.value, "Something went wrong")
+        XCTAssertEqual(errorMessage.value, "Request timed out")
     }
 
     func test_search_failure_after_success_shows_error_message_with_previous_search_results() async {
@@ -120,9 +114,9 @@ final class ShowSearchReducerTests: XCTestCase {
         ) {
             $0.iTunesClient.searchShows = { query in
                 if query == "stack" {
-                    return [.fixtureStacktrace, .fixtureStackOverflow]
+                    return .success([.fixtureStacktrace, .fixtureStackOverflow])
                 } else {
-                    throw TestError.somethingWentWrong
+                    return .failure(.parseError)
                 }
             }
             $0.messageClient.presentError = { message in
@@ -163,11 +157,11 @@ final class ShowSearchReducerTests: XCTestCase {
         await store.send(.queryChangeDebounced) {
             $0.searchRequestInFlight = true
         }
-        await store.receive(.querySearchResponse(.failure(TestError.somethingWentWrong))) {
+        await store.receive(.querySearchResponse(.failure(.parseError))) {
             $0.searchRequestInFlight = false
         }
 
-        XCTAssertEqual(errorMessage.value, "Something went wrong")
+        XCTAssertEqual(errorMessage.value, "Invalid server response")
     }
 
     func test_query_changed_to_empty_while_searching_cancels_search() async {
@@ -178,12 +172,9 @@ final class ShowSearchReducerTests: XCTestCase {
             reducer: ShowSearchReducer()
         ) {
             $0.iTunesClient.searchShows = { query in
-                guard query == "stack" else {
-                    XCTFail()
-                    throw TestError.somethingWentWrong
-                }
-                try await clock.sleep(for: .seconds(1))
-                return [.fixtureStacktrace, .fixtureStackOverflow]
+                XCTAssertNoDifference(query, "stack")
+                try? await clock.sleep(for: .seconds(1))
+                return .success([.fixtureStacktrace, .fixtureStackOverflow])
             }
         }
 
@@ -207,11 +198,8 @@ final class ShowSearchReducerTests: XCTestCase {
             reducer: ShowSearchReducer()
         ) {
             $0.rssClient.fetch = { url in
-                guard url == URL(string: "https://feeds.rebuild.fm/rebuildfm") else {
-                    XCTFail()
-                    throw TestError.somethingWentWrong
-                }
-                return .fixtureRebuild
+                XCTAssertNoDifference(url, URL(string: "https://feeds.rebuild.fm/rebuildfm"))
+                return .success(.fixtureRebuild)
             }
         }
 
@@ -243,11 +231,8 @@ final class ShowSearchReducerTests: XCTestCase {
             reducer: ShowSearchReducer()
         ) {
             $0.rssClient.fetch = { url in
-                guard url == URL(string: "https://feeds.rebuild.fm/reb") else {
-                    XCTFail()
-                    throw TestError.somethingWentWrong
-                }
-                throw RSSError.invalidFeed
+                XCTAssertNoDifference(url, URL(string: "https://feeds.rebuild.fm/reb"))
+                return .failure(RSSError.invalidFeed)
             }
         }
 
@@ -263,14 +248,14 @@ final class ShowSearchReducerTests: XCTestCase {
             $0.showsState = .empty
         }
     }
-    func test_query_with_http_url_does_not_fetch_rss() async {
+    func test_query_with_http_url_fetches_rss() async {
         let store = TestStore(
             initialState: ShowSearchReducer.State(),
             reducer: ShowSearchReducer()
         ) {
-            $0.iTunesClient.searchShows = { query in
-                XCTAssertEqual(query, "http://feeds.rebuild.fm/rebuildfm")
-                return []
+            $0.rssClient.fetch = { url in
+                XCTAssertNoDifference(url, URL(string: "http://feeds.rebuild.fm/rebuildfm"))
+                return .success(.fixtureRebuild)
             }
         }
 
@@ -281,9 +266,16 @@ final class ShowSearchReducerTests: XCTestCase {
         await store.send(.queryChangeDebounced) {
             $0.searchRequestInFlight = true
         }
-        await store.receive(.querySearchResponse(.success([]))) {
+        await store.receive(.urlSearchResponse(.success(.fixtureRebuild))) {
             $0.searchRequestInFlight = false
-            $0.showsState = .empty
+            $0.showsState = .loaded(shows: [
+                SimpleShow(
+                    feedURL: URL(string: "https://feeds.rebuild.fm/rebuildfm")!,
+                    imageURL: URL(string: "https://cdn.rebuild.fm/images/icon1400.jpg")!,
+                    title: "Rebuild",
+                    author: "Tatsuhiko Miyagawa"
+                ),
+            ])
         }
     }
 
@@ -293,11 +285,8 @@ final class ShowSearchReducerTests: XCTestCase {
             reducer: ShowSearchReducer()
         ) {
             $0.iTunesClient.searchShows = { query in
-                guard query == "stack" else {
-                    XCTFail()
-                    throw TestError.somethingWentWrong
-                }
-                return [.fixtureStacktrace, .fixtureStackOverflow]
+                XCTAssertNoDifference(query, "stack")
+                return .success([.fixtureStacktrace, .fixtureStackOverflow])
             }
         }
 

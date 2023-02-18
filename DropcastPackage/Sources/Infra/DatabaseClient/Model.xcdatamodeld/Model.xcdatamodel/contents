@@ -3,7 +3,7 @@
     <entity name="EpisodeRecord" representedClassName="EpisodeRecord" syncable="YES" codeGenerationType="class">
         <attribute name="duration" optional="YES" attributeType="Double" defaultValueString="0.0" usesScalarValueType="YES"/>
         <attribute name="episodeDescription" optional="YES" attributeType="String"/>
-        <attribute name="guid" optional="YES" attributeType="String"/>
+        <attribute name="id" optional="YES" attributeType="String"/>
         <attribute name="publishedAt" optional="YES" attributeType="Date" usesScalarValueType="NO"/>
         <attribute name="soundURL" optional="YES" attributeType="URI"/>
         <attribute name="subtitle" optional="YES" attributeType="String"/>

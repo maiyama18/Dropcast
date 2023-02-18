@@ -2,7 +2,7 @@ import Formatter
 import Foundation
 
 public struct Episode: Sendable, Identifiable, Equatable {
-    public var guid: String
+    public var id: String
     public var title: String
     public var subtitle: String?
     public var description: String?
@@ -14,10 +14,8 @@ public struct Episode: Sendable, Identifiable, Equatable {
     public var showTitle: String
     public var showImageURL: URL
 
-    public var id: String { guid }
-
     public init(
-        guid: String,
+        id: String,
         title: String,
         subtitle: String?,
         description: String?,
@@ -28,7 +26,7 @@ public struct Episode: Sendable, Identifiable, Equatable {
         showTitle: String,
         showImageURL: URL
     ) {
-        self.guid = guid
+        self.id = id
         self.title = title
         self.subtitle = subtitle
         self.description = description
@@ -47,7 +45,7 @@ public struct Episode: Sendable, Identifiable, Equatable {
 #if DEBUG
 extension Episode {
     public static let fixtureRebuild352 = Episode(
-        guid: "https://rebuild.fm/352/",
+        id: "https://rebuild.fm/352/",
         title: "352: There's a Fifth Way (naoya)",
         subtitle: "Naoya Ito さんをゲストに迎えて、MacBook Pro, キーボード、競技プログラミング、レイオフ、ゲームなどについて話しました。",
         description: """
@@ -65,7 +63,7 @@ extension Episode {
         showImageURL: URL(string: "https://cdn.rebuild.fm/images/icon1400.jpg")!
     )
     public static let fixtureRebuild351 = Episode(
-        guid: "https://rebuild.fm/351/",
+        id: "https://rebuild.fm/351/",
         title: "351: Time For Change (hak)",
         subtitle: "Hakuro Matsuda さんをゲストに迎えて、CES, VR, Apple TV, Twitter などについて話しました。",
         description: """
@@ -83,7 +81,7 @@ extension Episode {
         showImageURL: URL(string: "https://cdn.rebuild.fm/images/icon1400.jpg")!
     )
     public static let fixtureRebuild350 = Episode(
-        guid: "https://rebuild.fm/350/",
+        id: "https://rebuild.fm/350/",
         title: "350: Mister O-1 (N, naan)",
         subtitle: "Naoki Hiroshima さん、Kazuho Okui さんをゲストに迎えて、近況、Twitter, USB-C, ChatGPT などについて話しました。",
         description: """
@@ -101,7 +99,7 @@ extension Episode {
     )
 
     public static let fixtureSwiftBySundell123 = Episode(
-        guid: "https://www.swiftbysundell.com/podcast/123",
+        id: "https://www.swiftbysundell.com/podcast/123",
         title: "123: “The evolution of Swift”, with special guest Nick Lockwood",
         subtitle: "On this final episode of 2022, Nick Lockwood returns to the show to discuss the overall evolution of Swift and its ecosystem of tools and libraries. How has Swift changed since its original introduction in 2014, how does it compare to other modern programming languages, and how might the language continue to evolve in 2023 and beyond?",
         description: "<p>On this final episode of 2022, Nick Lockwood returns to the show to discuss the overall evolution of Swift and its ecosystem of tools and libraries. How has Swift changed since its original introduction in 2014, how does it compare to other modern programming languages, and how might the language continue to evolve in 2023 and beyond?</p>",
@@ -113,7 +111,7 @@ extension Episode {
         showImageURL: URL(string: "https://www.swiftbysundell.com/images/podcastArtwork.png")!
     )
     public static let fixtureSwiftBySundell122 = Episode(
-        guid: "https://www.swiftbysundell.com/podcast/122",
+        id: "https://www.swiftbysundell.com/podcast/122",
         title: "122: “Swift concurrency in practice”, with special guest Ben Scheirman",
         subtitle: "Ben Scheirman returns to the show to discuss how Swift’s built-in concurrency features, such as async/await and tasks, can be used in practice when building apps for Apple’s platforms.",
         description: "<p>Ben Scheirman returns to the show to discuss how Swift’s built-in concurrency features, such as async/await and tasks, can be used in practice when building apps for Apple’s platforms.</p>",
@@ -125,7 +123,7 @@ extension Episode {
         showImageURL: URL(string: "https://www.swiftbysundell.com/images/podcastArtwork.png")!
     )
     public static let fixtureSwiftBySundell121 = Episode(
-        guid: "https://www.swiftbysundell.com/podcast/121",
+        id: "https://www.swiftbysundell.com/podcast/121",
         title: "121: “Responsive and smooth UIs”, with special guest Adam Bell",
         subtitle: "Adam Bell returns to the podcast to discuss different techniques and approaches for optimizing UI code, and how to utilize tools like animations in order to build iOS apps that feel fast and responsive.",
         description: "<p>Adam Bell returns to the podcast to discuss different techniques and approaches for optimizing UI code, and how to utilize tools like animations in order to build iOS apps that feel fast and responsive.</p>",
@@ -138,7 +136,7 @@ extension Episode {
     )
 
     public static let fixtureプログラム雑談225 = Episode(
-        guid: "955dc198-f1c2-4d02-8711-1ad458c67268",
+        id: "955dc198-f1c2-4d02-8711-1ad458c67268",
         title: "225回 週、月、年の振り返りとか抱負とか",
         subtitle: "<p>年末の振り返りとか翌年の抱負とかって結構いいよな、という雑談。</p>",
         description: "<p>年末の振り返りとか翌年の抱負とかって結構いいよな、という雑談。</p>",
@@ -150,7 +148,7 @@ extension Episode {
         showImageURL: URL(string: "https://d3t3ozftmdmh3i.cloudfront.net/production/podcast_uploaded/998960/998960-1535212397504-93ed2911e3e38.jpg")!
     )
     public static let fixtureプログラム雑談224 = Episode(
-        guid: "f64a0aaf-0baa-4257-b78e-b0b01e53cf60",
+        id: "f64a0aaf-0baa-4257-b78e-b0b01e53cf60",
         title: "224回 プログラムエッセイとか昔のワインバーグの本読んでるとかの雑談",
         subtitle: """
         <p>プログラミングの心理学を読んでて思ったことやプログラミング関連エッセイについての雑談。</p>
@@ -168,7 +166,7 @@ extension Episode {
         showImageURL: URL(string: "https://d3t3ozftmdmh3i.cloudfront.net/production/podcast_uploaded/998960/998960-1535212397504-93ed2911e3e38.jpg")!
     )
     public static let fixtureプログラム雑談223 = Episode(
-        guid: "7cb976f8-660a-414e-bfd1-aefe3ef82f34",
+        id: "7cb976f8-660a-414e-bfd1-aefe3ef82f34",
         title: "223回 奄美大島にワーケーションに来たという雑談",
         subtitle: "<p>奄美に来たぜひゃっほい！って回。</p>",
         description: "<p>奄美に来たぜひゃっほい！って回。</p>",

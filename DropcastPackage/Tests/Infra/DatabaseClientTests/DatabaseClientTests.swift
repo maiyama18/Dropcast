@@ -19,13 +19,13 @@ final class DatabaseClientTests: XCTestCase {
 
         try await XCTAssertReceive(from: followedShowsSequence, [])
 
-        try client.followShow(.fixtureSwiftBySundell)
+        try client.followShow(.fixtureSwiftBySundell).get()
         try await XCTAssertReceive(from: followedShowsSequence, [.fixtureSwiftBySundell])
 
-        try client.followShow(.fixtureRebuild)
+        try client.followShow(.fixtureRebuild).get()
         try await XCTAssertReceive(from: followedShowsSequence, [.fixtureRebuild, .fixtureSwiftBySundell])
 
-        try client.followShow(.fixtureプログラム雑談)
+        try client.followShow(.fixtureプログラム雑談).get()
         try await XCTAssertReceive(from: followedShowsSequence, [.fixtureRebuild, .fixtureSwiftBySundell, .fixtureプログラム雑談])
 
         try await XCTAssertNoReceive(from: followedShowsSequence)
@@ -36,44 +36,44 @@ final class DatabaseClientTests: XCTestCase {
 
         try await XCTAssertReceive(from: followedShowsSequence, [])
 
-        try client.followShow(.fixtureRebuild)
+        try client.followShow(.fixtureRebuild).get()
         try await XCTAssertReceive(from: followedShowsSequence, [.fixtureRebuild])
 
-        try client.followShow(.fixtureRebuild)
+        try client.followShow(.fixtureRebuild).get()
 
         try await XCTAssertNoReceive(from: followedShowsSequence)
     }
 
     func test_unfollow_show() async throws {
-        try client.followShow(.fixtureSwiftBySundell)
-        try client.followShow(.fixtureRebuild)
-        try client.followShow(.fixtureプログラム雑談)
+        try client.followShow(.fixtureSwiftBySundell).get()
+        try client.followShow(.fixtureRebuild).get()
+        try client.followShow(.fixtureプログラム雑談).get()
 
         let followedShowsSequence = client.followedShowsStream()
 
         try await XCTAssertReceive(from: followedShowsSequence, [.fixtureRebuild, .fixtureSwiftBySundell, .fixtureプログラム雑談])
 
-        try client.unfollowShow(Show.fixtureSwiftBySundell.feedURL)
+        try client.unfollowShow(Show.fixtureSwiftBySundell.feedURL).get()
 
         try await XCTAssertReceive(from: followedShowsSequence, [.fixtureRebuild, .fixtureプログラム雑談])
 
-        try client.unfollowShow(Show.fixtureプログラム雑談.feedURL)
+        try client.unfollowShow(Show.fixtureプログラム雑談.feedURL).get()
 
         try await XCTAssertReceive(from: followedShowsSequence, [.fixtureRebuild])
 
-        try client.unfollowShow(Show.fixtureRebuild.feedURL)
+        try client.unfollowShow(Show.fixtureRebuild.feedURL).get()
 
         try await XCTAssertReceive(from: followedShowsSequence, [])
     }
 
     func test_unfollowing_not_following_show_has_no_effect() async throws {
-        try client.followShow(.fixtureSwiftBySundell)
+        try client.followShow(.fixtureSwiftBySundell).get()
 
         let followedShowsSequence = client.followedShowsStream()
 
         try await XCTAssertReceive(from: followedShowsSequence, [.fixtureSwiftBySundell])
 
-        try client.unfollowShow(Show.fixtureRebuild.feedURL)
+        try client.unfollowShow(Show.fixtureRebuild.feedURL).get()
 
         try await XCTAssertNoReceive(from: followedShowsSequence)
     }
@@ -83,7 +83,7 @@ final class DatabaseClientTests: XCTestCase {
 
         try await XCTAssertReceive(from: followedEpisodesSequence, [])
 
-        try client.followShow(.fixtureSwiftBySundell)
+        try client.followShow(.fixtureSwiftBySundell).get()
         try await XCTAssertReceive(
             from: followedEpisodesSequence,
             [
@@ -93,7 +93,7 @@ final class DatabaseClientTests: XCTestCase {
             ]
         )
 
-        try client.followShow(.fixtureRebuild)
+        try client.followShow(.fixtureRebuild).get()
         try await XCTAssertReceive(
             from: followedEpisodesSequence,
             [
@@ -106,7 +106,7 @@ final class DatabaseClientTests: XCTestCase {
             ]
         )
 
-        try client.followShow(.fixtureプログラム雑談)
+        try client.followShow(.fixtureプログラム雑談).get()
         try await XCTAssertReceive(
             from: followedEpisodesSequence,
             [
@@ -124,9 +124,9 @@ final class DatabaseClientTests: XCTestCase {
     }
 
     func test_episodes_of_unfollowed_shows_are_removed_from_stream() async throws {
-        try client.followShow(.fixtureSwiftBySundell)
-        try client.followShow(.fixtureRebuild)
-        try client.followShow(.fixtureプログラム雑談)
+        try client.followShow(.fixtureSwiftBySundell).get()
+        try client.followShow(.fixtureRebuild).get()
+        try client.followShow(.fixtureプログラム雑談).get()
 
         let followedEpisodesSequence = client.followedEpisodesStream()
         try await XCTAssertReceive(
@@ -144,7 +144,7 @@ final class DatabaseClientTests: XCTestCase {
             ]
         )
 
-        try client.unfollowShow(Show.fixtureSwiftBySundell.feedURL)
+        try client.unfollowShow(Show.fixtureSwiftBySundell.feedURL).get()
         try await XCTAssertReceive(
             from: followedEpisodesSequence,
             [

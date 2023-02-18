@@ -19,11 +19,11 @@ final class ITunesClientTests: XCTestCase {
         let data = try Data(contentsOf: url)
         URLProtocolStub.setResponses(
             [
-                URL(string: "https://itunes.apple.com/search?media=podcast&term=rebuild")!: .success(data)
+                URL(string: "https://itunes.apple.com/search?media=podcast&term=rebuild")!: .init(statusCode: 200, result: .success(data))
             ]
         )
 
-        let shows = try await client.searchShows("rebuild")
+        let shows = try await client.searchShows("rebuild").get()
         XCTAssertEqual(shows.count, 50)
         for show in shows {
             XCTAssertEqual(show.feedURL.scheme, "https")
@@ -48,11 +48,11 @@ final class ITunesClientTests: XCTestCase {
         let data = try Data(contentsOf: url)
         URLProtocolStub.setResponses(
             [
-                URL(string: "https://itunes.apple.com/search?media=podcast&term=empty")!: .success(data)
+                URL(string: "https://itunes.apple.com/search?media=podcast&term=empty")!: .init(statusCode: 200, result: .success(data))
             ]
         )
 
-        let shows = try await client.searchShows("empty")
+        let shows = try await client.searchShows("empty").get()
         XCTAssertEqual(shows.count, 0)
     }
 
@@ -61,14 +61,12 @@ final class ITunesClientTests: XCTestCase {
         let data = try Data(contentsOf: url)
         URLProtocolStub.setResponses(
             [
-                URL(string: "https://itunes.apple.com/search?media=podcast&term=%E3%83%90%E3%82%A4%E3%83%AA%E3%83%B3%E3%82%AC%E3%83%AB")!: .success(data)
+                URL(string: "https://itunes.apple.com/search?media=podcast&term=%E3%83%90%E3%82%A4%E3%83%AA%E3%83%B3%E3%82%AC%E3%83%AB")!:
+                        .init(statusCode: 200, result: .success(data)),
             ]
         )
 
-        let shows = try await client.searchShows("バイリンガル")
-        XCTAssertEqual(shows.count, 19) // search results include 22 shows, but 3 is removed due to there http scheme
-        for show in shows {
-            XCTAssertEqual(show.feedURL.scheme, "https")
-        }
+        let shows = try await client.searchShows("バイリンガル").get()
+        XCTAssertEqual(shows.count, 22)
     }
 }

@@ -26,7 +26,7 @@ public struct FeedScreen: View {
                                     ForEach(episodes) { episode in
                                         EpisodeRowView(
                                             episode: episode,
-                                            downloadState: viewStore.state.downloadState(guid: episode.guid),
+                                            downloadState: viewStore.state.downloadState(id: episode.id),
                                             showsImage: true,
                                             onDownloadButtonTapped: {
                                                 viewStore.send(.downloadEpisodeButtonTapped(episode: episode))
@@ -84,8 +84,8 @@ struct FeedScreen_Previews: PreviewProvider {
             store: StoreOf<FeedReducer>(
                 initialState: FeedReducer.State(),
                 reducer: withDependencies({
-                    try? $0.databaseClient.followShow(.fixtureRebuild)
-                    try? $0.databaseClient.followShow(.fixtureSwiftBySundell)
+                    _ = $0.databaseClient.followShow(.fixtureRebuild)
+                    _ = $0.databaseClient.followShow(.fixtureSwiftBySundell)
                 }) {
                     FeedReducer()
                 }

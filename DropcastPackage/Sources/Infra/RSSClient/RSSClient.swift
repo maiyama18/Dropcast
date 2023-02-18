@@ -3,23 +3,47 @@ import Entity
 import Error
 import FeedKit
 import Foundation
+import Logger
+import Network
 
 public struct RSSClient: Sendable {
-    public var fetch: @Sendable (_ url: URL) async throws -> Show
+    public var fetch: @Sendable (_ url: URL) async -> Result<Show, RSSError>
 }
 
 extension RSSClient {
     static func live(urlSession: URLSession = .shared) -> RSSClient {
-        RSSClient(
+        @Dependency(\.logger[.rss]) var logger
+        
+        return RSSClient(
             fetch: { url in
-                let (data, _) = try await urlSession.data(from: url)
-                let parser = FeedParser(data: data)
-                let rssFeed = try await parser.parseRSS()
-
-                guard let show = rssFeed.toShow(feedURL: url) else {
-                    throw RSSError.invalidFeed
+                logger.notice("fetching rss: \(url, privacy: .public)")
+                
+                let result = await request(session: urlSession, url: url)
+                
+                let data: Data
+                switch result {
+                case .success(let tmpData):
+                    data = tmpData
+                case .failure:
+                    return .failure(.invalidFeed)
                 }
-                return show
+                
+                let parser = FeedParser(data: data)
+                
+                let rssFeed: RSSFeed
+                do {
+                    rssFeed = try await parser.parseRSS()
+                } catch {
+                    logger.error("failed to parse rss feed: \(error)")
+                    return .failure(.invalidFeed)
+                }
+                
+                guard let show = rssFeed.toShow(feedURL: url) else {
+                    logger.error("failed to convert to show")
+                    return .failure(RSSError.invalidFeed)
+                }
+                logger.notice("fetching rss succeeded:\n\(customDump(show), privacy: .public)")
+                return .success(show)
             }
         )
     }

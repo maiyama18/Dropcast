@@ -23,11 +23,11 @@ final class RSSClientTests: XCTestCase {
         let feedURL = URL(string: "https://feeds.rebuild.fm/rebuildfm")!
         URLProtocolStub.setResponses(
             [
-                feedURL: .success(data)
+                feedURL: .init(statusCode: 200, result: .success(data))
             ]
         )
 
-        let show = try await client.fetch(feedURL)
+        let show = try await client.fetch(feedURL).get()
         XCTAssertEqual(show.title, "Rebuild")
         XCTAssertEqual(show.description, "ウェブ開発、プログラミング、モバイル、ガジェットなどにフォーカスしたテクノロジー系ポッドキャストです。 #rebuildfm")
         XCTAssertEqual(show.author, "Tatsuhiko Miyagawa")
@@ -36,7 +36,7 @@ final class RSSClientTests: XCTestCase {
         XCTAssertEqual(show.episodes.count, 477)
 
         let latestEpisode = try XCTUnwrap(show.episodes.first)
-        XCTAssertEqual(latestEpisode.guid, "https://rebuild.fm/352/")
+        XCTAssertEqual(latestEpisode.id, "https://rebuild.fm/352/")
         XCTAssertEqual(latestEpisode.title, "352: There's a Fifth Way (naoya)")
         XCTAssertEqual(latestEpisode.subtitle, "Naoya Ito さんをゲストに迎えて、MacBook Pro, キーボード、競技プログラミング、レイオフ、ゲームなどについて話しました。")
         XCTAssertEqual(latestEpisode.description?.starts(with: "<p>Naoya Ito さんをゲストに迎えて、MacBook Pro, キーボード、競技プログラミング、レイオフ、ゲームなどについて話しました。</p>"), true)
@@ -51,11 +51,11 @@ final class RSSClientTests: XCTestCase {
         let feedURL = URL(string: "https://swiftbysundell.com/podcast/feed.rss")!
         URLProtocolStub.setResponses(
             [
-                feedURL: .success(data)
+                feedURL: .init(statusCode: 200, result: .success(data))
             ]
         )
 
-        let show = try await client.fetch(feedURL)
+        let show = try await client.fetch(feedURL).get()
         XCTAssertEqual(show.title, "Swift by Sundell")
         XCTAssertEqual(show.description, "In-depth conversations about Swift and software development in general, hosted by John Sundell.")
         XCTAssertEqual(show.author, "John Sundell")
@@ -64,7 +64,7 @@ final class RSSClientTests: XCTestCase {
         XCTAssertEqual(show.episodes.count, 123)
 
         let latestEpisode = try XCTUnwrap(show.episodes.first)
-        XCTAssertEqual(latestEpisode.guid, "https://www.swiftbysundell.com/podcast/123")
+        XCTAssertEqual(latestEpisode.id, "https://www.swiftbysundell.com/podcast/123")
         XCTAssertEqual(latestEpisode.title, "123: “The evolution of Swift”, with special guest Nick Lockwood")
         XCTAssertEqual(latestEpisode.subtitle, "On this final episode of 2022, Nick Lockwood returns to the show to discuss the overall evolution of Swift and its ecosystem of tools and libraries. How has Swift changed since its original introduction in 2014, how does it compare to other modern programming languages, and how might the language continue to evolve in 2023 and beyond?")
         XCTAssertEqual(latestEpisode.description?.starts(with: "<p>On this final episode of 2022, Nick Lockwood returns to the show to discuss the overall evolution of Swift and its ecosystem of tools and libraries. How has Swift changed since its original introduction in 2014, how does it compare to other modern programming languages, and how might the language continue to evolve in 2023 and beyond?</p>"), true)
@@ -79,11 +79,11 @@ final class RSSClientTests: XCTestCase {
         let feedURL = URL(string: "https://anchor.fm/s/68ce140/podcast/rss")!
         URLProtocolStub.setResponses(
             [
-                feedURL: .success(data)
+                feedURL: .init(statusCode: 200, result: .success(data))
             ]
         )
 
-        let show = try await client.fetch(feedURL)
+        let show = try await client.fetch(feedURL).get()
         XCTAssertEqual(show.title, "プログラム雑談")
         XCTAssertEqual(
             show.description,
@@ -98,7 +98,7 @@ final class RSSClientTests: XCTestCase {
         XCTAssertEqual(show.episodes.count, 226)
 
         let latestEpisode = try XCTUnwrap(show.episodes.first)
-        XCTAssertEqual(latestEpisode.guid, "b8c3341d-bbf1-4184-8977-137e4ee45526")
+        XCTAssertEqual(latestEpisode.id, "b8c3341d-bbf1-4184-8977-137e4ee45526")
         XCTAssertEqual(latestEpisode.title, "228回 プログラマがweb上のろくでもないおっさんになってしまうメカニズムについての雑談")
         XCTAssertEqual(latestEpisode.subtitle, "<p>自分のやってる事が大したこと無いと気づく結果ろくでもないおっさんになってしまう、という新発見。</p>")
         XCTAssertEqual(latestEpisode.description?.starts(with: "<p>自分のやってる事が大したこと無いと気づく結果ろくでもないおっさんになってしまう、という新発見。</p>"), true)
@@ -113,11 +113,11 @@ final class RSSClientTests: XCTestCase {
         let feedURL = URL(string: "https://feeds.simplecast.com/XA_851k3")!
         URLProtocolStub.setResponses(
             [
-                feedURL: .success(data)
+                feedURL: .init(statusCode: 200, result: .success(data))
             ]
         )
 
-        let show = try await client.fetch(feedURL)
+        let show = try await client.fetch(feedURL).get()
         XCTAssertEqual(show.title, "The Stack Overflow Podcast")
         XCTAssertEqual(show.description, "For more than a dozen years, the Stack Overflow Podcast has been exploring what it means to be a developer and how the art and practice of software programming is changing our world. From Rails to React, from Java to Node.js, we host important conversations and fascinating guests that will help you understand how technology is made and where it’s headed. Hosted by Ben Popper, Cassidy Williams, and Ceora Ford, the Stack Overflow Podcast is your home for all things code.")
         XCTAssertEqual(show.author, "The Stack Overflow Podcast")
@@ -125,7 +125,7 @@ final class RSSClientTests: XCTestCase {
         XCTAssertEqual(show.episodes.count, 542)
 
         let latestEpisode = try XCTUnwrap(show.episodes.first)
-        XCTAssertEqual(latestEpisode.guid, "dddb9ccd-0318-4c58-aa86-ee082259ed75")
+        XCTAssertEqual(latestEpisode.id, "dddb9ccd-0318-4c58-aa86-ee082259ed75")
         XCTAssertEqual(latestEpisode.title, "How chaos engineering preps developers for the ultimate game day")
         XCTAssertEqual(latestEpisode.subtitle, "On this sponsored episode, our fourth in the series with Intuit, Ben and Ryan chat with Deepthi Panthula, Senior Product Manager, and Shan Anwar, Principal Software Engineer, both of Intuit about how use self-serve chaos engineering tools to control the blast radius of failures, how game day tests and drills keep their systems resilient, and how their investment in open-source software powers their program.")
         XCTAssertEqual(latestEpisode.description?.starts(with: "<p>In complex service-oriented architectures, failure can happen in individual servers and containers, then cascade through your system. Good engineering takes into account possible failures. But how do you test whether a solution actually mitigates failures without risking the ire of your customers? That’s where chaos engineering comes in, injecting failures and uncertainty into complex systems so your team can see where your architecture breaks. </p>"), true)

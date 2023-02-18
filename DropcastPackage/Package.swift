@@ -61,8 +61,10 @@ let targets: [PackageDescription.Target] = [
     .target(
         name: "App",
         dependencies: [
+            .dependencies,
             "AppFeature",
             "MessageClientLive",
+            "Logger",
         ],
         path: "Sources/App/App"
     ),
@@ -178,6 +180,7 @@ let targets: [PackageDescription.Target] = [
             .identifiedCollections,
             "Entity",
             "Error",
+            "Logger",
         ],
         path: "Sources/Infra/DatabaseClient"
     ),
@@ -196,6 +199,8 @@ let targets: [PackageDescription.Target] = [
             .feedKit,
             "Entity",
             "Error",
+            "Logger",
+            "Network",
         ],
         path: "Sources/Infra/RSSClient"
     ),
@@ -214,6 +219,8 @@ let targets: [PackageDescription.Target] = [
             .dependencies,
             "Entity",
             "Error",
+            "Logger",
+            "Network",
         ],
         path: "Sources/Infra/ITunesClient"
     ),
@@ -246,6 +253,7 @@ let targets: [PackageDescription.Target] = [
             .dependencies,
             "Error",
             "Entity",
+            "Logger",
         ],
         path: "Sources/Infra/SoundFileClient"
     ),
@@ -279,6 +287,27 @@ let targets: [PackageDescription.Target] = [
         name: "FormatterTests",
         dependencies: ["Formatter"],
         path: "Tests/Core/FormatterTests"
+    ),
+    .target(
+        name: "Network",
+        dependencies: ["Error"],
+        path: "Sources/Core/Network"
+    ),
+    .testTarget(
+        name: "NetworkTests",
+        dependencies: [
+            "Network",
+            "TestHelper",
+        ],
+        path: "Tests/Core/NetworkTests"
+    ),
+    .target(
+        name: "Logger",
+        dependencies: [
+            .customDump,
+            .dependencies,
+        ],
+        path: "Sources/Core/Logger"
     ),
     .target(
         name: "TestHelper",
@@ -348,6 +377,9 @@ var package = Package(
         .library(
             name: "Formatter",
             targets: ["Formatter"]),
+        .library(
+            name: "Network",
+            targets: ["Network"]),
     ],
     dependencies: dependencies,
     targets: targets

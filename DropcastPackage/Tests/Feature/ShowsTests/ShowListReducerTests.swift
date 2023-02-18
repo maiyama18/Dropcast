@@ -16,7 +16,7 @@ final class ShowListReducerTests: XCTestCase {
         ) {
             $0.databaseClient = .live(persistentProvider: InMemoryPersistentProvider())
             do {
-                try $0.databaseClient.followShow(.fixtureRebuild)
+                try $0.databaseClient.followShow(.fixtureRebuild).get()
             } catch {
                 XCTFail()
             }
@@ -38,7 +38,7 @@ final class ShowListReducerTests: XCTestCase {
         ) {
             $0.databaseClient = databaseClient
             do {
-                try $0.databaseClient.followShow(.fixtureRebuild)
+                try $0.databaseClient.followShow(.fixtureRebuild).get()
             } catch {
                 XCTFail()
             }
@@ -49,7 +49,7 @@ final class ShowListReducerTests: XCTestCase {
             $0.shows = [.fixtureRebuild]
         }
 
-        try databaseClient.followShow(.fixtureSwiftBySundell)
+        try databaseClient.followShow(.fixtureSwiftBySundell).get()
 
         await store.receive(
             .showsResponse(
@@ -70,7 +70,7 @@ final class ShowListReducerTests: XCTestCase {
         ) {
             $0.databaseClient = databaseClient
             do {
-                try $0.databaseClient.followShow(.fixtureRebuild)
+                try $0.databaseClient.followShow(.fixtureRebuild).get()
             } catch {
                 XCTFail()
             }
@@ -88,6 +88,37 @@ final class ShowListReducerTests: XCTestCase {
 
         await task.cancel()
     }
+    
+    func test_unfollow_show_failure_present_error_message() async throws {
+        let errorMessage: LockIsolated<String?> = .init(nil)
+        
+        let databaseClient: DatabaseClient = .live(persistentProvider: InMemoryPersistentProvider())
+        let store = TestStore(
+            initialState: ShowListReducer.State(),
+            reducer: ShowListReducer()._printChanges()
+        ) {
+            $0.databaseClient = databaseClient
+            $0.databaseClient.unfollowShow = { _ in .failure(.databaseError) }
+            do {
+                try $0.databaseClient.followShow(.fixtureRebuild).get()
+            } catch {
+                XCTFail()
+            }
+            
+            $0.messageClient.presentError = { message in errorMessage.withValue { $0 = message } }
+        }
+
+        let task = await store.send(.task)
+        await store.receive(.showsResponse(IdentifiedArrayOf(uniqueElements: [.fixtureRebuild]))) {
+            $0.shows = [.fixtureRebuild]
+        }
+
+        await store.send(.showSwipeToDeleted(feedURL: Show.fixtureRebuild.feedURL))
+        
+        XCTAssertNoDifference(errorMessage.value, "Failed to unfollow the show")
+
+        await task.cancel()
+    }
 
     func test_tapping_show_makes_transition() async {
         let store = TestStore(
@@ -96,7 +127,7 @@ final class ShowListReducerTests: XCTestCase {
         ) {
             $0.databaseClient = .live(persistentProvider: InMemoryPersistentProvider())
             do {
-                try $0.databaseClient.followShow(.fixtureRebuild)
+                try $0.databaseClient.followShow(.fixtureRebuild).get()
             } catch {
                 XCTFail()
             }

@@ -1,6 +1,7 @@
 import ComposableArchitecture
 import Entity
 import Foundation
+import MessageClient
 import ShowDetailFeature
 
 public struct ShowListReducer: ReducerProtocol, Sendable {
@@ -28,6 +29,7 @@ public struct ShowListReducer: ReducerProtocol, Sendable {
     }
 
     @Dependency(\.databaseClient) private var databaseClient
+    @Dependency(\.messageClient) private var messageClient
 
     public init() {}
 
@@ -45,7 +47,11 @@ public struct ShowListReducer: ReducerProtocol, Sendable {
                 return .none
             case .showSwipeToDeleted(let feedURL):
                 return .fireAndForget {
-                    try databaseClient.unfollowShow(feedURL)
+                    do {
+                        try databaseClient.unfollowShow(feedURL).get()
+                    } catch {
+                        messageClient.presentError("Failed to unfollow the show")
+                    }
                 }
             case .showSearchDismissed:
                 state.showSearchState = nil
