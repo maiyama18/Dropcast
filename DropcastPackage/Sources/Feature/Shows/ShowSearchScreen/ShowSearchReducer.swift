@@ -39,7 +39,7 @@ public struct ShowSearchReducer: ReducerProtocol, Sendable {
         case showDetailSelected(feedURL: URL?)
 
         case querySearchResponse(Result<[ITunesShow], ITunesError>)
-        case urlSearchResponse(TaskResult<Entity.Show>)
+        case urlSearchResponse(Result<Entity.Show, RSSError>)
 
         case showDetail(ShowDetailReducer.Action)
     }
@@ -72,7 +72,8 @@ public struct ShowSearchReducer: ReducerProtocol, Sendable {
                 state.searchRequestInFlight = true
                 return .task {
                     if let url = URL(string: query), (url.scheme == "https" || url.scheme == "http") {
-                        return await .urlSearchResponse(TaskResult { try await rssClient.fetch(url) })
+                        let result = await rssClient.fetch(url)
+                        return .urlSearchResponse(result)
                     } else {
                         let result = await self.iTunesClient.searchShows(query)
                         return .querySearchResponse(result)

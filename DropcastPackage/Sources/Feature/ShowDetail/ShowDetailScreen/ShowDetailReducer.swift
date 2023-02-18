@@ -61,7 +61,7 @@ public struct ShowDetailReducer: ReducerProtocol, Sendable {
         case databaseShowResponse(Result<Show?, DatabaseError>)
         case downloadStatesResponse([String: EpisodeDownloadState])
         case downloadErrorResponse(SoundFileClientError)
-        case rssShowResponse(TaskResult<Show>)
+        case rssShowResponse(Result<Show, RSSError>)
         case toggleFollowResponse(Result<Bool, DatabaseError>)
     }
 
@@ -87,13 +87,10 @@ public struct ShowDetailReducer: ReducerProtocol, Sendable {
                             return .databaseShowResponse(result)
                         },
                         .task { [feedURL = state.feedURL] in
-                            await .rssShowResponse(
-                                TaskResult {
-                                    try await rssClient.fetch(feedURL)
-                                }
-                            )
+                            let result = await rssClient.fetch(feedURL)
+                            return .rssShowResponse(result)
                         }
-                            .cancellable(id: RSSRequestID.self)
+                        .cancellable(id: RSSRequestID.self)
                     ),
                     .run { send in
                         for await downloadStates in soundFileClient.downloadStatesPublisher.values {
@@ -167,8 +164,15 @@ public struct ShowDetailReducer: ReducerProtocol, Sendable {
                     reflectShow(state: &state, show: show)
                     return .none
                 case .failure(let error):
+                    let message: String
+                    switch error {
+                    case .invalidFeed:
+                        message = "Invalid rss feed"
+                    case .networkError(reason: let error):
+                        message = error.localizedDescription
+                    }
                     return .fireAndForget {
-                        messageClient.presentError(error.userMessage)
+                        messageClient.presentError(message)
                     }
                 }
             case .toggleFollowResponse(let result):

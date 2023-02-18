@@ -27,7 +27,7 @@ final class RSSClientTests: XCTestCase {
             ]
         )
 
-        let show = try await client.fetch(feedURL)
+        let show = try await client.fetch(feedURL).get()
         XCTAssertEqual(show.title, "Rebuild")
         XCTAssertEqual(show.description, "ウェブ開発、プログラミング、モバイル、ガジェットなどにフォーカスしたテクノロジー系ポッドキャストです。 #rebuildfm")
         XCTAssertEqual(show.author, "Tatsuhiko Miyagawa")
@@ -55,7 +55,7 @@ final class RSSClientTests: XCTestCase {
             ]
         )
 
-        let show = try await client.fetch(feedURL)
+        let show = try await client.fetch(feedURL).get()
         XCTAssertEqual(show.title, "Swift by Sundell")
         XCTAssertEqual(show.description, "In-depth conversations about Swift and software development in general, hosted by John Sundell.")
         XCTAssertEqual(show.author, "John Sundell")
@@ -83,7 +83,7 @@ final class RSSClientTests: XCTestCase {
             ]
         )
 
-        let show = try await client.fetch(feedURL)
+        let show = try await client.fetch(feedURL).get()
         XCTAssertEqual(show.title, "プログラム雑談")
         XCTAssertEqual(
             show.description,
@@ -117,7 +117,7 @@ final class RSSClientTests: XCTestCase {
             ]
         )
 
-        let show = try await client.fetch(feedURL)
+        let show = try await client.fetch(feedURL).get()
         XCTAssertEqual(show.title, "The Stack Overflow Podcast")
         XCTAssertEqual(show.description, "For more than a dozen years, the Stack Overflow Podcast has been exploring what it means to be a developer and how the art and practice of software programming is changing our world. From Rails to React, from Java to Node.js, we host important conversations and fascinating guests that will help you understand how technology is made and where it’s headed. Hosted by Ben Popper, Cassidy Williams, and Ceora Ford, the Stack Overflow Podcast is your home for all things code.")
         XCTAssertEqual(show.author, "The Stack Overflow Podcast")

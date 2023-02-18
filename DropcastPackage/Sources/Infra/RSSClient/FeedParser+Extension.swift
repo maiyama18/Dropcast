@@ -13,8 +13,8 @@ extension FeedParser {
                         return
                     }
                     continuation.resume(returning: rssFeed)
-                case .failure:
-                    continuation.resume(throwing: RSSError.fetchError)
+                case .failure(let error):
+                    continuation.resume(throwing: error)
                 }
             }
         }

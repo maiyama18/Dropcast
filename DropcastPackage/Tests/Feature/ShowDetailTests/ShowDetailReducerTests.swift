@@ -25,8 +25,8 @@ final class ShowDetailReducerTests: XCTestCase {
 
             $0.rssClient.fetch = { url in
                 XCTAssertEqual(url, ITunesShow.fixtureRebuild.feedURL)
-                try await clock.sleep(for: .seconds(1))
-                return Show.fixtureRebuild
+                try? await clock.sleep(for: .seconds(1))
+                return .success(Show.fixtureRebuild)
             }
         }
 
@@ -77,8 +77,8 @@ final class ShowDetailReducerTests: XCTestCase {
 
             $0.rssClient.fetch = { url in
                 XCTAssertEqual(url, ITunesShow.fixtureRebuild.feedURL)
-                try await clock.sleep(for: .seconds(1))
-                return Show.fixtureRebuild
+                try? await clock.sleep(for: .seconds(1))
+                return .success(Show.fixtureRebuild)
             }
         }
 
@@ -120,8 +120,8 @@ final class ShowDetailReducerTests: XCTestCase {
 
             $0.rssClient.fetch = { url in
                 XCTAssertEqual(url, ITunesShow.fixtureRebuild.feedURL)
-                try await clock.sleep(for: .seconds(1))
-                return Show.fixtureRebuild
+                try? await clock.sleep(for: .seconds(1))
+                return .success(Show.fixtureRebuild)
             }
         }
 
@@ -166,7 +166,7 @@ final class ShowDetailReducerTests: XCTestCase {
 
             $0.rssClient.fetch = { url in
                 XCTAssertEqual(url, Show.fixtureRebuild.feedURL)
-                return Show.fixtureRebuild
+                return .success(Show.fixtureRebuild)
             }
 
             $0.messageClient.presentError = { message in
@@ -214,8 +214,8 @@ final class ShowDetailReducerTests: XCTestCase {
             $0.databaseClient = .live(persistentProvider: InMemoryPersistentProvider())
 
             $0.rssClient.fetch = { _ in
-                try await clock.sleep(for: .seconds(1))
-                throw RSSError.fetchError
+                try? await clock.sleep(for: .seconds(1))
+                return .failure(RSSError.networkError(reason: .offline))
             }
 
             $0.messageClient.presentError = { message in
@@ -233,11 +233,11 @@ final class ShowDetailReducerTests: XCTestCase {
             $0.downloadStates = [:]
         }
         await clock.advance(by: .seconds(1))
-        await store.receive(.rssShowResponse(.failure(RSSError.fetchError))) {
+        await store.receive(.rssShowResponse(.failure(RSSError.networkError(reason: .offline)))) {
             $0.taskRequestInFlight = false
         }
 
-        XCTAssertEqual(errorMessage.value, "Failed to fetch information about this show")
+        XCTAssertEqual(errorMessage.value, "No internet connection")
         
         await test.cancel()
     }
@@ -258,7 +258,7 @@ final class ShowDetailReducerTests: XCTestCase {
 
             $0.rssClient.fetch = { url in
                 XCTAssertEqual(url, ITunesShow.fixtureRebuild.feedURL)
-                return Show.fixtureRebuild
+                return .success(Show.fixtureRebuild)
             }
         }
 
@@ -300,7 +300,7 @@ final class ShowDetailReducerTests: XCTestCase {
 
             $0.rssClient.fetch = { url in
                 XCTAssertEqual(url, ITunesShow.fixtureRebuild.feedURL)
-                return Show.fixtureRebuild
+                return .success(Show.fixtureRebuild)
             }
 
             $0.messageClient.presentError = { message in
@@ -348,7 +348,7 @@ final class ShowDetailReducerTests: XCTestCase {
 
             $0.rssClient.fetch = { url in
                 XCTAssertEqual(url, ITunesShow.fixtureRebuild.feedURL)
-                return Show.fixtureRebuild
+                return .success(Show.fixtureRebuild)
             }
         }
 
@@ -389,7 +389,7 @@ final class ShowDetailReducerTests: XCTestCase {
 
             $0.rssClient.fetch = { url in
                 XCTAssertEqual(url, ITunesShow.fixtureRebuild.feedURL)
-                return Show.fixtureRebuild
+                return .success(Show.fixtureRebuild)
             }
 
             $0.messageClient.presentSuccess = { title in successTitle.withValue { $0 = title } }
@@ -430,8 +430,8 @@ final class ShowDetailReducerTests: XCTestCase {
 
             $0.rssClient.fetch = { url in
                 XCTAssertEqual(url, ITunesShow.fixtureRebuild.feedURL)
-                try await clock.sleep(for: .seconds(1))
-                return Show.fixtureRebuild
+                try? await clock.sleep(for: .seconds(1))
+                return .success(Show.fixtureRebuild)
             }
         }
 

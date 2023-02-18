@@ -7,7 +7,7 @@ import Logger
 import Network
 
 public struct RSSClient: Sendable {
-    public var fetch: @Sendable (_ url: URL) async throws -> Show
+    public var fetch: @Sendable (_ url: URL) async -> Result<Show, RSSError>
 }
 
 extension RSSClient {
@@ -24,18 +24,26 @@ extension RSSClient {
                 switch result {
                 case .success(let tmpData):
                     data = tmpData
-                case .failure(let error):
-                    throw error
+                case .failure:
+                    return .failure(.invalidFeed)
                 }
                 
                 let parser = FeedParser(data: data)
-                let rssFeed = try await parser.parseRSS()
-
+                
+                let rssFeed: RSSFeed
+                do {
+                    rssFeed = try await parser.parseRSS()
+                } catch {
+                    logger.error("failed to parse rss feed: \(error)")
+                    return .failure(.invalidFeed)
+                }
+                
                 guard let show = rssFeed.toShow(feedURL: url) else {
-                    throw RSSError.invalidFeed
+                    logger.error("failed to convert to show")
+                    return .failure(RSSError.invalidFeed)
                 }
                 logger.notice("fetching rss succeeded:\n\(customDump(show), privacy: .public)")
-                return show
+                return .success(show)
             }
         )
     }

@@ -198,11 +198,8 @@ final class ShowSearchReducerTests: XCTestCase {
             reducer: ShowSearchReducer()
         ) {
             $0.rssClient.fetch = { url in
-                guard url == URL(string: "https://feeds.rebuild.fm/rebuildfm") else {
-                    XCTFail()
-                    throw TestError.somethingWentWrong
-                }
-                return .fixtureRebuild
+                XCTAssertNoDifference(url, URL(string: "https://feeds.rebuild.fm/rebuildfm"))
+                return .success(.fixtureRebuild)
             }
         }
 
@@ -234,11 +231,8 @@ final class ShowSearchReducerTests: XCTestCase {
             reducer: ShowSearchReducer()
         ) {
             $0.rssClient.fetch = { url in
-                guard url == URL(string: "https://feeds.rebuild.fm/reb") else {
-                    XCTFail()
-                    throw TestError.somethingWentWrong
-                }
-                throw RSSError.invalidFeed
+                XCTAssertNoDifference(url, URL(string: "https://feeds.rebuild.fm/reb"))
+                return .failure(RSSError.invalidFeed)
             }
         }
 
@@ -261,7 +255,7 @@ final class ShowSearchReducerTests: XCTestCase {
         ) {
             $0.rssClient.fetch = { url in
                 XCTAssertNoDifference(url, URL(string: "http://feeds.rebuild.fm/rebuildfm"))
-                return .fixtureRebuild
+                return .success(.fixtureRebuild)
             }
         }
 

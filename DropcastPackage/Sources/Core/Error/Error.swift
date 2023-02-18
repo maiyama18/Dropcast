@@ -38,18 +38,9 @@ public enum ITunesError: Error, Equatable {
     case networkError(reason: NetworkError)
 }
 
-public enum RSSError: Error, Equatable, HasMessage {
-    case fetchError
+public enum RSSError: Error, Equatable {
     case invalidFeed
-
-    var message: String {
-        switch self {
-        case .invalidFeed:
-            return "Something went wrong with this show"
-        case .fetchError:
-            return "Failed to fetch information about this show"
-        }
-    }
+    case networkError(reason: NetworkError)
 }
 
 public enum DatabaseError: Error, Equatable {
