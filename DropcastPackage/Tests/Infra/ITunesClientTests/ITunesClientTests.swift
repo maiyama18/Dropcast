@@ -19,7 +19,7 @@ final class ITunesClientTests: XCTestCase {
         let data = try Data(contentsOf: url)
         URLProtocolStub.setResponses(
             [
-                URL(string: "https://itunes.apple.com/search?media=podcast&term=rebuild")!: .success(data)
+                URL(string: "https://itunes.apple.com/search?media=podcast&term=rebuild")!: .init(statusCode: 200, result: .success(data))
             ]
         )
 
@@ -48,7 +48,7 @@ final class ITunesClientTests: XCTestCase {
         let data = try Data(contentsOf: url)
         URLProtocolStub.setResponses(
             [
-                URL(string: "https://itunes.apple.com/search?media=podcast&term=empty")!: .success(data)
+                URL(string: "https://itunes.apple.com/search?media=podcast&term=empty")!: .init(statusCode: 200, result: .success(data))
             ]
         )
 
@@ -61,7 +61,8 @@ final class ITunesClientTests: XCTestCase {
         let data = try Data(contentsOf: url)
         URLProtocolStub.setResponses(
             [
-                URL(string: "https://itunes.apple.com/search?media=podcast&term=%E3%83%90%E3%82%A4%E3%83%AA%E3%83%B3%E3%82%AC%E3%83%AB")!: .success(data)
+                URL(string: "https://itunes.apple.com/search?media=podcast&term=%E3%83%90%E3%82%A4%E3%83%AA%E3%83%B3%E3%82%AC%E3%83%AB")!:
+                        .init(statusCode: 200, result: .success(data)),
             ]
         )
 

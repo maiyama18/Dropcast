@@ -1,10 +1,20 @@
 import Dependencies
 import Foundation
 
-public final class URLProtocolStub: URLProtocol {
-    public static let responses: LockIsolated<[URL: Result<Data, Error>]> = .init([:])
+public struct StubResponse: Sendable {
+    public let statusCode: Int
+    public let result: Result<Data, Error>
+    
+    public init(statusCode: Int, result: Result<Data, Error>) {
+        self.statusCode = statusCode
+        self.result = result
+    }
+}
 
-    public static func setResponses(_ responses: [URL: Result<Data, Error>]) {
+public final class URLProtocolStub: URLProtocol {
+    public static let responses: LockIsolated<[URL: StubResponse]> = .init([:])
+
+    public static func setResponses(_ responses: [URL: StubResponse]) {
         self.responses.withValue { $0 = responses }
     }
 
@@ -20,16 +30,16 @@ public final class URLProtocolStub: URLProtocol {
         defer { client?.urlProtocolDidFinishLoading(self) }
 
         guard let url = request.url,
-              let result = Self.responses.value[url] else {
+              let response = Self.responses.value[url] else {
             client?.urlProtocol(self, didFailWithError: NSError(domain: "stub response not match", code: 0))
             return
         }
 
-        switch result {
+        switch response.result {
         case .success(let data):
             let response = HTTPURLResponse(
                 url: url,
-                statusCode: 200,
+                statusCode: response.statusCode,
                 httpVersion: nil,
                 headerFields: nil
             )!

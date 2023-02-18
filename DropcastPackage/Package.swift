@@ -282,6 +282,19 @@ let targets: [PackageDescription.Target] = [
         path: "Tests/Core/FormatterTests"
     ),
     .target(
+        name: "Network",
+        dependencies: ["Error"],
+        path: "Sources/Core/Network"
+    ),
+    .testTarget(
+        name: "NetworkTests",
+        dependencies: [
+            "Network",
+            "TestHelper",
+        ],
+        path: "Tests/Core/NetworkTests"
+    ),
+    .target(
         name: "Logger",
         dependencies: [
             .customDump,
@@ -357,6 +370,9 @@ var package = Package(
         .library(
             name: "Formatter",
             targets: ["Formatter"]),
+        .library(
+            name: "Network",
+            targets: ["Network"]),
     ],
     dependencies: dependencies,
     targets: targets

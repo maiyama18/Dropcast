@@ -23,7 +23,7 @@ final class RSSClientTests: XCTestCase {
         let feedURL = URL(string: "https://feeds.rebuild.fm/rebuildfm")!
         URLProtocolStub.setResponses(
             [
-                feedURL: .success(data)
+                feedURL: .init(statusCode: 200, result: .success(data))
             ]
         )
 
@@ -51,7 +51,7 @@ final class RSSClientTests: XCTestCase {
         let feedURL = URL(string: "https://swiftbysundell.com/podcast/feed.rss")!
         URLProtocolStub.setResponses(
             [
-                feedURL: .success(data)
+                feedURL: .init(statusCode: 200, result: .success(data))
             ]
         )
 
@@ -79,7 +79,7 @@ final class RSSClientTests: XCTestCase {
         let feedURL = URL(string: "https://anchor.fm/s/68ce140/podcast/rss")!
         URLProtocolStub.setResponses(
             [
-                feedURL: .success(data)
+                feedURL: .init(statusCode: 200, result: .success(data))
             ]
         )
 
@@ -113,7 +113,7 @@ final class RSSClientTests: XCTestCase {
         let feedURL = URL(string: "https://feeds.simplecast.com/XA_851k3")!
         URLProtocolStub.setResponses(
             [
-                feedURL: .success(data)
+                feedURL: .init(statusCode: 200, result: .success(data))
             ]
         )
 

@@ -4,6 +4,18 @@ protocol HasMessage {
     var message: String { get }
 }
 
+public enum NetworkError: Error, Equatable, HasMessage {
+    case offline
+    case timeout
+    case cancelled
+    case serverError(status: Int)
+    case unknownError
+    
+    var message: String {
+        ""
+    }
+}
+
 public enum ITunesError: Error, Equatable, HasMessage {
     case invalidQuery
 
