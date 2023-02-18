@@ -2,6 +2,7 @@ import Dependencies
 import Entity
 import Error
 import Foundation
+import Network
 import XCTestDynamicOverlay
 
 public struct ITunesClient: Sendable {
@@ -17,9 +18,14 @@ extension ITunesClient {
                     throw ITunesError.invalidQuery
                 }
 
-                let (data, _) = try await urlSession.data(from: url)
-                let response = try JSONDecoder().decode(SearchShowsResponse.self, from: data)
-                return response.results.compactMap { $0.toShow() }
+                let result = await request(session: urlSession, url: url)
+                switch result {
+                case .success(let data):
+                    let response = try JSONDecoder().decode(SearchShowsResponse.self, from: data)
+                    return response.results.compactMap { $0.toShow() }
+                case .failure(let error):
+                    throw error
+                }
             }
         )
     }
