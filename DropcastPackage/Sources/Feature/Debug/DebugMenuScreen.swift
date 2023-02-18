@@ -29,7 +29,7 @@ struct DebugMenuScreen: View {
                 case .coreData:
                     Text("CoreData")
                 case .log:
-                    Text("Log")
+                    DebugLogScreen()
                 }
             }
         }
