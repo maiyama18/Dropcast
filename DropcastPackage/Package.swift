@@ -196,6 +196,7 @@ let targets: [PackageDescription.Target] = [
             .feedKit,
             "Entity",
             "Error",
+            "Logger",
         ],
         path: "Sources/Infra/RSSClient"
     ),
@@ -279,6 +280,14 @@ let targets: [PackageDescription.Target] = [
         name: "FormatterTests",
         dependencies: ["Formatter"],
         path: "Tests/Core/FormatterTests"
+    ),
+    .target(
+        name: "Logger",
+        dependencies: [
+            .customDump,
+            .dependencies,
+        ],
+        path: "Sources/Core/Logger"
     ),
     .target(
         name: "TestHelper",
