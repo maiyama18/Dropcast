@@ -75,8 +75,15 @@ public struct FeedReducer: ReducerProtocol, Sendable {
                 state.downloadStates = downloadStates
                 return .none
             case .downloadErrorResponse(let error):
+                let message: String
+                switch error {
+                case .unexpectedError:
+                    message = "Something went wrong"
+                case .downloadError:
+                    message = "Failed to download the episode"
+                }
                 return .fireAndForget {
-                    messageClient.presentError(error.userMessage)
+                    messageClient.presentError(message)
                 }
             case .episodesResponse(let episodes):
                 state.episodes = episodes

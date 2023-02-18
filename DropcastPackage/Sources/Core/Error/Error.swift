@@ -1,9 +1,5 @@
 import Foundation
 
-protocol HasMessage {
-    var message: String { get }
-}
-
 public enum NetworkError: LocalizedError, Equatable {
     case offline
     case timeout
@@ -47,16 +43,7 @@ public enum DatabaseError: Error, Equatable {
     case databaseError
 }
 
-public enum SoundFileClientError: Error, Equatable, HasMessage {
+public enum SoundFileClientError: Error, Equatable {
     case unexpectedError
     case downloadError
-
-    var message: String {
-        switch self {
-        case .unexpectedError:
-            return "Unexpected error occurred"
-        case .downloadError:
-            return "Failed to download the episode"
-        }
-    }
 }
