@@ -8,3 +8,11 @@ public let rssDateFormatter: DateFormatter = {
     formatter.locale = Locale(identifier: "en_US")
     return formatter
 }()
+
+public let logDateFormatter: DateFormatter = {
+    let formatter = DateFormatter()
+    formatter.dateFormat = "MM-dd HH:mm:ss.SSS"
+    formatter.calendar = Calendar(identifier: .gregorian)
+    formatter.locale = Locale(identifier: "en_US")
+    return formatter
+}()

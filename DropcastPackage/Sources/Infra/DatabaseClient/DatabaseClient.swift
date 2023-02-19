@@ -98,7 +98,7 @@ extension DatabaseClient {
                     logger.notice("show response:\n\(customDump(show), privacy: .public)")
                     return .success(show)
                 } catch {
-                    logger.error("failed to fetch show: \(error, privacy: .public)")
+                    logger.fault("failed to fetch show: \(error, privacy: .public)")
                     return .failure(.databaseError)
                 }
             }
@@ -159,7 +159,7 @@ extension DatabaseClient {
                         return .success(())
                     } catch {
                         context.rollback()
-                        logger.error("failed to follow show: \(error, privacy: .public)")
+                        logger.fault("failed to follow show: \(error, privacy: .public)")
                         return .failure(.databaseError)
                     }
                 }
@@ -180,7 +180,7 @@ extension DatabaseClient {
                         }
                         record = firstRecord
                     } catch {
-                        logger.error("failed to fetch show to unfollow: \(error, privacy: .public)")
+                        logger.fault("failed to fetch show to unfollow: \(error, privacy: .public)")
                         return .failure(.databaseError)
                     }
                     
@@ -191,7 +191,7 @@ extension DatabaseClient {
                         return .success(())
                     } catch {
                         context.rollback()
-                        logger.error("failed to follow show: \(error, privacy: .public)")
+                        logger.fault("failed to follow show: \(error, privacy: .public)")
                         return .failure(.databaseError)
                     }
                 }

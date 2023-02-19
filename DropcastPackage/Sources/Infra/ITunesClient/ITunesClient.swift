@@ -20,7 +20,7 @@ extension ITunesClient {
                 logger.notice("searching shows by query: \(query, privacy: .public)")
                 guard let encodedQuery = query.addingPercentEncoding(withAllowedCharacters: .urlQueryAllowed),
                       let url = URL(string: "https://itunes.apple.com/search?media=podcast&term=\(encodedQuery)") else {
-                    logger.error("invalid query: \(query, privacy: .public)")
+                    logger.fault("invalid query: \(query, privacy: .public)")
                     return .failure(ITunesError.invalidQuery)
                 }
 
@@ -37,7 +37,7 @@ extension ITunesClient {
                         return .failure(.parseError)
                     }
                 case .failure(let error):
-                    logger.error("network error: \(error, privacy: .public)")
+                    logger.fault("network error: \(error, privacy: .public)")
                     return .failure(.networkError(reason: error))
                 }
             }

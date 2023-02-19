@@ -63,6 +63,7 @@ let targets: [PackageDescription.Target] = [
         dependencies: [
             .dependencies,
             "AppFeature",
+            "DebugFeature",
             "MessageClientLive",
             "Logger",
         ],
@@ -84,6 +85,18 @@ let targets: [PackageDescription.Target] = [
         name: "AppFeatureTests",
         dependencies: ["AppFeature"],
         path: "Tests/Feature/AppTests"
+    ),
+    .target(
+        name: "DebugFeature",
+        dependencies: [
+            .dependencies,
+            "ClipboardClient",
+            "Formatter",
+            "Logger",
+            "MessageClient",
+            "SoundFileClient",
+        ],
+        path: "Sources/Feature/Debug"
     ),
     .target(
         name: "FeedFeature",
