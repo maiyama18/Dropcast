@@ -13,7 +13,7 @@ struct DebugLogScreen: View {
                     .scaleEffect(2)
             } else {
                 List {
-                    ForEach(viewModel.allLogEntries, id: \.date) { entry in
+                    ForEach(viewModel.visibleEntries, id: \.date) { entry in
                         DebugLogRowView(entry: entry)
                             .listRowInsets(.init(top: 0, leading: 0, bottom: 0, trailing: 0))
                             .containerShape(Rectangle())
@@ -23,6 +23,7 @@ struct DebugLogScreen: View {
                     }
                 }
                 .listStyle(.plain)
+                .searchable(text: $viewModel.query)
             }
         }
         .task {
