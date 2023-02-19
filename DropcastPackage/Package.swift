@@ -90,6 +90,7 @@ let targets: [PackageDescription.Target] = [
         name: "DebugFeature",
         dependencies: [
             .dependencies,
+            "ClipboardClient",
             "Formatter",
             "Logger",
             "MessageClient",

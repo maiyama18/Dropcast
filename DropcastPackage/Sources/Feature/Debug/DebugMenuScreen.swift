@@ -3,6 +3,7 @@ import SwiftUI
 struct DebugMenuScreen: View {
     enum Route: Hashable {
         case log
+        case logDetail(message: String)
         case coreData
     }
     
@@ -29,7 +30,9 @@ struct DebugMenuScreen: View {
                 case .coreData:
                     Text("CoreData")
                 case .log:
-                    DebugLogScreen()
+                    DebugLogScreen(onMessageTapped: { path.append(.logDetail(message: $0)) })
+                case .logDetail(let message):
+                    DebugLogDetailScreen(message: message)
                 }
             }
         }

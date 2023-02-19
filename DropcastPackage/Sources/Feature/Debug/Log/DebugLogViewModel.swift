@@ -14,6 +14,8 @@ final class DebugLogViewModel: ObservableObject {
     private let logStore = LogStore()
     
     func task() async {
+        guard allLogEntries.isEmpty else { return }
+        
         loading = true
         defer { loading = false }
         
