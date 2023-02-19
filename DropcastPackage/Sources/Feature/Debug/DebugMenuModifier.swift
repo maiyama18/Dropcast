@@ -8,7 +8,6 @@ struct DebugMenuModifier: ViewModifier {
         content
             .sheet(isPresented: $isPresented) {
                 DebugMenuScreen()
-                    .presentationDetents([.medium, .large])
             }
             .onShake {
                 if isPresented {
