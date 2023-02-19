@@ -140,7 +140,7 @@ actor SoundFileClientLive: SoundFileClient {
                 try FileManager.default.createDirectory(at: directoryURL, withIntermediateDirectories: true)
             } catch {
                 guard (error as? CocoaError)?.code == CocoaError.fileWriteFileExists else {
-                    logger.error("failed to make directory: \(error, privacy: .public)")
+                    logger.fault("failed to make directory: \(error, privacy: .public)")
                     throw SoundFileClientError.downloadError
                 }
             }
@@ -151,7 +151,7 @@ actor SoundFileClientLive: SoundFileClient {
                 logger.notice("download file saved \(identifier.idBase64, privacy: .public): \(fileURL)")
                 await self.updateDownloadState(identifier: identifier, downloadState: .downloaded)
             } catch {
-                logger.error("failed to save downloaded file \(identifier.idBase64, privacy: .public): \(error, privacy: .public)")
+                logger.fault("failed to save downloaded file \(identifier.idBase64, privacy: .public): \(error, privacy: .public)")
                 throw SoundFileClientError.downloadError
             }
         },
@@ -166,7 +166,7 @@ actor SoundFileClientLive: SoundFileClient {
             
             self.downloadErrorSubject.send(.downloadError)
             
-            logger.error("failed to download file \(identifier?.idBase64 ?? "", privacy: .public): \(error, privacy: .public)")
+            logger.fault("failed to download file \(identifier?.idBase64 ?? "", privacy: .public): \(error, privacy: .public)")
             
             guard let identifier else { return }
             await self.updateDownloadState(identifier: identifier, downloadState: .notDownloaded)

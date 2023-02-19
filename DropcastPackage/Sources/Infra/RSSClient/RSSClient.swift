@@ -34,12 +34,12 @@ extension RSSClient {
                 do {
                     rssFeed = try await parser.parseRSS()
                 } catch {
-                    logger.error("failed to parse rss feed: \(error)")
+                    logger.fault("failed to parse rss feed: \(error)")
                     return .failure(.invalidFeed)
                 }
                 
                 guard let show = rssFeed.toShow(feedURL: url) else {
-                    logger.error("failed to convert to show")
+                    logger.fault("failed to convert to show")
                     return .failure(RSSError.invalidFeed)
                 }
                 logger.notice("fetching rss succeeded:\n\(customDump(show), privacy: .public)")
