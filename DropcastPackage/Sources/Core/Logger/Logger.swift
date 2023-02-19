@@ -5,9 +5,13 @@ import OSLog
 extension Logger: @unchecked Sendable {}
 
 extension Logger {
+    static func subsystem() -> String {
+        Bundle.main.bundleIdentifier ?? "com.muijp.Dropcast"
+    }
+    
     public subscript(category: LogCategory) -> Logger {
         return Logger(
-            subsystem: Bundle.main.bundleIdentifier ?? "com.muijp.Dropcast",
+            subsystem: Self.subsystem(),
             category: category.rawValue
         )
     }

@@ -1,4 +1,4 @@
-public enum LogCategory: String, Sendable {
+public enum LogCategory: String, CaseIterable, Sendable {
     case app
     case database
     case iTunes

@@ -88,7 +88,12 @@ let targets: [PackageDescription.Target] = [
     ),
     .target(
         name: "DebugFeature",
-        dependencies: [],
+        dependencies: [
+            .dependencies,
+            "Formatter",
+            "Logger",
+            "MessageClient",
+        ],
         path: "Sources/Feature/Debug"
     ),
     .target(
