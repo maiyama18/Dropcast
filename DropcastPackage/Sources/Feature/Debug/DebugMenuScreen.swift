@@ -1,3 +1,7 @@
+import ClipboardClient
+import Dependencies
+import MessageClient
+import SoundFileClient
 import SwiftUI
 
 struct DebugMenuScreen: View {
@@ -8,11 +12,15 @@ struct DebugMenuScreen: View {
     
     @State private var path: [Route] = []
     
+    @Dependency(\.clipboardClient) private var clipboardClient
+    @Dependency(\.messageClient) private var messageClient
+    
     var body: some View {
         NavigationStack(path: $path) {
             List {
                 Button("Copy SoundFiles Path") {
-                    print("copy")
+                    clipboardClient.copy(SoundFileClientLive().soundFilesRootDirectoryURL.absoluteString)
+                    messageClient.presentSuccess("Copied!")
                 }
                 Button("Show Log") {
                     path.append(.log)

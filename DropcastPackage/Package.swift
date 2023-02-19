@@ -94,6 +94,7 @@ let targets: [PackageDescription.Target] = [
             "Formatter",
             "Logger",
             "MessageClient",
+            "SoundFileClient",
         ],
         path: "Sources/Feature/Debug"
     ),

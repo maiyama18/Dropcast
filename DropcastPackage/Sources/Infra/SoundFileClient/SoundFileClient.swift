@@ -13,7 +13,7 @@ public protocol SoundFileClient: Sendable {
     func cancelDownload(_ episode: Episode) async throws
 }
 
-actor SoundFileClientLive: SoundFileClient {
+public actor SoundFileClientLive: SoundFileClient {
     struct TaskIdentifier: Codable, Hashable {
         var feedURLBase64: String
         var idBase64: String
@@ -116,6 +116,10 @@ actor SoundFileClientLive: SoundFileClient {
     private let documentDirectoryURL: URL
     private let sessionProvider: @Sendable (_ configuration: URLSessionConfiguration, _ delegate: URLSessionDownloadDelegate) -> URLSession
     
+    public nonisolated var soundFilesRootDirectoryURL: URL {
+        documentDirectoryURL.appendingPathComponent("SoundFiles")
+    }
+    
     nonisolated public var downloadStatesPublisher: AnyPublisher<[String: EpisodeDownloadState], Never> {
         downloadStatesSubject.eraseToAnyPublisher()
     }
@@ -132,8 +136,7 @@ actor SoundFileClientLive: SoundFileClient {
             
             @Dependency(\.logger[.soundFile]) var logger
             
-            let directoryURL = self.documentDirectoryURL
-                .appendingPathComponent("SoundFiles")
+            let directoryURL = self.soundFilesRootDirectoryURL
                 .appendingPathComponent(identifier.feedURLBase64)
                 .appendingPathComponent(identifier.idBase64)
             do {
@@ -175,7 +178,7 @@ actor SoundFileClientLive: SoundFileClient {
     
     private var tasks: [TaskIdentifier: URLSessionDownloadTask] = [:]
     
-    init(
+    public init(
         documentDirectoryURL: URL = .documentsDirectory,
         sessionProvider: @escaping @Sendable (
             _ configuration: URLSessionConfiguration,
@@ -190,7 +193,7 @@ actor SoundFileClientLive: SoundFileClient {
         Task { await initializeDownloadStates() }
     }
     
-    func download(_ episode: Episode) async throws {
+    public func download(_ episode: Episode) async throws {
         guard let identifier = TaskIdentifier(episode: episode),
               let identifierString = identifier.string() else {
             logger.notice("failed to make identifierString")
@@ -208,7 +211,7 @@ actor SoundFileClientLive: SoundFileClient {
         task.resume()
     }
     
-    func cancelDownload(_ episode: Episode) async throws {
+    public func cancelDownload(_ episode: Episode) async throws {
         guard let identifier = TaskIdentifier(episode: episode) else {
             throw SoundFileClientError.unexpectedError
         }
@@ -221,7 +224,7 @@ actor SoundFileClientLive: SoundFileClient {
     
     private func initializeDownloadStates() {
         guard let enumerator = FileManager.default.enumerator(
-            at: self.documentDirectoryURL.appendingPathComponent("SoundFiles"),
+            at: self.soundFilesRootDirectoryURL,
             includingPropertiesForKeys: [.isRegularFileKey],
             options: [.skipsHiddenFiles, .skipsPackageDescendants]
         ) else {
