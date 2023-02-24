@@ -1,0 +1,46 @@
+name: pr
+on:
+  pull_request
+
+jobs:
+  lint:
+    runs-on: macos-12
+    name: Lint
+    steps:
+      - uses: actions/checkout@v3
+      - name: Lint Fix
+        run: |
+          swift package --package-path DropcastPackage plugin --allow-writing-to-package-directory lint-fix
+      - name: Lint Check
+        run: |
+          swift package --package-path DropcastPackage plugin lint-check
+      - name: Push
+        run: |
+          git remote set-url origin https://github-actions:${GITHUB_TOKEN}@github.com/${GITHUB_REPOSITORY}
+          git config --global user.name "github-actions"
+          git config --global user.email "22269397+maiyama18@users.noreply.github.com"
+          if (git diff --shortstat | grep '[0-9]'); then \
+            git add .; \
+            git commit -m "Apply lint"; \
+            git push origin HEAD:${GITHUB_REF}; \
+          fi
+
+  test:
+    needs: lint
+    runs-on: macos-12
+    name: Test
+    steps:
+      - uses: actions/checkout@v3
+      - uses: mikehardy/buildcache-action@v2
+      - name: SwiftPM Cache
+        uses: actions/cache@v3
+        with:
+          path: SourcePackages
+          key: ${{ runner.os }}-swiftpm-${{ hashFiles('**/Package.resolved') }}
+      - name: Test
+        run: |
+          xcodebuild -scheme DropcastDev -sdk iphonesimulator -destination "platform=iOS Simulator,name=iPhone 14" -clonedSourcePackagesDirPath SourcePackages -resultBundlePath TestResults -skipPackagePluginValidation test
+      - uses: kishikawakatsumi/xcresulttool@v1
+        with:
+          path: TestResults.xcresult
+        if: always()
