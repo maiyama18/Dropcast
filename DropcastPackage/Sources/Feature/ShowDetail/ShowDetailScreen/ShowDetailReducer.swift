@@ -58,7 +58,6 @@ public struct ShowDetailReducer: ReducerProtocol, Sendable {
         case copyFeedURLButtonTapped
         case downloadEpisodeButtonTapped(episode: Episode)
 
-        case databaseShowResponse(Result<Show?, DatabaseError>)
         case downloadStatesResponse([String: EpisodeDownloadState])
         case downloadErrorResponse(SoundFileClientError)
         case rssShowResponse(Result<Show, RSSError>)
@@ -79,19 +78,24 @@ public struct ShowDetailReducer: ReducerProtocol, Sendable {
         Reduce { state, action in
             switch action {
             case .task:
+                let result = databaseClient.fetchShow(state.feedURL)
+                switch result {
+                case .success(let show):
+                    state.followed = show != nil
+                    if let show {
+                        reflectShow(state: &state, show: show)
+                    }
+                case .failure:
+                    messageClient.presentError("Failed to communicate with database")
+                }
+                
                 state.taskRequestInFlight = true
                 return .merge(
-                    .concatenate(
-                        .task { [feedURL = state.feedURL] in
-                            let result = databaseClient.fetchShow(feedURL)
-                            return .databaseShowResponse(result)
-                        },
-                        .task { [feedURL = state.feedURL] in
-                            let result = await rssClient.fetch(feedURL)
-                            return .rssShowResponse(result)
-                        }
-                        .cancellable(id: RSSRequestID.self)
-                    ),
+                    .task { [feedURL = state.feedURL] in
+                        let result = await rssClient.fetch(feedURL)
+                        return .rssShowResponse(result)
+                    }
+                    .cancellable(id: RSSRequestID.self),
                     .run { send in
                         for await downloadStates in soundFileClient.downloadStatesPublisher.values {
                             await send(.downloadStatesResponse(downloadStates))
@@ -142,19 +146,6 @@ public struct ShowDetailReducer: ReducerProtocol, Sendable {
                     case .downloaded:
                         // FIXME: play sound
                         break
-                    }
-                }
-            case .databaseShowResponse(let result):
-                switch result {
-                case .success(let show):
-                    state.followed = show != nil
-                    if let show {
-                        reflectShow(state: &state, show: show)
-                    }
-                    return .none
-                case .failure:
-                    return .fireAndForget {
-                        messageClient.presentError("Failed to communicate with database")
                     }
                 }
             case .rssShowResponse(let result):
