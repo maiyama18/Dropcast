@@ -12,7 +12,6 @@ opt_in_rules:
   - file_header
   - modifier_order
   - sorted_imports
-  - unused_capture_list
 
 trailing_comma:
     mandatory_comma: true
@@ -20,4 +19,4 @@ trailing_comma:
 line_length: 180
 
 excluded:
-  - DropcastPackage/.build/**
+  - .build/**
