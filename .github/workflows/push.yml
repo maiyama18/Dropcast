@@ -1,6 +1,6 @@
-name: pr
+name: push
 on:
-  pull_request
+  push
 
 jobs:
   lint:
@@ -8,6 +8,13 @@ jobs:
     name: Lint
     steps:
       - uses: actions/checkout@v3
+        with:
+          ref: ${{ github.ref_name }}
+      - name: SwiftPM Cache
+        uses: actions/cache@v3
+        with:
+          path: DropcastPackage/.build
+          key: ${{ runner.os }}-swiftpm-plugin-${{ hashFiles('**/Package.resolved') }}
       - name: Lint Fix
         run: |
           swift package --package-path DropcastPackage plugin --allow-writing-to-package-directory lint-fix
@@ -22,7 +29,7 @@ jobs:
           if (git diff --shortstat | grep '[0-9]'); then \
             git add .; \
             git commit -m "Apply lint"; \
-            git push origin HEAD:${GITHUB_REF}; \
+            git push
           fi
 
   test:
