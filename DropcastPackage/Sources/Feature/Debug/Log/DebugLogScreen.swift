@@ -3,9 +3,9 @@ import SwiftUI
 
 struct DebugLogScreen: View {
     @StateObject private var viewModel: DebugLogViewModel = .init()
-    
+
     var onMessageTapped: (String) -> Void
-    
+
     var body: some View {
         Group {
             if viewModel.loading {

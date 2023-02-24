@@ -50,7 +50,7 @@ final class ShowDetailReducerTests: XCTestCase {
             $0.description = Show.fixtureRebuild.description
             $0.episodes = Show.fixtureRebuild.episodes
         }
-        
+
         await task.cancel()
     }
 
@@ -95,7 +95,7 @@ final class ShowDetailReducerTests: XCTestCase {
         await store.receive(.rssShowResponse(.success(.fixtureRebuild))) {
             $0.taskRequestInFlight = false
         }
-        
+
         await task.cancel()
     }
 
@@ -145,7 +145,7 @@ final class ShowDetailReducerTests: XCTestCase {
         await store.receive(.rssShowResponse(.success(.fixtureRebuild))) {
             $0.taskRequestInFlight = false
         }
-        
+
         await task.cancel()
     }
 
@@ -194,7 +194,7 @@ final class ShowDetailReducerTests: XCTestCase {
         }
 
         XCTAssertEqual(errorMessage.value, "Failed to communicate with database")
-        
+
         await task.cancel()
     }
 
@@ -238,7 +238,7 @@ final class ShowDetailReducerTests: XCTestCase {
         }
 
         XCTAssertEqual(errorMessage.value, "No internet connection")
-        
+
         await test.cancel()
     }
 
@@ -279,7 +279,7 @@ final class ShowDetailReducerTests: XCTestCase {
         }
 
         XCTAssertEqual(try databaseClient.fetchShow(Show.fixtureRebuild.feedURL).get()?.episodes.count, Show.fixtureRebuild.episodes.count)
-        
+
         await task.cancel()
     }
 
@@ -323,7 +323,7 @@ final class ShowDetailReducerTests: XCTestCase {
         await store.receive(.toggleFollowResponse(.failure(.databaseError)))
 
         XCTAssertEqual(errorMessage.value, "Failed to follow the show")
-        
+
         await task.cancel()
     }
 
@@ -368,7 +368,7 @@ final class ShowDetailReducerTests: XCTestCase {
         }
 
         XCTAssertEqual(databaseClient.fetchShow(Show.fixtureRebuild.feedURL), .success(nil))
-        
+
         await task.cancel()
     }
 
@@ -410,7 +410,7 @@ final class ShowDetailReducerTests: XCTestCase {
 
         XCTAssertEqual(copiedString.value, ITunesShow.fixtureRebuild.feedURL.absoluteString)
         XCTAssertEqual(successTitle.value, "Copied")
-        
+
         await task.cancel()
     }
 
@@ -447,7 +447,7 @@ final class ShowDetailReducerTests: XCTestCase {
         await store.send(.disappear)
         await clock.advance(by: .seconds(1))
         // no rss response should be received
-        
+
         await task.cancel()
     }
 }

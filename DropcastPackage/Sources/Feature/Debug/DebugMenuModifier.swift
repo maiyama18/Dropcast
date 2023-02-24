@@ -2,7 +2,7 @@ import SwiftUI
 
 struct DebugMenuModifier: ViewModifier {
     @State private var isPresented: Bool = false
-    
+
     func body(content: Content) -> some View {
         #if DEBUG
         content

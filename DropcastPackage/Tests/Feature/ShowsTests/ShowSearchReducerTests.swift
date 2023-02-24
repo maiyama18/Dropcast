@@ -33,14 +33,14 @@ final class ShowSearchReducerTests: XCTestCase {
                     SimpleShow(
                         feedURL: URL(string: "https://stacktracepodcast.fm/feed.rss")!,
                         imageURL: URL(string: "https://is4-ssl.mzstatic.com/image/thumb/Podcasts122/v4/21/b1/83/"
-                                      + "21b183f6-53e2-fe5e-eabb-f7447577c9b7/mza_9137980121963783437.png/100x100bb.jpg")!,
+                                        + "21b183f6-53e2-fe5e-eabb-f7447577c9b7/mza_9137980121963783437.png/100x100bb.jpg")!,
                         title: "Stacktrace",
                         author: "John Sundell and Gui Rambo"
                     ),
                     SimpleShow(
                         feedURL: URL(string: "https://feeds.simplecast.com/XA_851k3")!,
                         imageURL: URL(string: "https://is4-ssl.mzstatic.com/image/thumb/Podcasts116/v4/6d/32/15/"
-                                      + "6d32155b-12ec-8d15-2f76-256e8e7f8dcf/mza_16949506039235574720.jpg/100x100bb.jpg")!,
+                                        + "6d32155b-12ec-8d15-2f76-256e8e7f8dcf/mza_16949506039235574720.jpg/100x100bb.jpg")!,
                         title: "The Stack Overflow Podcast",
                         author: "The Stack Overflow Podcast"
                     ),
@@ -137,14 +137,14 @@ final class ShowSearchReducerTests: XCTestCase {
                     SimpleShow(
                         feedURL: URL(string: "https://stacktracepodcast.fm/feed.rss")!,
                         imageURL: URL(string: "https://is4-ssl.mzstatic.com/image/thumb/Podcasts122/v4/21/b1/83/"
-                                      + "21b183f6-53e2-fe5e-eabb-f7447577c9b7/mza_9137980121963783437.png/100x100bb.jpg")!,
+                                        + "21b183f6-53e2-fe5e-eabb-f7447577c9b7/mza_9137980121963783437.png/100x100bb.jpg")!,
                         title: "Stacktrace",
                         author: "John Sundell and Gui Rambo"
                     ),
                     SimpleShow(
                         feedURL: URL(string: "https://feeds.simplecast.com/XA_851k3")!,
                         imageURL: URL(string: "https://is4-ssl.mzstatic.com/image/thumb/Podcasts116/v4/6d/32/15/"
-                                      + "6d32155b-12ec-8d15-2f76-256e8e7f8dcf/mza_16949506039235574720.jpg/100x100bb.jpg")!,
+                                        + "6d32155b-12ec-8d15-2f76-256e8e7f8dcf/mza_16949506039235574720.jpg/100x100bb.jpg")!,
                         title: "The Stack Overflow Podcast",
                         author: "The Stack Overflow Podcast"
                     ),

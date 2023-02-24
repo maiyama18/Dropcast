@@ -5,10 +5,10 @@ import SwiftUI
 
 struct DebugLogDetailScreen: View {
     var message: String
-    
+
     @Dependency(\.clipboardClient) private var clipboardClient
     @Dependency(\.messageClient) private var messageClient
-    
+
     var body: some View {
         ScrollView {
             Text(message)

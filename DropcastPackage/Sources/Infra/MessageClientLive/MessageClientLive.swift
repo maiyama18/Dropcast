@@ -7,15 +7,15 @@ extension MessageClient {
     static var live: MessageClient {
         @Sendable
         func present(title: String, iconSystemName: String, iconColor: UIColor) {
-                Drops.hideAll()
+            Drops.hideAll()
 
-                let drop = Drop(
-                    title: title,
-                    titleNumberOfLines: 2,
-                    icon: UIImage(systemName: iconSystemName)?
-                        .withTintColor(iconColor, renderingMode: .alwaysOriginal)
-                )
-                Drops.show(drop)
+            let drop = Drop(
+                title: title,
+                titleNumberOfLines: 2,
+                icon: UIImage(systemName: iconSystemName)?
+                    .withTintColor(iconColor, renderingMode: .alwaysOriginal)
+            )
+            Drops.show(drop)
         }
 
         return MessageClient(

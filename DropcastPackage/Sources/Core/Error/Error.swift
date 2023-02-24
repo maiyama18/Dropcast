@@ -6,7 +6,7 @@ public enum NetworkError: LocalizedError, Equatable {
     case cancelled
     case serverError(status: Int)
     case unknownError
-    
+
     public var errorDescription: String? {
         switch self {
         case .offline:

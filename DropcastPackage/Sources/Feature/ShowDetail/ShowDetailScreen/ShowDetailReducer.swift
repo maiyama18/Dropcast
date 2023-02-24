@@ -22,12 +22,12 @@ public struct ShowDetailReducer: ReducerProtocol, Sendable {
         public var taskRequestInFlight: Bool = false
 
         var downloadStates: [Episode.ID: EpisodeDownloadState]?
-        
+
         public func downloadState(id: Episode.ID) -> EpisodeDownloadState {
             guard let downloadStates else { return .notDownloaded }
             return downloadStates[id] ?? .notDownloaded
         }
-        
+
         public init(
             feedURL: URL,
             imageURL: URL,
@@ -121,8 +121,8 @@ public struct ShowDetailReducer: ReducerProtocol, Sendable {
                 return .task {
                     .toggleFollowResponse(
                         followed
-                        ? databaseClient.unfollowShow(show.feedURL).map { true }
-                        : databaseClient.followShow(show).map { true }
+                            ? databaseClient.unfollowShow(show.feedURL).map { true }
+                            : databaseClient.followShow(show).map { true }
                     )
                 }
             case .copyFeedURLButtonTapped:
@@ -183,8 +183,8 @@ public struct ShowDetailReducer: ReducerProtocol, Sendable {
                 case .failure:
                     return .fireAndForget { [followed = state.followed ?? false] in
                         let message = followed
-                        ? "Failed to unfollow the show"
-                        : "Failed to follow the show"
+                            ? "Failed to unfollow the show"
+                            : "Failed to follow the show"
                         messageClient.presentError(message)
                     }
                 }

@@ -10,11 +10,11 @@ public struct LogEntry: Sendable {
 
 public actor LogStore {
     public init() {}
-    
+
     public func getAllLogEntries() throws -> [LogEntry] {
         let store = try OSLogStore(scope: .currentProcessIdentifier)
         let position = store.position(timeIntervalSinceLatestBoot: 1)
-        
+
         return try store.getEntries(at: position)
             .compactMap { $0 as? OSLogEntryLog }
             .filter { $0.subsystem == Logger.subsystem() }

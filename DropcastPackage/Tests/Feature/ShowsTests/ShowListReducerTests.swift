@@ -88,10 +88,10 @@ final class ShowListReducerTests: XCTestCase {
 
         await task.cancel()
     }
-    
+
     func test_unfollow_show_failure_present_error_message() async throws {
         let errorMessage: LockIsolated<String?> = .init(nil)
-        
+
         let databaseClient: DatabaseClient = .live(persistentProvider: InMemoryPersistentProvider())
         let store = TestStore(
             initialState: ShowListReducer.State(),
@@ -104,7 +104,7 @@ final class ShowListReducerTests: XCTestCase {
             } catch {
                 XCTFail()
             }
-            
+
             $0.messageClient.presentError = { message in errorMessage.withValue { $0 = message } }
         }
 
@@ -114,7 +114,7 @@ final class ShowListReducerTests: XCTestCase {
         }
 
         await store.send(.showSwipeToDeleted(feedURL: Show.fixtureRebuild.feedURL))
-        
+
         XCTAssertNoDifference(errorMessage.value, "Failed to unfollow the show")
 
         await task.cancel()

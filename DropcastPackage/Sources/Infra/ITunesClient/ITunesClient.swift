@@ -14,7 +14,7 @@ public struct ITunesClient: Sendable {
 extension ITunesClient {
     public static func live(urlSession: URLSession) -> ITunesClient {
         @Dependency(\.logger[.iTunes]) var logger
-        
+
         return ITunesClient(
             searchShows: { query in
                 logger.notice("searching shows by query: \(query, privacy: .public)")

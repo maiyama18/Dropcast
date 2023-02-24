@@ -7,7 +7,7 @@ import SwiftUI
 
 public struct ContentView: View {
     @Dependency(\.logger[.app]) var logger
-    
+
     public init() {
         logger.notice("app launched")
     }

@@ -75,7 +75,7 @@ extension XCTestCase {
             group.cancelAll()
         }
     }
-    
+
     public func XCTAssertReceive<E: Equatable, P: Publisher<E, Never>>(
         from publisher: P,
         _ expectedValue: @Sendable @escaping @autoclosure () -> E,
@@ -91,12 +91,12 @@ extension XCTestCase {
                 actuals.append(value)
                 expectation.fulfill()
             }
-        
+
         wait(for: [expectation], timeout: timeout)
         XCTAssertNoDifference(actuals.first, expectedValue(), message(), file: file, line: line)
         _ = cancellable
     }
-    
+
     public func XCTAssertReceive<E: Equatable, P: Publisher<E, Never>>(
         from publisher: P,
         _ expectedValue: @Sendable @escaping @autoclosure () -> E,
@@ -113,9 +113,9 @@ extension XCTestCase {
                 actuals.append(value)
                 expectation.fulfill()
             }
-        
+
         try await operation()
-        
+
         wait(for: [expectation], timeout: timeout)
         XCTAssertNoDifference(actuals.first, expectedValue(), message(), file: file, line: line)
         _ = cancellable

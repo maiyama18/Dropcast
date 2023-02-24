@@ -9,12 +9,12 @@ struct DebugMenuScreen: View {
         case log
         case logDetail(message: String)
     }
-    
+
     @State private var path: [Route] = []
-    
+
     @Dependency(\.clipboardClient) private var clipboardClient
     @Dependency(\.messageClient) private var messageClient
-    
+
     var body: some View {
         NavigationStack(path: $path) {
             List {

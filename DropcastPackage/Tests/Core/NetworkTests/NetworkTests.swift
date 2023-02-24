@@ -8,7 +8,7 @@ final class NetworkTests: XCTestCase {
         let config = URLSessionConfiguration.ephemeral
         config.protocolClasses = [URLProtocolStub.self]
         let urlSession = URLSession(configuration: config)
-        
+
         URLProtocolStub.setResponses(
             [
                 URL(string: "https://example.com/success")!: .init(
@@ -37,32 +37,32 @@ final class NetworkTests: XCTestCase {
                 ),
             ]
         )
-        
+
         try await XCTAsyncAssertEqual(
             await request(session: urlSession, url: URL(string: "https://example.com/success")!),
             .success("response".data(using: .utf8)!)
         )
-        
+
         try await XCTAsyncAssertEqual(
             await request(session: urlSession, url: URL(string: "https://example.com/500")!),
             .failure(.serverError(status: 500))
         )
-        
+
         try await XCTAsyncAssertEqual(
             await request(session: urlSession, url: URL(string: "https://example.com/offline")!),
             .failure(.offline)
         )
-        
+
         try await XCTAsyncAssertEqual(
             await request(session: urlSession, url: URL(string: "https://example.com/timeout")!),
             .failure(.timeout)
         )
-        
+
         try await XCTAsyncAssertEqual(
             await request(session: urlSession, url: URL(string: "https://example.com/cancelled")!),
             .failure(.cancelled)
         )
-        
+
         try await XCTAsyncAssertEqual(
             await request(session: urlSession, url: URL(string: "https://example.com/other")!),
             .failure(.unknownError)

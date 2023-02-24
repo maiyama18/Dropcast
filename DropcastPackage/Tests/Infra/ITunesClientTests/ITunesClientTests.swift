@@ -62,7 +62,7 @@ final class ITunesClientTests: XCTestCase {
         URLProtocolStub.setResponses(
             [
                 URL(string: "https://itunes.apple.com/search?media=podcast&term=%E3%83%90%E3%82%A4%E3%83%AA%E3%83%B3%E3%82%AC%E3%83%AB")!:
-                        .init(statusCode: 200, result: .success(data)),
+                    .init(statusCode: 200, result: .success(data)),
             ]
         )
 

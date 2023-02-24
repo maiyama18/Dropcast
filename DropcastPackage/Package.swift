@@ -343,13 +343,13 @@ let targets: [PackageDescription.Target] = [
         )
     )
     target.swiftSettings = swiftSettings
-    
+
     var plugins = target.plugins ?? []
     plugins.append(
         .plugin(name: "LintCheckBuildToolPlugin", package: "SwiftLintPlugins")
     )
     target.plugins = plugins
-    
+
     return target
 }
 
