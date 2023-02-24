@@ -72,7 +72,7 @@ final class ShowDetailReducerTests: XCTestCase {
             } catch {
                 XCTFail()
             }
-            
+
             $0.rssClient.fetch = { url in
                 XCTAssertEqual(url, ITunesShow.fixtureRebuild.feedURL)
                 try? await clock.sleep(for: .seconds(1))
@@ -124,7 +124,7 @@ final class ShowDetailReducerTests: XCTestCase {
         let task = await store.send(.task) {
             $0.taskRequestInFlight = true
             $0.followed = true
-            
+
             $0.imageURL = Show.fixtureRebuild.imageURL
             $0.title = Show.fixtureRebuild.title
             $0.author = Show.fixtureRebuild.author

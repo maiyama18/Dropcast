@@ -88,7 +88,7 @@ public struct ShowDetailReducer: ReducerProtocol, Sendable {
                 case .failure:
                     messageClient.presentError("Failed to communicate with database")
                 }
-                
+
                 state.taskRequestInFlight = true
                 return .merge(
                     .task { [feedURL = state.feedURL] in
