@@ -78,9 +78,9 @@ public struct FeedReducer: ReducerProtocol, Sendable {
                 let message: String
                 switch error {
                 case .unexpectedError:
-                    message = "Something went wrong"
+                    message = L10n.Error.somethingWentWrong
                 case .downloadError:
-                    message = "Failed to download the episode"
+                    message = L10n.Error.downloadError
                 }
                 return .fireAndForget {
                     messageClient.presentError(message)

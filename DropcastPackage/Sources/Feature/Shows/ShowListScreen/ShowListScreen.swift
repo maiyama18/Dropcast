@@ -39,7 +39,7 @@ public struct ShowListScreen: View {
                         }
                     }
                 }
-                .navigationTitle("Shows")
+                .navigationTitle(L10n.shows)
             }
             .task {
                 viewStore.send(.task)
@@ -97,14 +97,14 @@ public struct ShowListScreen: View {
             Spacer()
                 .frame(height: 8)
 
-            Text("No shows")
-                .font(.title2)
+            Text(L10n.noShows)
+                .font(.title3.bold())
                 .foregroundStyle(.secondary)
 
             Spacer()
                 .frame(height: 16)
 
-            Button("Follow your favorite shows!") {
+            Button(L10n.followFavoriteShows) {
                 onButtonTapped()
             }
             .tint(.orange)

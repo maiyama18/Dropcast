@@ -1,0 +1,9 @@
+"feed" = "Feed";
+
+"no_feed" = "No feed";
+
+"follow_shows" = "Follow your favorite shows!";
+
+"error.something_went_wrong" = "Something went wrong";
+
+"error.download_error" = "Failed to download the episode";

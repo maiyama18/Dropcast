@@ -10,20 +10,20 @@ public enum NetworkError: LocalizedError, Equatable {
     public var errorDescription: String? {
         switch self {
         case .offline:
-            return "No internet connection"
+            return L10n.offline
         case .timeout:
-            return "Request timed out"
+            return L10n.timeout
         case .cancelled:
-            return "Request cancelled"
+            return L10n.cancelled
         case .serverError(let status):
             switch status {
             case 400..<500:
-                return "Invalid request"
+                return L10n.invalidRequest
             default:
-                return "Service returns error"
+                return L10n.serverError
             }
         case .unknownError:
-            return "Something went wrong"
+            return L10n.somethingWentWrong
         }
     }
 }

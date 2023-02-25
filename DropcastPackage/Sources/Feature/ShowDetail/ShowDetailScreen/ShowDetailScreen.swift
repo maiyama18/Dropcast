@@ -69,13 +69,13 @@ public struct ShowDetailScreen: View {
                         Button {
                             viewStore.send(.copyFeedURLButtonTapped)
                         } label: {
-                            Label("Copy Feed URL", systemImage: "doc")
+                            Label(L10n.copyFeedUrl, systemImage: "doc")
                         }
                         if let linkURL = viewStore.linkURL {
                             Button {
                                 openURL(linkURL)
                             } label: {
-                                Label("Open in Browser", systemImage: "globe")
+                                Label(L10n.openInBrowser, systemImage: "globe")
                             }
                         }
                     } label: {

@@ -13,9 +13,9 @@ struct ShowSearchScreen: View {
                 Group {
                     switch viewStore.showsState {
                     case .prompt:
-                        labelView(title: "Search Shows")
+                        labelView(title: L10n.searchShows)
                     case .empty:
-                        labelView(title: "No Results")
+                        labelView(title: L10n.noResults)
                     case .loaded(let shows):
                         List {
                             ForEach(shows) { show in
@@ -48,11 +48,11 @@ struct ShowSearchScreen: View {
                             .scaleEffect(2)
                     }
                 }
-                .navigationTitle("Follow shows")
+                .navigationTitle(L10n.followShows)
                 .searchable(
                     text: viewStore.binding(get: \.query, send: { .queryChanged(query: $0) }),
                     placement: .navigationBarDrawer(displayMode: .always),
-                    prompt: Text("Show title, Feed URL, Author...")
+                    prompt: Text(L10n.searchPlaceholder)
                 )
                 .autocorrectionDisabled(true)
                 .textInputAutocapitalization(.never)

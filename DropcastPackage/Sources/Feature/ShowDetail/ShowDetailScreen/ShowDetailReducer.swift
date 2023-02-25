@@ -86,7 +86,7 @@ public struct ShowDetailReducer: ReducerProtocol, Sendable {
                         reflectShow(state: &state, show: show)
                     }
                 case .failure:
-                    messageClient.presentError("Failed to communicate with database")
+                    messageClient.presentError(L10n.Error.databaseError)
                 }
 
                 state.taskRequestInFlight = true
@@ -132,7 +132,7 @@ public struct ShowDetailReducer: ReducerProtocol, Sendable {
             case .copyFeedURLButtonTapped:
                 return .fireAndForget { [feedURL = state.feedURL] in
                     clipboardClient.copy(feedURL.absoluteString)
-                    messageClient.presentSuccess("Copied")
+                    messageClient.presentSuccess(L10n.Message.copied)
                 }
             case .downloadEpisodeButtonTapped(let episode):
                 return .fireAndForget { [downloadState = state.downloadState(id: episode.id)] in
@@ -158,7 +158,7 @@ public struct ShowDetailReducer: ReducerProtocol, Sendable {
                     let message: String
                     switch error {
                     case .invalidFeed:
-                        message = "Invalid rss feed"
+                        message = L10n.Error.invalidRssFeed
                     case .networkError(reason: let error):
                         message = error.localizedDescription
                     }
@@ -174,8 +174,8 @@ public struct ShowDetailReducer: ReducerProtocol, Sendable {
                 case .failure:
                     return .fireAndForget { [followed = state.followed ?? false] in
                         let message = followed
-                            ? "Failed to unfollow the show"
-                            : "Failed to follow the show"
+                            ? L10n.Error.failedToUnfollow
+                            : L10n.Error.failedToFollow
                         messageClient.presentError(message)
                     }
                 }
@@ -186,9 +186,9 @@ public struct ShowDetailReducer: ReducerProtocol, Sendable {
                 let message: String
                 switch error {
                 case .unexpectedError:
-                    message = "Something went wrong"
+                    message = L10n.Error.somethingWentWrong
                 case .downloadError:
-                    message = "Failed to download the episode"
+                    message = L10n.Error.downloadError
                 }
                 return .fireAndForget {
                     messageClient.presentError(message)

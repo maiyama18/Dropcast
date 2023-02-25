@@ -41,6 +41,17 @@ extension PackageDescription.Target.Dependency {
     )
 }
 
+extension PackageDescription.Target.PluginUsage {
+    static let swiftlint: Self = .plugin(
+        name: "LintCheckBuildToolPlugin",
+        package: "SwiftLintPlugins"
+    )
+    static let swiftgen: Self = .plugin(
+        name: "SwiftGenPlugin",
+        package: "SwiftGenPlugin"
+    )
+}
+
 let dependencies: [PackageDescription.Package.Dependency] = [
     .package(url: "https://github.com/apple/swift-algorithms", exact: "1.0.0"),
     .package(url: "https://github.com/apple/swift-async-algorithms", exact: "0.0.4"),
@@ -52,6 +63,7 @@ let dependencies: [PackageDescription.Package.Dependency] = [
     .package(url: "https://github.com/pointfreeco/swift-dependencies", exact: "0.1.4"),
     .package(url: "https://github.com/pointfreeco/swift-identified-collections", exact: "0.7.0"),
     .package(url: "https://github.com/maiyama18/SwiftLintPlugins", exact: "0.9.2"),
+    .package(url: "https://github.com/SwiftGen/SwiftGenPlugin", exact: "6.6.2"),
 ]
 
 let targets: [PackageDescription.Target] = [
@@ -79,7 +91,8 @@ let targets: [PackageDescription.Target] = [
             "FeedFeature",
             "ShowsFeature",
         ],
-        path: "Sources/Feature/App"
+        path: "Sources/Feature/App",
+        plugins: [.swiftgen]
     ),
     .testTarget(
         name: "AppFeatureTests",
@@ -108,7 +121,8 @@ let targets: [PackageDescription.Target] = [
             "MessageClient",
             "SoundFileClient",
         ],
-        path: "Sources/Feature/Feed"
+        path: "Sources/Feature/Feed",
+        plugins: [.swiftgen]
     ),
     .testTarget(
         name: "FeedFeatureTests",
@@ -130,7 +144,8 @@ let targets: [PackageDescription.Target] = [
             "RSSClient",
             "ShowDetailFeature",
         ],
-        path: "Sources/Feature/Shows"
+        path: "Sources/Feature/Shows",
+        plugins: [.swiftgen]
     ),
     .testTarget(
         name: "ShowsFeatureTests",
@@ -153,7 +168,8 @@ let targets: [PackageDescription.Target] = [
             "RSSClient",
             "SoundFileClient",
         ],
-        path: "Sources/Feature/ShowDetail"
+        path: "Sources/Feature/ShowDetail",
+        plugins: [.swiftgen]
     ),
     .testTarget(
         name: "ShowDetailFeatureTest",
@@ -289,7 +305,8 @@ let targets: [PackageDescription.Target] = [
     .target(
         name: "Error",
         dependencies: [],
-        path: "Sources/Core/Error"
+        path: "Sources/Core/Error",
+        plugins: [.swiftgen]
     ),
     .target(
         name: "Formatter",
@@ -331,7 +348,19 @@ let targets: [PackageDescription.Target] = [
         ],
         path: "Sources/Core/TestHelper"
     ),
+
+    // Plugin module
+
+    .plugin(
+        name: "InitLocalizationPlugin",
+        capability: .command(
+            intent: .custom(verb: "init-localization", description: "Initialize files for localization"),
+            permissions: [.writeToPackageDirectory(reason: "Make files for localization")]
+        )
+    ),
 ].map { (target: PackageDescription.Target) -> PackageDescription.Target in
+    guard target.type != .plugin else { return target }
+
     var swiftSettings = target.swiftSettings ?? []
     swiftSettings.append(
         .unsafeFlags(
@@ -345,9 +374,7 @@ let targets: [PackageDescription.Target] = [
     target.swiftSettings = swiftSettings
 
     var plugins = target.plugins ?? []
-    plugins.append(
-        .plugin(name: "LintCheckBuildToolPlugin", package: "SwiftLintPlugins")
-    )
+    plugins.append(.swiftlint)
     target.plugins = plugins
 
     return target
@@ -355,6 +382,7 @@ let targets: [PackageDescription.Target] = [
 
 var package = Package(
     name: "DropcastPackage",
+    defaultLocalization: "en",
     platforms: [.iOS(.v16)],
     products: [
         .library(

@@ -1,0 +1,11 @@
+"offline" = "No internet connection";
+
+"timeout" = "Request timed out";
+
+"cancelled" = "Request cancelled";
+
+"invalid_request" = "Invalid request";
+
+"server_error" = "Server returns error";
+
+"something_went_wrong" = "Something went wrong";

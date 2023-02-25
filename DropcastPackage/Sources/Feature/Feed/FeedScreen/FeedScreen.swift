@@ -44,7 +44,7 @@ public struct FeedScreen: View {
                             .scaleEffect(2)
                     }
                 }
-                .navigationTitle("Feed")
+                .navigationTitle(L10n.feed)
             }
             .task {
                 viewStore.send(.task)
@@ -62,14 +62,14 @@ public struct FeedScreen: View {
             Spacer()
                 .frame(height: 8)
 
-            Text("No feed")
-                .font(.title2)
+            Text(L10n.noFeed)
+                .font(.title3.bold())
                 .foregroundStyle(.secondary)
 
             Spacer()
                 .frame(height: 16)
 
-            Button("Follow your favorite shows!") {
+            Button(L10n.followShows) {
                 onButtonTapped()
             }
             .tint(.orange)
