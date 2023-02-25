@@ -7,3 +7,5 @@
 "error.something_went_wrong" = "Something went wrong";
 
 "error.download_error" = "Failed to download the episode";
+
+"error.database_error" = "SFailed to communicate with database";

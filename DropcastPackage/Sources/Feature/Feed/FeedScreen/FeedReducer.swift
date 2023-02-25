@@ -2,6 +2,7 @@ import ComposableArchitecture
 import Entity
 import Error
 import MessageClient
+import RSSClient
 import SoundFileClient
 
 public struct FeedReducer: ReducerProtocol, Sendable {
@@ -29,6 +30,7 @@ public struct FeedReducer: ReducerProtocol, Sendable {
 
     @Dependency(\.databaseClient) private var databaseClient
     @Dependency(\.messageClient) private var messageClient
+    @Dependency(\.rssClient) private var rssClient
     @Dependency(\.soundFileClient) private var soundFileClient
 
     public init() {}
@@ -38,11 +40,33 @@ public struct FeedReducer: ReducerProtocol, Sendable {
             switch action {
             case .task:
                 return .merge(
+                    .fireAndForget {
+                        let shows: [Show]
+                        switch databaseClient.fetchFollowedShows() {
+                        case .success(let followedShows):
+                            shows = followedShows.elements
+                        case .failure:
+                            messageClient.presentError(L10n.Error.databaseError)
+                            return
+                        }
+                        
+                        for show in shows {
+                            Task {
+                                switch await rssClient.fetch(show.feedURL) {
+                                case .success(let show):
+                                    _ = databaseClient.addNewEpisodes(show)
+                                case .failure:
+                                    // do not show error when update of one of shows failed
+                                    break
+                                }
+                            }
+                        }
+                    },
                     .run { send in
                         for await episodes in databaseClient.followedEpisodesStream() {
                             await send(.episodesResponse(episodes))
                         }
-                    },
+                    }.animation(.default),
                     .run { send in
                         for await downloadStates in soundFileClient.downloadStatesPublisher.values {
                             await send(.downloadStatesResponse(downloadStates))

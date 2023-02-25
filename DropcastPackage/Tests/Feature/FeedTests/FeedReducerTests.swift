@@ -1,6 +1,7 @@
 import ComposableArchitecture
 import DatabaseClient
 import Entity
+import Error
 import SoundFileClient
 import TestHelper
 import XCTest
@@ -20,6 +21,11 @@ final class FeedReducerTests: XCTestCase {
             } catch {
                 XCTFail()
             }
+            
+            $0.rssClient.fetch = { feedURL in
+                XCTAssertNoDifference(feedURL, Show.fixtureRebuild.feedURL)
+                return .success(.fixtureRebuild)
+            }
         }
 
         let task = await store.send(.task)
@@ -28,6 +34,104 @@ final class FeedReducerTests: XCTestCase {
         }
         await store.receive(.episodesResponse(IdentifiedArrayOf(uniqueElements: [.fixtureRebuild352, .fixtureRebuild351, .fixtureRebuild350]))) {
             $0.episodes = [.fixtureRebuild352, .fixtureRebuild351, .fixtureRebuild350]
+        }
+
+        await task.cancel()
+    }
+    
+    func test_new_episodes_are_prepended_to_feed() async throws {
+        let clock = TestClock()
+        let databaseClient: DatabaseClient = .live(persistentProvider: InMemoryPersistentProvider())
+        let store = TestStore(
+            initialState: FeedReducer.State(),
+            reducer: FeedReducer()
+        ) {
+            $0.databaseClient = databaseClient
+            do {
+                var fixtureRebuild: Show = .fixtureRebuild
+                fixtureRebuild.episodes = [.fixtureRebuild350]
+                var fixtureSwiftBySundell: Show = .fixtureSwiftBySundell
+                fixtureSwiftBySundell.episodes = [.fixtureSwiftBySundell121, .fixtureSwiftBySundell122]
+                
+                try $0.databaseClient.followShow(fixtureRebuild).get()
+                try $0.databaseClient.followShow(fixtureSwiftBySundell).get()
+            } catch {
+                XCTFail()
+            }
+            
+            $0.rssClient.fetch = { feedURL in
+                switch feedURL {
+                case Show.fixtureRebuild.feedURL:
+                    try? await clock.sleep(for: .seconds(1))
+                    return .success(.fixtureRebuild)
+                case Show.fixtureSwiftBySundell.feedURL:
+                    try? await clock.sleep(for: .seconds(2))
+                    return .success(.fixtureSwiftBySundell)
+                default:
+                    XCTFail()
+                    return .failure(RSSError.invalidFeed)
+                }
+            }
+        }
+
+        let task = await store.send(.task)
+        await store.receive(.downloadStatesResponse([:])) {
+            $0.downloadStates = [:]
+        }
+        await store.receive(
+            .episodesResponse(IdentifiedArrayOf(uniqueElements: [
+                .fixtureRebuild350,
+                .fixtureSwiftBySundell122,
+                .fixtureSwiftBySundell121,
+            ]))
+        ) {
+            $0.episodes = [
+                .fixtureRebuild350,
+                .fixtureSwiftBySundell122,
+                .fixtureSwiftBySundell121,
+            ]
+        }
+        
+        await clock.advance(by: .seconds(1))
+        
+        await store.receive(
+            .episodesResponse(IdentifiedArrayOf(uniqueElements: [
+                .fixtureRebuild352,
+                .fixtureRebuild351,
+                .fixtureRebuild350,
+                .fixtureSwiftBySundell122,
+                .fixtureSwiftBySundell121,
+            ]))
+        ) {
+            $0.episodes = [
+                .fixtureRebuild352,
+                .fixtureRebuild351,
+                .fixtureRebuild350,
+                .fixtureSwiftBySundell122,
+                .fixtureSwiftBySundell121,
+            ]
+        }
+        
+        await clock.advance(by: .seconds(1))
+        
+        await store.receive(
+            .episodesResponse(IdentifiedArrayOf(uniqueElements: [
+                .fixtureRebuild352,
+                .fixtureSwiftBySundell123,
+                .fixtureRebuild351,
+                .fixtureRebuild350,
+                .fixtureSwiftBySundell122,
+                .fixtureSwiftBySundell121,
+            ]))
+        ) {
+            $0.episodes = [
+                .fixtureRebuild352,
+                .fixtureSwiftBySundell123,
+                .fixtureRebuild351,
+                .fixtureRebuild350,
+                .fixtureSwiftBySundell122,
+                .fixtureSwiftBySundell121,
+            ]
         }
 
         await task.cancel()
@@ -44,6 +148,11 @@ final class FeedReducerTests: XCTestCase {
                 try $0.databaseClient.followShow(.fixtureRebuild).get()
             } catch {
                 XCTFail()
+            }
+            
+            $0.rssClient.fetch = { feedURL in
+                XCTAssertNoDifference(feedURL, Show.fixtureRebuild.feedURL)
+                return .success(.fixtureRebuild)
             }
         }
 
@@ -91,6 +200,18 @@ final class FeedReducerTests: XCTestCase {
                 try $0.databaseClient.followShow(.fixtureSwiftBySundell).get()
             } catch {
                 XCTFail()
+            }
+            
+            $0.rssClient.fetch = { feedURL in
+                switch feedURL {
+                case Show.fixtureRebuild.feedURL:
+                    return .success(.fixtureRebuild)
+                case Show.fixtureSwiftBySundell.feedURL:
+                    return .success(.fixtureSwiftBySundell)
+                default:
+                    XCTFail()
+                    return .failure(RSSError.invalidFeed)
+                }
             }
         }
 
@@ -146,6 +267,11 @@ final class FeedReducerTests: XCTestCase {
                 try $0.databaseClient.followShow(.fixtureRebuild).get()
             } catch {
                 XCTFail()
+            }
+            
+            $0.rssClient.fetch = { feedURL in
+                XCTAssertNoDifference(feedURL, Show.fixtureRebuild.feedURL)
+                return .success(.fixtureRebuild)
             }
         }
 
@@ -207,6 +333,11 @@ final class FeedReducerTests: XCTestCase {
                 try $0.databaseClient.followShow(.fixtureRebuild).get()
             } catch {
                 XCTFail()
+            }
+            
+            $0.rssClient.fetch = { feedURL in
+                XCTAssertNoDifference(feedURL, Show.fixtureRebuild.feedURL)
+                return .success(.fixtureRebuild)
             }
         }
 
@@ -272,6 +403,11 @@ final class FeedReducerTests: XCTestCase {
                 try $0.databaseClient.followShow(.fixtureRebuild).get()
             } catch {
                 XCTFail()
+            }
+            
+            $0.rssClient.fetch = { feedURL in
+                XCTAssertNoDifference(feedURL, Show.fixtureRebuild.feedURL)
+                return .success(.fixtureRebuild)
             }
 
             $0.messageClient.presentError = { message in

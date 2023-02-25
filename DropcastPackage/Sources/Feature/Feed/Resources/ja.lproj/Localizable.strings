@@ -7,3 +7,5 @@
 "error.something_went_wrong" = "予期しないエラーが発生しました";
 
 "error.download_error" = "エピソードをダウンロードできませんでした";
+
+"error.database_error" = "データベースとの通信に失敗しました";
