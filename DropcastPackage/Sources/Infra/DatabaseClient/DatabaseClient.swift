@@ -281,8 +281,6 @@ extension DatabaseClient: DependencyKey {
     )
     public static let previewValue: DatabaseClient = DatabaseClient.live(persistentProvider: InMemoryPersistentProvider())
 }
-extension DatabaseClient: TestDependencyKey {
-}
 
 extension DependencyValues {
     public var databaseClient: DatabaseClient {
