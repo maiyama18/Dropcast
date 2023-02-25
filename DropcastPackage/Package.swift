@@ -355,6 +355,7 @@ let targets: [PackageDescription.Target] = [
 
 var package = Package(
     name: "DropcastPackage",
+    defaultLocalization: "en",
     platforms: [.iOS(.v16)],
     products: [
         .library(
