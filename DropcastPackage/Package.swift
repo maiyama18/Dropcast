@@ -119,6 +119,7 @@ let targets: [PackageDescription.Target] = [
             "DatabaseClient",
             "Entity",
             "MessageClient",
+            "RSSClient",
             "SoundFileClient",
         ],
         path: "Sources/Feature/Feed",
