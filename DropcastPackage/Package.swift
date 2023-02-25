@@ -348,9 +348,9 @@ let targets: [PackageDescription.Target] = [
         ],
         path: "Sources/Core/TestHelper"
     ),
-    
+
     // Plugin module
-    
+
     .plugin(
         name: "InitLocalizationPlugin",
         capability: .command(
@@ -360,7 +360,7 @@ let targets: [PackageDescription.Target] = [
     ),
 ].map { (target: PackageDescription.Target) -> PackageDescription.Target in
     guard target.type != .plugin else { return target }
-    
+
     var swiftSettings = target.swiftSettings ?? []
     swiftSettings.append(
         .unsafeFlags(

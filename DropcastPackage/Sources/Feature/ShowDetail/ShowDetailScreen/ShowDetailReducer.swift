@@ -174,8 +174,8 @@ public struct ShowDetailReducer: ReducerProtocol, Sendable {
                 case .failure:
                     return .fireAndForget { [followed = state.followed ?? false] in
                         let message = followed
-                        ? L10n.Error.failedToUnfollow
-                        : L10n.Error.failedToFollow
+                            ? L10n.Error.failedToUnfollow
+                            : L10n.Error.failedToFollow
                         messageClient.presentError(message)
                     }
                 }

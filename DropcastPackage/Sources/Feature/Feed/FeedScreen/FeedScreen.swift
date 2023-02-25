@@ -6,11 +6,11 @@ import SwiftUI
 
 public struct FeedScreen: View {
     let store: StoreOf<FeedReducer>
-    
+
     public init(store: StoreOf<FeedReducer>) {
         self.store = store
     }
-    
+
     public var body: some View {
         WithViewStore(store, observe: { $0 }) { viewStore in
             NavigationView {
@@ -32,7 +32,7 @@ public struct FeedScreen: View {
                                                 viewStore.send(.downloadEpisodeButtonTapped(episode: episode))
                                             }
                                         )
-                                        
+
                                         EpisodeDivider()
                                     }
                                 }
@@ -51,24 +51,24 @@ public struct FeedScreen: View {
             }
         }
     }
-    
+
     @ViewBuilder
     private func emptyView(onButtonTapped: @escaping () -> Void) -> some View {
         VStack(spacing: 0) {
             Image(systemName: "face.dashed")
                 .font(.largeTitle)
                 .foregroundStyle(.secondary)
-            
+
             Spacer()
                 .frame(height: 8)
-            
+
             Text(L10n.noFeed)
                 .font(.title3.bold())
                 .foregroundStyle(.secondary)
-            
+
             Spacer()
                 .frame(height: 16)
-            
+
             Button(L10n.followShows) {
                 onButtonTapped()
             }
