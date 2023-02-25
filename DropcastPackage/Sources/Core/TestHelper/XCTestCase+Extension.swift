@@ -116,7 +116,7 @@ extension XCTestCase {
 
         try await operation()
 
-        wait(for: [expectation], timeout: timeout)
+        await fulfillment(of: [expectation], timeout: timeout)
         XCTAssertNoDifference(actuals.first, expectedValue(), message(), file: file, line: line)
         _ = cancellable
     }
