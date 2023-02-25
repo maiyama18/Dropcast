@@ -96,19 +96,19 @@ public struct ShowSearchReducer: ReducerProtocol, Sendable {
                 switch result {
                 case .success(let shows):
                     state.showsState = shows.isEmpty
-                    ? .empty
-                    : .loaded(
-                        shows: IdentifiedArrayOf(
-                            uniqueElements: shows
-                                .uniqued(on: { $0.feedURL })
-                                .map { SimpleShow(iTunesShow: $0) }
+                        ? .empty
+                        : .loaded(
+                            shows: IdentifiedArrayOf(
+                                uniqueElements: shows
+                                    .uniqued(on: { $0.feedURL })
+                                    .map { SimpleShow(iTunesShow: $0) }
+                            )
                         )
-                    )
                     return .none
                 case .failure(let error):
                     let currentShows = state.showsState.currentShows
                     state.showsState = currentShows.isEmpty ? .prompt : .loaded(shows: currentShows)
-                    
+
                     let message: String
                     switch error {
                     case .parseError:

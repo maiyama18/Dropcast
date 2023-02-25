@@ -19,13 +19,19 @@ final class DatabaseClientTests: XCTestCase {
 
         try await XCTAssertReceive(from: followedShowsSequence, [])
 
-        try client.followShow(.fixtureSwiftBySundell).get()
+        Task { [client = self.client!] in
+            try client.followShow(.fixtureSwiftBySundell).get()
+        }
         try await XCTAssertReceive(from: followedShowsSequence, [.fixtureSwiftBySundell])
 
-        try client.followShow(.fixtureRebuild).get()
+        Task { [client = self.client!] in
+            try client.followShow(.fixtureRebuild).get()
+        }
         try await XCTAssertReceive(from: followedShowsSequence, [.fixtureRebuild, .fixtureSwiftBySundell])
 
-        try client.followShow(.fixtureプログラム雑談).get()
+        Task { [client = self.client!] in
+            try client.followShow(.fixtureプログラム雑談).get()
+        }
         try await XCTAssertReceive(from: followedShowsSequence, [.fixtureRebuild, .fixtureSwiftBySundell, .fixtureプログラム雑談])
 
         try await XCTAssertNoReceive(from: followedShowsSequence)
@@ -36,10 +42,14 @@ final class DatabaseClientTests: XCTestCase {
 
         try await XCTAssertReceive(from: followedShowsSequence, [])
 
-        try client.followShow(.fixtureRebuild).get()
+        Task { [client = self.client!] in
+            try client.followShow(.fixtureRebuild).get()
+        }
         try await XCTAssertReceive(from: followedShowsSequence, [.fixtureRebuild])
 
-        try client.followShow(.fixtureRebuild).get()
+        Task { [client = self.client!] in
+            try client.followShow(.fixtureRebuild).get()
+        }
 
         try await XCTAssertNoReceive(from: followedShowsSequence)
     }
@@ -53,16 +63,19 @@ final class DatabaseClientTests: XCTestCase {
 
         try await XCTAssertReceive(from: followedShowsSequence, [.fixtureRebuild, .fixtureSwiftBySundell, .fixtureプログラム雑談])
 
-        try client.unfollowShow(Show.fixtureSwiftBySundell.feedURL).get()
-
+        Task { [client = self.client!] in
+            try client.unfollowShow(Show.fixtureSwiftBySundell.feedURL).get()
+        }
         try await XCTAssertReceive(from: followedShowsSequence, [.fixtureRebuild, .fixtureプログラム雑談])
 
-        try client.unfollowShow(Show.fixtureプログラム雑談.feedURL).get()
-
+        Task { [client = self.client!] in
+            try client.unfollowShow(Show.fixtureプログラム雑談.feedURL).get()
+        }
         try await XCTAssertReceive(from: followedShowsSequence, [.fixtureRebuild])
 
-        try client.unfollowShow(Show.fixtureRebuild.feedURL).get()
-
+        Task { [client = self.client!] in
+            try client.unfollowShow(Show.fixtureRebuild.feedURL).get()
+        }
         try await XCTAssertReceive(from: followedShowsSequence, [])
     }
 
@@ -73,8 +86,9 @@ final class DatabaseClientTests: XCTestCase {
 
         try await XCTAssertReceive(from: followedShowsSequence, [.fixtureSwiftBySundell])
 
-        try client.unfollowShow(Show.fixtureRebuild.feedURL).get()
-
+        Task { [client = self.client!] in
+            try client.unfollowShow(Show.fixtureRebuild.feedURL).get()
+        }
         try await XCTAssertNoReceive(from: followedShowsSequence)
     }
 
@@ -83,7 +97,9 @@ final class DatabaseClientTests: XCTestCase {
 
         try await XCTAssertReceive(from: followedEpisodesSequence, [])
 
-        try client.followShow(.fixtureSwiftBySundell).get()
+        Task { [client = self.client!] in
+            try client.followShow(.fixtureSwiftBySundell).get()
+        }
         try await XCTAssertReceive(
             from: followedEpisodesSequence,
             [
@@ -93,7 +109,9 @@ final class DatabaseClientTests: XCTestCase {
             ]
         )
 
-        try client.followShow(.fixtureRebuild).get()
+        Task { [client = self.client!] in
+            try client.followShow(.fixtureRebuild).get()
+        }
         try await XCTAssertReceive(
             from: followedEpisodesSequence,
             [
@@ -106,7 +124,9 @@ final class DatabaseClientTests: XCTestCase {
             ]
         )
 
-        try client.followShow(.fixtureプログラム雑談).get()
+        Task { [client = self.client!] in
+            try client.followShow(.fixtureプログラム雑談).get()
+        }
         try await XCTAssertReceive(
             from: followedEpisodesSequence,
             [
@@ -144,7 +164,9 @@ final class DatabaseClientTests: XCTestCase {
             ]
         )
 
-        try client.unfollowShow(Show.fixtureSwiftBySundell.feedURL).get()
+        Task { [client = self.client!] in
+            try client.unfollowShow(Show.fixtureSwiftBySundell.feedURL).get()
+        }
         try await XCTAssertReceive(
             from: followedEpisodesSequence,
             [

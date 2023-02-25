@@ -4,7 +4,7 @@ import Foundation
 public struct StubResponse: Sendable {
     public let statusCode: Int
     public let result: Result<Data, Error>
-    
+
     public init(statusCode: Int, result: Result<Data, Error>) {
         self.statusCode = statusCode
         self.result = result

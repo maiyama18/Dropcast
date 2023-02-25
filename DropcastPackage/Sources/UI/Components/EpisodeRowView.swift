@@ -77,9 +77,9 @@ public struct EpisodeRowView: View {
                         }
                     }
                     .font(.title)
-                    
+
                     Spacer()
-                    
+
                     Button {
                         print("misc")
                     } label: {
@@ -109,21 +109,21 @@ struct EpisodeRowView_Previews: PreviewProvider {
                     showsImage: true,
                     onDownloadButtonTapped: {}
                 )
-                
+
                 EpisodeRowView(
                     episode: .fixtureRebuild351,
                     downloadState: .pushedToDownloadQueue,
                     showsImage: true,
                     onDownloadButtonTapped: {}
                 )
-                
+
                 EpisodeRowView(
                     episode: .fixtureRebuild351,
                     downloadState: .downloading(progress: 0.4),
                     showsImage: true,
                     onDownloadButtonTapped: {}
                 )
-                
+
                 EpisodeRowView(
                     episode: .fixtureRebuild350,
                     downloadState: .downloaded,

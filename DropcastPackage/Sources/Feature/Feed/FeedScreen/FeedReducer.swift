@@ -8,7 +8,7 @@ public struct FeedReducer: ReducerProtocol, Sendable {
     public struct State: Equatable {
         public var episodes: IdentifiedArrayOf<Episode>?
         var downloadStates: [Episode.ID: EpisodeDownloadState]?
-        
+
         public func downloadState(id: Episode.ID) -> EpisodeDownloadState {
             guard let downloadStates else { return .notDownloaded }
             return downloadStates[id] ?? .notDownloaded
@@ -32,7 +32,7 @@ public struct FeedReducer: ReducerProtocol, Sendable {
     @Dependency(\.soundFileClient) private var soundFileClient
 
     public init() {}
-    
+
     public var body: some ReducerProtocol<State, Action> {
         Reduce { state, action in
             switch action {

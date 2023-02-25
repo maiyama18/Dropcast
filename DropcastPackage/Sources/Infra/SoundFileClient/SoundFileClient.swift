@@ -8,7 +8,7 @@ import Logger
 public protocol SoundFileClient: Sendable {
     var downloadStatesPublisher: AnyPublisher<[String: EpisodeDownloadState], Never> { get }
     var downloadErrorPublisher: AnyPublisher<SoundFileClientError, Never> { get }
-    
+
     func download(_ episode: Episode) async throws
     func cancelDownload(_ episode: Episode) async throws
 }
@@ -18,35 +18,35 @@ public actor SoundFileClientLive: SoundFileClient {
         var feedURLBase64: String
         var idBase64: String
         var soundFileName: String
-        
+
         init?(episode: Episode) {
             guard let feedURLBase64 = episode.showFeedURL.absoluteString.base64Encoded(),
                   let idBase64 = episode.id.base64Encoded() else { return nil }
-                  
+
             self.feedURLBase64 = feedURLBase64
             self.idBase64 = idBase64
             self.soundFileName = episode.soundURL.lastPathComponent
         }
-        
+
         init?(string: String) {
             guard let data = string.data(using: .utf8) else { return nil }
             guard let result = try? JSONDecoder().decode(TaskIdentifier.self, from: data) else { return nil }
             self = result
         }
-        
+
         func string() -> String? {
             guard let data = try? JSONEncoder().encode(self) else { return nil }
             return String(data: data, encoding: .utf8)
         }
     }
-    
+
     final class Delegate: NSObject, URLSessionDownloadDelegate, Sendable {
         private let onDownloadFinished: @Sendable (_ identifier: TaskIdentifier, _ data: Data) async throws -> Void
         private let onProgressUpdated: @Sendable (_ identifier: TaskIdentifier, _ progress: Double) async -> Void
         private let onErrorOccurred: @Sendable (_ identifier: TaskIdentifier?, _ error: Error) async -> Void
-        
+
         private let decoder = JSONDecoder()
-        
+
         init(
             onDownloadFinished: @escaping @Sendable (SoundFileClientLive.TaskIdentifier, Data) async throws -> Void,
             onProgressUpdated: @escaping @Sendable (SoundFileClientLive.TaskIdentifier, Double) async -> Void,
@@ -56,19 +56,19 @@ public actor SoundFileClientLive: SoundFileClient {
             self.onProgressUpdated = onProgressUpdated
             self.onErrorOccurred = onErrorOccurred
         }
-        
+
         func urlSession(_ session: URLSession, task: URLSessionTask, didCompleteWithError error: Error?) {
             if let error {
                 Task { await handleDelegateError(session: session, error: error) }
             }
         }
-        
+
         func urlSession(_ session: URLSession, didBecomeInvalidWithError error: Error?) {
             if let error {
                 Task { await handleDelegateError(session: session, error: error) }
             }
         }
-        
+
         func urlSession(_ session: URLSession, downloadTask: URLSessionDownloadTask, didFinishDownloadingTo location: URL) {
             guard let identifierString = session.configuration.identifier,
                   let identifier = TaskIdentifier(string: identifierString),
@@ -78,7 +78,7 @@ public actor SoundFileClientLive: SoundFileClient {
                 }
                 return
             }
-            
+
             Task {
                 do {
                     try await onDownloadFinished(identifier, data)
@@ -87,7 +87,7 @@ public actor SoundFileClientLive: SoundFileClient {
                 }
             }
         }
-        
+
         func urlSession(_ session: URLSession, downloadTask: URLSessionDownloadTask, didWriteData bytesWritten: Int64, totalBytesWritten: Int64, totalBytesExpectedToWrite: Int64) {
             guard let identifierString = session.configuration.identifier,
                   let identifier = TaskIdentifier(string: identifierString) else {
@@ -98,44 +98,44 @@ public actor SoundFileClientLive: SoundFileClient {
                 await onProgressUpdated(identifier, progress)
             }
         }
-        
+
         private func handleDelegateError(session: URLSession, error: Error?) async {
             var identifier: TaskIdentifier?
             if let identifierString = session.configuration.identifier {
-               identifier = TaskIdentifier(string: identifierString)
+                identifier = TaskIdentifier(string: identifierString)
             }
-            
+
             await onErrorOccurred(identifier, SoundFileClientError.downloadError)
         }
     }
-    
+
     static let shared: SoundFileClientLive = .init()
-    
+
     @Dependency(\.logger[.soundFile]) var logger
-    
+
     private let documentDirectoryURL: URL
     private let sessionProvider: @Sendable (_ configuration: URLSessionConfiguration, _ delegate: URLSessionDownloadDelegate) -> URLSession
-    
+
     public nonisolated var soundFilesRootDirectoryURL: URL {
         documentDirectoryURL.appendingPathComponent("SoundFiles")
     }
-    
+
     nonisolated public var downloadStatesPublisher: AnyPublisher<[String: EpisodeDownloadState], Never> {
         downloadStatesSubject.eraseToAnyPublisher()
     }
     private let downloadStatesSubject: CurrentValueSubject<[String: EpisodeDownloadState], Never> = .init([:])
-    
+
     nonisolated public var downloadErrorPublisher: AnyPublisher<SoundFileClientError, Never> {
         downloadErrorSubject.eraseToAnyPublisher()
     }
     private let downloadErrorSubject: PassthroughSubject<SoundFileClientError, Never> = .init()
-    
+
     private lazy var delegate = Delegate(
         onDownloadFinished: { [weak self] identifier, data in
             guard let self else { return }
-            
+
             @Dependency(\.logger[.soundFile]) var logger
-            
+
             let directoryURL = self.soundFilesRootDirectoryURL
                 .appendingPathComponent(identifier.feedURLBase64)
                 .appendingPathComponent(identifier.idBase64)
@@ -147,7 +147,7 @@ public actor SoundFileClientLive: SoundFileClient {
                     throw SoundFileClientError.downloadError
                 }
             }
-            
+
             let fileURL = directoryURL.appendingPathComponent(identifier.soundFileName)
             do {
                 try data.write(to: fileURL)
@@ -164,20 +164,20 @@ public actor SoundFileClientLive: SoundFileClient {
         },
         onErrorOccurred: { [weak self] identifier, error in
             guard let self else { return }
-            
+
             @Dependency(\.logger[.soundFile]) var logger
-            
+
             self.downloadErrorSubject.send(.downloadError)
-            
+
             logger.fault("failed to download file \(identifier?.idBase64 ?? "", privacy: .public): \(error, privacy: .public)")
-            
+
             guard let identifier else { return }
             await self.updateDownloadState(identifier: identifier, downloadState: .notDownloaded)
         }
     )
-    
+
     private var tasks: [TaskIdentifier: URLSessionDownloadTask] = [:]
-    
+
     public init(
         documentDirectoryURL: URL = .documentsDirectory,
         sessionProvider: @escaping @Sendable (
@@ -189,19 +189,19 @@ public actor SoundFileClientLive: SoundFileClient {
     ) {
         self.documentDirectoryURL = documentDirectoryURL
         self.sessionProvider = sessionProvider
-        
+
         Task { await initializeDownloadStates() }
     }
-    
+
     public func download(_ episode: Episode) async throws {
         guard let identifier = TaskIdentifier(episode: episode),
               let identifierString = identifier.string() else {
             logger.notice("failed to make identifierString")
             throw SoundFileClientError.unexpectedError
         }
-        
+
         logger.notice("downloading episode: \(identifier.idBase64) \(episode.showTitle) \(episode.title)")
-        
+
         self.updateDownloadState(identifier: identifier, downloadState: .pushedToDownloadQueue)
 
         let configuration = URLSessionConfiguration.background(withIdentifier: identifierString)
@@ -210,18 +210,18 @@ public actor SoundFileClientLive: SoundFileClient {
         tasks[identifier] = task
         task.resume()
     }
-    
+
     public func cancelDownload(_ episode: Episode) async throws {
         guard let identifier = TaskIdentifier(episode: episode) else {
             throw SoundFileClientError.unexpectedError
         }
-        
+
         logger.notice("download cancelled: \(identifier.idBase64) \(episode.showTitle) \(episode.title)")
-        
+
         updateDownloadState(identifier: identifier, downloadState: .notDownloaded)
         tasks[identifier]?.cancel()
     }
-    
+
     private func initializeDownloadStates() {
         guard let enumerator = FileManager.default.enumerator(
             at: self.soundFilesRootDirectoryURL,
@@ -230,25 +230,25 @@ public actor SoundFileClientLive: SoundFileClient {
         ) else {
             return
         }
-        
+
         // ref: https://stackoverflow.com/questions/57640119/listing-all-files-in-a-folder-recursively-with-swift
         var downloadStates: [String: EpisodeDownloadState] = [:]
         for case let fileURL as URL in enumerator {
             guard (try? fileURL.resourceValues(forKeys: [.isRegularFileKey]).isRegularFile) == true else { continue }
-            
+
             let idIndex = fileURL.pathComponents.count - 2
             guard idIndex >= 0,
                   let id = String(base64Encoded: fileURL.pathComponents[idIndex]) else { continue }
-            
+
             downloadStates[id] = .downloaded
         }
-        
+
         downloadStatesSubject.send(downloadStates)
     }
-    
+
     private func updateDownloadState(identifier: TaskIdentifier, downloadState: EpisodeDownloadState) {
         guard let id = String(base64Encoded: identifier.idBase64) else { return }
-        
+
         var downloadStates = downloadStatesSubject.value
         downloadStates[id] = downloadState
         downloadStatesSubject.send(downloadStates)
@@ -269,59 +269,59 @@ extension DependencyValues {
 
 public actor SoundFileClientMock: SoundFileClient {
     @Dependency(\.continuousClock) var clock
-    
+
     private var tasks: [String: Task<Void, Error>] = [:]
-    
+
     nonisolated public var downloadStatesPublisher: AnyPublisher<[String: EpisodeDownloadState], Never> {
         downloadStatesSubject.eraseToAnyPublisher()
     }
     private let downloadStatesSubject: CurrentValueSubject<[String: EpisodeDownloadState], Never> = .init([:])
-    
+
     nonisolated public var downloadErrorPublisher: AnyPublisher<SoundFileClientError, Never> {
         downloadErrorSubject.eraseToAnyPublisher()
     }
     private let downloadErrorSubject: PassthroughSubject<SoundFileClientError, Never> = .init()
-    
+
     public var error: SoundFileClientError?
-    
+
     public init() {}
-    
+
     public func setError(error: SoundFileClientError?) {
         self.error = error
     }
-    
+
     public func download(_ episode: Episode) async throws {
         let task = Task {
             updateDownloadState(id: episode.id, downloadState: .pushedToDownloadQueue)
-            
+
             try await clock.sleep(for: .seconds(1))
-            
+
             updateDownloadState(id: episode.id, downloadState: .downloading(progress: 0))
-            
+
             try await clock.sleep(for: .seconds(5))
-            
+
             if let error {
                 downloadErrorSubject.send(error)
                 self.error = nil
                 updateDownloadState(id: episode.id, downloadState: .notDownloaded)
                 return
             }
-            
+
             updateDownloadState(id: episode.id, downloadState: .downloading(progress: 0.5))
-            
+
             try await clock.sleep(for: .seconds(5))
-            
+
             updateDownloadState(id: episode.id, downloadState: .downloaded)
         }
         tasks[episode.id] = task
         try await task.value
     }
-    
+
     public func cancelDownload(_ episode: Episode) async throws {
         tasks[episode.id]?.cancel()
         updateDownloadState(id: episode.id, downloadState: .notDownloaded)
     }
-    
+
     private func updateDownloadState(id: Episode.ID, downloadState: EpisodeDownloadState) {
         var downloadStates = downloadStatesSubject.value
         downloadStates[id] = downloadState

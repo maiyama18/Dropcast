@@ -32,8 +32,6 @@ final class ShowDetailReducerTests: XCTestCase {
 
         let task = await store.send(.task) {
             $0.taskRequestInFlight = true
-        }
-        await store.receive(.databaseShowResponse(.success(nil))) {
             $0.followed = false
         }
         await store.receive(.downloadStatesResponse([:])) {
@@ -50,7 +48,7 @@ final class ShowDetailReducerTests: XCTestCase {
             $0.description = Show.fixtureRebuild.description
             $0.episodes = Show.fixtureRebuild.episodes
         }
-        
+
         await task.cancel()
     }
 
@@ -84,8 +82,6 @@ final class ShowDetailReducerTests: XCTestCase {
 
         let task = await store.send(.task) {
             $0.taskRequestInFlight = true
-        }
-        await store.receive(.databaseShowResponse(.success(.fixtureRebuild))) {
             $0.followed = true
         }
         await store.receive(.downloadStatesResponse([:])) {
@@ -95,7 +91,7 @@ final class ShowDetailReducerTests: XCTestCase {
         await store.receive(.rssShowResponse(.success(.fixtureRebuild))) {
             $0.taskRequestInFlight = false
         }
-        
+
         await task.cancel()
     }
 
@@ -127,8 +123,6 @@ final class ShowDetailReducerTests: XCTestCase {
 
         let task = await store.send(.task) {
             $0.taskRequestInFlight = true
-        }
-        await store.receive(.databaseShowResponse(.success(.fixtureRebuild))) {
             $0.followed = true
 
             $0.imageURL = Show.fixtureRebuild.imageURL
@@ -145,7 +139,7 @@ final class ShowDetailReducerTests: XCTestCase {
         await store.receive(.rssShowResponse(.success(.fixtureRebuild))) {
             $0.taskRequestInFlight = false
         }
-        
+
         await task.cancel()
     }
 
@@ -166,6 +160,7 @@ final class ShowDetailReducerTests: XCTestCase {
 
             $0.rssClient.fetch = { url in
                 XCTAssertEqual(url, Show.fixtureRebuild.feedURL)
+                try? await clock.sleep(for: .seconds(1))
                 return .success(Show.fixtureRebuild)
             }
 
@@ -177,7 +172,6 @@ final class ShowDetailReducerTests: XCTestCase {
         let task = await store.send(.task) {
             $0.taskRequestInFlight = true
         }
-        await store.receive(.databaseShowResponse(.failure(.databaseError)))
         await store.receive(.downloadStatesResponse([:])) {
             $0.downloadStates = [:]
         }
@@ -194,7 +188,7 @@ final class ShowDetailReducerTests: XCTestCase {
         }
 
         XCTAssertEqual(errorMessage.value, "Failed to communicate with database")
-        
+
         await task.cancel()
     }
 
@@ -225,8 +219,6 @@ final class ShowDetailReducerTests: XCTestCase {
 
         let test = await store.send(.task) {
             $0.taskRequestInFlight = true
-        }
-        await store.receive(.databaseShowResponse(.success(nil))) {
             $0.followed = false
         }
         await store.receive(.downloadStatesResponse([:])) {
@@ -238,11 +230,12 @@ final class ShowDetailReducerTests: XCTestCase {
         }
 
         XCTAssertEqual(errorMessage.value, "No internet connection")
-        
+
         await test.cancel()
     }
 
     func test_following_show() async {
+        let clock = TestClock()
         let databaseClient: DatabaseClient = .live(persistentProvider: InMemoryPersistentProvider())
         let store = TestStore(
             initialState: ShowDetailReducer.State(
@@ -258,6 +251,7 @@ final class ShowDetailReducerTests: XCTestCase {
 
             $0.rssClient.fetch = { url in
                 XCTAssertEqual(url, ITunesShow.fixtureRebuild.feedURL)
+                try? await clock.sleep(for: .seconds(1))
                 return .success(Show.fixtureRebuild)
             }
         }
@@ -265,10 +259,10 @@ final class ShowDetailReducerTests: XCTestCase {
         store.exhaustivity = .off
 
         let task = await store.send(.task)
-        await store.receive(.databaseShowResponse(.success(nil)))
         await store.receive(.downloadStatesResponse([:])) {
             $0.downloadStates = [:]
         }
+        await clock.advance(by: .seconds(1))
         await store.receive(.rssShowResponse(.success(.fixtureRebuild)))
 
         store.exhaustivity = .on
@@ -279,12 +273,13 @@ final class ShowDetailReducerTests: XCTestCase {
         }
 
         XCTAssertEqual(try databaseClient.fetchShow(Show.fixtureRebuild.feedURL).get()?.episodes.count, Show.fixtureRebuild.episodes.count)
-        
+
         await task.cancel()
     }
 
     func test_following_show_failure_shows_error_message() async {
         let errorMessage: LockIsolated<String?> = .init(nil)
+        let clock = TestClock()
         let store = TestStore(
             initialState: ShowDetailReducer.State(
                 feedURL: ITunesShow.fixtureRebuild.feedURL,
@@ -300,6 +295,7 @@ final class ShowDetailReducerTests: XCTestCase {
 
             $0.rssClient.fetch = { url in
                 XCTAssertEqual(url, ITunesShow.fixtureRebuild.feedURL)
+                try? await clock.sleep(for: .seconds(1))
                 return .success(Show.fixtureRebuild)
             }
 
@@ -311,10 +307,10 @@ final class ShowDetailReducerTests: XCTestCase {
         store.exhaustivity = .off
 
         let task = await store.send(.task)
-        await store.receive(.databaseShowResponse(.success(nil)))
         await store.receive(.downloadStatesResponse([:])) {
             $0.downloadStates = [:]
         }
+        await clock.advance(by: .seconds(1))
         await store.receive(.rssShowResponse(.success(.fixtureRebuild)))
 
         store.exhaustivity = .on
@@ -323,12 +319,13 @@ final class ShowDetailReducerTests: XCTestCase {
         await store.receive(.toggleFollowResponse(.failure(.databaseError)))
 
         XCTAssertEqual(errorMessage.value, "Failed to follow the show")
-        
+
         await task.cancel()
     }
 
     func test_unfollowing_show() async {
         let databaseClient: DatabaseClient = .live(persistentProvider: InMemoryPersistentProvider())
+        let clock = TestClock()
         let store = TestStore(
             initialState: ShowDetailReducer.State(
                 feedURL: ITunesShow.fixtureRebuild.feedURL,
@@ -348,6 +345,7 @@ final class ShowDetailReducerTests: XCTestCase {
 
             $0.rssClient.fetch = { url in
                 XCTAssertEqual(url, ITunesShow.fixtureRebuild.feedURL)
+                try? await clock.sleep(for: .seconds(1))
                 return .success(Show.fixtureRebuild)
             }
         }
@@ -357,7 +355,8 @@ final class ShowDetailReducerTests: XCTestCase {
         store.exhaustivity = .off
 
         let task = await store.send(.task)
-        await store.receive(.databaseShowResponse(.success(.fixtureRebuild)))
+        await store.receive(.downloadStatesResponse([:]))
+        await clock.advance(by: .seconds(1))
         await store.receive(.rssShowResponse(.success(.fixtureRebuild)))
 
         store.exhaustivity = .on
@@ -368,13 +367,14 @@ final class ShowDetailReducerTests: XCTestCase {
         }
 
         XCTAssertEqual(databaseClient.fetchShow(Show.fixtureRebuild.feedURL), .success(nil))
-        
+
         await task.cancel()
     }
 
     func test_copy_feed_url() async {
         let copiedString: LockIsolated<String?> = .init(nil)
         let successTitle: LockIsolated<String?> = .init(nil)
+        let clock = TestClock()
         let store = TestStore(
             initialState: ShowDetailReducer.State(
                 feedURL: ITunesShow.fixtureRebuild.feedURL,
@@ -389,6 +389,7 @@ final class ShowDetailReducerTests: XCTestCase {
 
             $0.rssClient.fetch = { url in
                 XCTAssertEqual(url, ITunesShow.fixtureRebuild.feedURL)
+                try? await clock.sleep(for: .seconds(1))
                 return .success(Show.fixtureRebuild)
             }
 
@@ -401,7 +402,8 @@ final class ShowDetailReducerTests: XCTestCase {
         store.exhaustivity = .off
 
         let task = await store.send(.task)
-        await store.receive(.databaseShowResponse(.success(nil)))
+        await store.receive(.downloadStatesResponse([:]))
+        await clock.advance(by: .seconds(1))
         await store.receive(.rssShowResponse(.success(.fixtureRebuild)))
 
         store.exhaustivity = .on
@@ -410,7 +412,7 @@ final class ShowDetailReducerTests: XCTestCase {
 
         XCTAssertEqual(copiedString.value, ITunesShow.fixtureRebuild.feedURL.absoluteString)
         XCTAssertEqual(successTitle.value, "Copied")
-        
+
         await task.cancel()
     }
 
@@ -437,8 +439,6 @@ final class ShowDetailReducerTests: XCTestCase {
 
         let task = await store.send(.task) {
             $0.taskRequestInFlight = true
-        }
-        await store.receive(.databaseShowResponse(.success(nil))) {
             $0.followed = false
         }
         await store.receive(.downloadStatesResponse([:])) {
@@ -447,7 +447,7 @@ final class ShowDetailReducerTests: XCTestCase {
         await store.send(.disappear)
         await clock.advance(by: .seconds(1))
         // no rss response should be received
-        
+
         await task.cancel()
     }
 }

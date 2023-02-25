@@ -13,13 +13,13 @@ public struct RSSClient: Sendable {
 extension RSSClient {
     static func live(urlSession: URLSession = .shared) -> RSSClient {
         @Dependency(\.logger[.rss]) var logger
-        
+
         return RSSClient(
             fetch: { url in
                 logger.notice("fetching rss: \(url, privacy: .public)")
-                
+
                 let result = await request(session: urlSession, url: url)
-                
+
                 let data: Data
                 switch result {
                 case .success(let tmpData):
@@ -27,9 +27,9 @@ extension RSSClient {
                 case .failure:
                     return .failure(.invalidFeed)
                 }
-                
+
                 let parser = FeedParser(data: data)
-                
+
                 let rssFeed: RSSFeed
                 do {
                     rssFeed = try await parser.parseRSS()
@@ -37,7 +37,7 @@ extension RSSClient {
                     logger.fault("failed to parse rss feed: \(error)")
                     return .failure(.invalidFeed)
                 }
-                
+
                 guard let show = rssFeed.toShow(feedURL: url) else {
                     logger.fault("failed to convert to show")
                     return .failure(RSSError.invalidFeed)

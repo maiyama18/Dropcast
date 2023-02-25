@@ -26,7 +26,7 @@ extension LogCategory {
     }
 }
 
- extension OSLogEntryLog.Level {
+extension OSLogEntryLog.Level {
     var color: Color {
         switch self {
         case .undefined:
@@ -45,21 +45,21 @@ extension LogCategory {
             return .clear
         }
     }
- }
+}
 
 struct DebugLogRowView: View {
     var entry: LogEntry
-    
+
     var body: some View {
         HStack {
             Image(systemName: "circle.fill")
                 .foregroundColor(entry.level.color)
                 .font(.caption2)
-            
+
             VStack(alignment: .leading, spacing: 4) {
                 HStack {
                     Text(logDateFormatter.string(from: entry.date))
-                    
+
                     Text(entry.category.rawValue)
                         .padding(.vertical, 2)
                         .padding(.horizontal, 4)
@@ -67,7 +67,7 @@ struct DebugLogRowView: View {
                         .cornerRadius(4)
                         .bold()
                 }
-                
+
                 Text(entry.message)
                     .lineLimit(1)
             }

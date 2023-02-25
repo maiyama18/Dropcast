@@ -34,7 +34,7 @@ public struct DatabaseClient: Sendable {
 extension DatabaseClient {
     public static func live(persistentProvider: PersistentProvider) -> DatabaseClient {
         @Dependency(\.logger[.database]) var logger
-        
+
         final class Delegate: NSObject, NSFetchedResultsControllerDelegate, Sendable {
             let showsStream: AsyncChannel<IdentifiedArrayOf<Show>> = .init()
             let episodesStream: AsyncChannel<IdentifiedArrayOf<Episode>> = .init()
@@ -63,7 +63,7 @@ extension DatabaseClient {
 
             private func sendFetchedShowRecords(_ records: [ShowRecord]) {
                 @Dependency(\.logger[.database]) var logger
-                
+
                 let shows = records.compactMap { $0.toShow() }
                 let uniquedShows = shows.uniqued(on: { $0.feedURL })
                 let identifiedShows = IdentifiedArrayOf(uniqueElements: uniquedShows)
@@ -75,7 +75,7 @@ extension DatabaseClient {
 
             private func sendFetchedEpisodeRecords(_ records: [EpisodeRecord]) {
                 @Dependency(\.logger[.database]) var logger
-                
+
                 let episodes = records.compactMap { $0.toEpisode() }
                 let uniquedEpisodes = episodes.uniqued(on: { $0.id })
                 let identifiedEpisodes = IdentifiedArrayOf(uniqueElements: uniquedEpisodes)
@@ -85,7 +85,7 @@ extension DatabaseClient {
                 }
             }
         }
-        
+
         @Sendable
         func fetchShow(feedURL: URL) -> Result<Show?, DatabaseError> {
             persistentProvider.executeInBackground { context in
@@ -169,7 +169,7 @@ extension DatabaseClient {
                     logger.notice("unfollowing show: \(feedURL, privacy: .public)")
                     let request = ShowRecord.fetchRequest()
                     request.predicate = NSPredicate(format: "%K = %@", #keyPath(ShowRecord.feedURL), feedURL as NSURL)
-                    
+
                     let record: ShowRecord
                     do {
                         let records = try context.fetch(request)
@@ -183,7 +183,7 @@ extension DatabaseClient {
                         logger.fault("failed to fetch show to unfollow: \(error, privacy: .public)")
                         return .failure(.databaseError)
                     }
-                    
+
                     context.delete(record)
                     do {
                         try context.save()

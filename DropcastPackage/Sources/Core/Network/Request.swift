@@ -7,7 +7,7 @@ public func request(session: URLSession, url: URL) async -> Result<Data, Network
         guard let response = response as? HTTPURLResponse else {
             return .failure(.unknownError)
         }
-        
+
         switch response.statusCode {
         case 200..<300:
             return .success(data)

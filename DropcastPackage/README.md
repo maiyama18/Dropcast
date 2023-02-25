@@ -1,3 +1,3 @@
 # DropcastPackage
 
-A description of this package.
+A local package for Dropcast app.

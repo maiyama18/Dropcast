@@ -186,7 +186,7 @@ final class FeedReducerTests: XCTestCase {
 
         await task.cancel()
     }
-    
+
     func test_download_cancel() async throws {
         let clock = TestClock()
         let soundFileClient: SoundFileClient = withDependencies {
@@ -232,10 +232,10 @@ final class FeedReducerTests: XCTestCase {
         await store.receive(.downloadStatesResponse([Episode.fixtureRebuild352.id: .pushedToDownloadQueue])) {
             $0.downloadStates = [Episode.fixtureRebuild352.id: .pushedToDownloadQueue]
         }
-        
+
         // has no effect
         await store.send(.downloadEpisodeButtonTapped(episode: .fixtureRebuild352))
-        
+
         await clock.advance(by: .seconds(1))
         await store.receive(.downloadStatesResponse([Episode.fixtureRebuild352.id: .downloading(progress: 0)])) {
             $0.downloadStates = [Episode.fixtureRebuild352.id: .downloading(progress: 0)]
@@ -247,10 +247,10 @@ final class FeedReducerTests: XCTestCase {
 
         await task.cancel()
     }
-    
+
     func test_download_failure() async throws {
         let errorMessage: LockIsolated<String?> = .init(nil)
-        
+
         let clock = TestClock()
         let soundFileClient: SoundFileClientMock = withDependencies {
             $0.continuousClock = clock
@@ -260,7 +260,7 @@ final class FeedReducerTests: XCTestCase {
         await soundFileClient.setError(error: .downloadError)
 
         let databaseClient: DatabaseClient = .live(persistentProvider: InMemoryPersistentProvider())
-        
+
         let store = TestStore(
             initialState: FeedReducer.State(),
             reducer: FeedReducer()
@@ -273,7 +273,7 @@ final class FeedReducerTests: XCTestCase {
             } catch {
                 XCTFail()
             }
-            
+
             $0.messageClient.presentError = { message in
                 errorMessage.withValue { $0 = message }
             }
@@ -310,9 +310,9 @@ final class FeedReducerTests: XCTestCase {
         await store.receive(.downloadStatesResponse([Episode.fixtureRebuild352.id: .notDownloaded])) {
             $0.downloadStates = [Episode.fixtureRebuild352.id: .notDownloaded]
         }
-        
+
         XCTAssertEqual(errorMessage.value, "Failed to download the episode")
-        
+
         await task.cancel()
     }
 }
