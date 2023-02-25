@@ -120,7 +120,8 @@ let targets: [PackageDescription.Target] = [
             "MessageClient",
             "SoundFileClient",
         ],
-        path: "Sources/Feature/Feed"
+        path: "Sources/Feature/Feed",
+        plugins: [.swiftgen]
     ),
     .testTarget(
         name: "FeedFeatureTests",

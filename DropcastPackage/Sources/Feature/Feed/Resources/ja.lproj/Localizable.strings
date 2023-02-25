@@ -1,0 +1,9 @@
+"feed" = "フィード";
+
+"no_feed" = "フィードが空です";
+
+"follow_shows" = "好きな番組をフォローしましょう！";
+
+"error.something_went_wrong" = "予期しないエラーが発生しました";
+
+"error.download_error" = "エピソードをダウンロードできませんでした";
