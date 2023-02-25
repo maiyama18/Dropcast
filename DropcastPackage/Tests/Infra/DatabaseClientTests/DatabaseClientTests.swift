@@ -198,6 +198,8 @@ final class DatabaseClientTests: XCTestCase {
     }
     
     func test_newly_added_episodes_of_followed_shows_are_received_from_stream() async throws {
+        try assertAllEpisodeRecordsCount(expected: 0)
+        
         let followedEpisodesSequence = client.followedEpisodesStream()
 
         try await XCTAssertReceive(from: followedEpisodesSequence, [])
@@ -212,6 +214,8 @@ final class DatabaseClientTests: XCTestCase {
             from: followedEpisodesSequence,
             [.fixtureSwiftBySundell121]
         )
+        
+        try assertAllEpisodeRecordsCount(expected: 1)
 
         Task { [client = self.client!] in
             try client.addNewEpisodes(.fixtureSwiftBySundell).get()
@@ -224,6 +228,15 @@ final class DatabaseClientTests: XCTestCase {
                 .fixtureSwiftBySundell121,
             ]
         )
+        
+        try assertAllEpisodeRecordsCount(expected: 3)
     }
 
+    private func assertAllEpisodeRecordsCount(expected: Int, file: StaticString = #file, line: UInt = #line) throws {
+        try persistentProvider.executeInBackground { context in
+            let request = EpisodeRecord.fetchRequest()
+            let records = try context.fetch(request)
+            XCTAssertNoDifference(records.count, expected, file: file, line: line)
+        }
+    }
 }

@@ -224,26 +224,25 @@ extension DatabaseClient {
                 }
             },
             addNewEpisodes: { show in
-                let newEpisodes: [Episode]
-                switch fetchShow(feedURL: show.feedURL) {
-                case .success(let existingShow):
-                    guard let existingShow else {
-                        return .failure(DatabaseError.showNotFollowed)
-                    }
-                    let existingEpisodeIDs = Set(existingShow.episodes.map(\.id))
-                    newEpisodes = show.episodes.filter { !existingEpisodeIDs.contains($0.id) }
-                case .failure(let error):
-                    return .failure(error)
-                }
-                
                 return persistentProvider.executeInBackground { context in
                     logger.notice("adding new episodes: \(show.title, privacy: .public)")
-                    for newEpisode in newEpisodes {
-                        _ = EpisodeRecord(context: context, episode: newEpisode, show: show)
-                    }
+                    let request = ShowRecord.fetchRequest()
+                    request.predicate = NSPredicate(format: "%K = %@", #keyPath(ShowRecord.feedURL), show.feedURL as NSURL)
                     do {
+                        guard let showRecord = try context.fetch(request).first else {
+                            logger.notice("show to add new episodes not followed: \(show.title, privacy: .public)")
+                            return .failure(.showNotFollowed)
+                        }
+                        let existingEpisodeRecords = showRecord.episodes?.allObjects as? [EpisodeRecord] ?? []
+                        let existingEpisodeIDs = Set(existingEpisodeRecords.map(\.id))
+                        var addedEpisodeTitles: [String] = []
+                        for episode in show.episodes {
+                            if existingEpisodeIDs.contains(episode.id) { continue }
+                            showRecord.addToEpisodes(EpisodeRecord(context: context, episode: episode))
+                            addedEpisodeTitles.append(episode.title)
+                        }
                         try context.save()
-                        logger.notice("added new episodes: \(newEpisodes.map(\.title))")
+                        logger.notice("added new episodes: \(addedEpisodeTitles, privacy: .public)")
                         return .success(())
                     } catch {
                         context.rollback()
