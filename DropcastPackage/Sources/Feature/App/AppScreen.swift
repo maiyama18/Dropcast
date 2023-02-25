@@ -13,13 +13,13 @@ public struct AppScreen: View {
                     FeedScreen(store: store.scope(state: \.feedState, action: { .feed($0) }))
                         .tag(AppReducer.Tab.feed)
                         .tabItem {
-                            Label("Feed", systemImage: "dot.radiowaves.up.forward")
+                            Label(L10n.feed, systemImage: "dot.radiowaves.up.forward")
                         }
 
                     ShowListScreen(store: store.scope(state: \.showsState, action: { .shows($0) }))
                         .tag(AppReducer.Tab.shows)
                         .tabItem {
-                            Label("Shows", systemImage: "square.stack.3d.down.right")
+                            Label(L10n.shows, systemImage: "square.stack.3d.down.right")
                         }
                 }
                 .toolbarBackground(.visible, for: .tabBar)

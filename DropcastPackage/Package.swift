@@ -91,7 +91,8 @@ let targets: [PackageDescription.Target] = [
             "FeedFeature",
             "ShowsFeature",
         ],
-        path: "Sources/Feature/App"
+        path: "Sources/Feature/App",
+        plugins: [.swiftgen]
     ),
     .testTarget(
         name: "AppFeatureTests",
