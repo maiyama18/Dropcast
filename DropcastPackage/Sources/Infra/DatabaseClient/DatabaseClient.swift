@@ -14,6 +14,7 @@ public struct DatabaseClient: Sendable {
     public var fetchFollowedShows: @Sendable () -> Result<IdentifiedArrayOf<Show>, DatabaseError>
     public var followShow: @Sendable (Show) -> Result<Void, DatabaseError>
     public var unfollowShow: @Sendable (URL) -> Result<Void, DatabaseError>
+    public var addNewEpisodes: @Sendable (Show) -> Result<Void, DatabaseError>
     public var followedShowsStream: @Sendable () -> AsyncChannel<IdentifiedArrayOf<Show>>
     public var followedEpisodesStream: @Sendable () -> AsyncChannel<IdentifiedArrayOf<Episode>>
 
@@ -22,6 +23,7 @@ public struct DatabaseClient: Sendable {
         fetchFollowedShows: @escaping @Sendable () -> Result<IdentifiedArrayOf<Show>, DatabaseError>,
         followShow: @escaping @Sendable (Show) -> Result<Void, DatabaseError>,
         unfollowShow: @escaping @Sendable (URL) -> Result<Void, DatabaseError>,
+        addNewEpisodes: @escaping @Sendable (Show) -> Result<Void, DatabaseError>,
         followedShowsStream: @escaping @Sendable () -> AsyncChannel<IdentifiedArrayOf<Show>>,
         followedEpisodesStream: @escaping @Sendable () -> AsyncChannel<IdentifiedArrayOf<Episode>>
     ) {
@@ -29,6 +31,7 @@ public struct DatabaseClient: Sendable {
         self.fetchFollowedShows = fetchFollowedShows
         self.followShow = followShow
         self.unfollowShow = unfollowShow
+        self.addNewEpisodes = addNewEpisodes
         self.followedShowsStream = followedShowsStream
         self.followedEpisodesStream = followedEpisodesStream
     }
@@ -220,6 +223,35 @@ extension DatabaseClient {
                     }
                 }
             },
+            addNewEpisodes: { show in
+                let newEpisodes: [Episode]
+                switch fetchShow(feedURL: show.feedURL) {
+                case .success(let existingShow):
+                    guard let existingShow else {
+                        return .failure(DatabaseError.showNotFollowed)
+                    }
+                    let existingEpisodeIDs = Set(existingShow.episodes.map(\.id))
+                    newEpisodes = show.episodes.filter { !existingEpisodeIDs.contains($0.id) }
+                case .failure(let error):
+                    return .failure(error)
+                }
+                
+                return persistentProvider.executeInBackground { context in
+                    logger.notice("adding new episodes: \(show.title, privacy: .public)")
+                    for newEpisode in newEpisodes {
+                        _ = EpisodeRecord(context: context, episode: newEpisode, show: show)
+                    }
+                    do {
+                        try context.save()
+                        logger.notice("added new episodes: \(newEpisodes.map(\.title))")
+                        return .success(())
+                    } catch {
+                        context.rollback()
+                        logger.fault("failed to add new episodes: \(error, privacy: .public)")
+                        return .failure(.databaseError)
+                    }
+                }
+            },
             followedShowsStream: {
                 showsController.delegate = delegate
                 delegate.sendShowsInitialValue(showsController)
@@ -243,6 +275,7 @@ extension DatabaseClient: DependencyKey {
         fetchFollowedShows: unimplemented(),
         followShow: unimplemented(),
         unfollowShow: unimplemented(),
+        addNewEpisodes: unimplemented(),
         followedShowsStream: unimplemented(),
         followedEpisodesStream: unimplemented()
     )

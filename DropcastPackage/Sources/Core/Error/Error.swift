@@ -41,6 +41,7 @@ public enum RSSError: Error, Equatable {
 
 public enum DatabaseError: Error, Equatable {
     case databaseError
+    case showNotFollowed
 }
 
 public enum SoundFileClientError: Error, Equatable {

@@ -196,4 +196,34 @@ final class DatabaseClientTests: XCTestCase {
             ]
         )
     }
+    
+    func test_newly_added_episodes_of_followed_shows_are_received_from_stream() async throws {
+        let followedEpisodesSequence = client.followedEpisodesStream()
+
+        try await XCTAssertReceive(from: followedEpisodesSequence, [])
+
+        Task { [client = self.client!] in
+            var swiftBySundell: Show = .fixtureSwiftBySundell
+            swiftBySundell.episodes = [.fixtureSwiftBySundell121]
+            
+            try client.followShow(swiftBySundell).get()
+        }
+        try await XCTAssertReceive(
+            from: followedEpisodesSequence,
+            [.fixtureSwiftBySundell121]
+        )
+
+        Task { [client = self.client!] in
+            try client.addNewEpisodes(.fixtureSwiftBySundell).get()
+        }
+        try await XCTAssertReceive(
+            from: followedEpisodesSequence,
+            [
+                .fixtureSwiftBySundell123,
+                .fixtureSwiftBySundell122,
+                .fixtureSwiftBySundell121,
+            ]
+        )
+    }
+
 }
