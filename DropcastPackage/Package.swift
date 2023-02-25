@@ -166,7 +166,8 @@ let targets: [PackageDescription.Target] = [
             "RSSClient",
             "SoundFileClient",
         ],
-        path: "Sources/Feature/ShowDetail"
+        path: "Sources/Feature/ShowDetail",
+        plugins: [.swiftgen]
     ),
     .testTarget(
         name: "ShowDetailFeatureTest",
