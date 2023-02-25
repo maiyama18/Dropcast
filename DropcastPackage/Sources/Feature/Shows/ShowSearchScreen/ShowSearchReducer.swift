@@ -112,9 +112,9 @@ public struct ShowSearchReducer: ReducerProtocol, Sendable {
                     let message: String
                     switch error {
                     case .parseError:
-                        message = "Invalid server response"
+                        message = L10n.Error.invalidServerResponse
                     case .invalidQuery:
-                        message = "Invalid query"
+                        message = L10n.Error.invalidQuery
                     case .networkError(reason: let error):
                         message = error.localizedDescription
                     }

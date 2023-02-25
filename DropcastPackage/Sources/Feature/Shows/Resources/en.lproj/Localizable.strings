@@ -1,0 +1,21 @@
+// ShowSearchScreen
+
+"follow_shows" = "Follow shows";
+
+"search_shows" = "Search shows";
+
+"no_results" = "No results";
+
+"search_placeholder" = "Show title, Feed URL, Author...";
+
+"error.invalid_server_response" = "Invalid server response";
+
+"error.invalid_query" = "Invalid query";
+
+// ShowListScreen
+
+"shows" = "Shows";
+
+"no_shows" = "No shows";
+
+"follow_favorite_shows" = "Follow your favorite shows!";

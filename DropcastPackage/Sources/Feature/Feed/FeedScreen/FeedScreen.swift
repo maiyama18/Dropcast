@@ -63,7 +63,7 @@ public struct FeedScreen: View {
                 .frame(height: 8)
             
             Text(L10n.noFeed)
-                .font(.title2.bold())
+                .font(.title3.bold())
                 .foregroundStyle(.secondary)
             
             Spacer()

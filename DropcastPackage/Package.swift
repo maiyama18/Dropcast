@@ -144,7 +144,8 @@ let targets: [PackageDescription.Target] = [
             "RSSClient",
             "ShowDetailFeature",
         ],
-        path: "Sources/Feature/Shows"
+        path: "Sources/Feature/Shows",
+        plugins: [.swiftgen]
     ),
     .testTarget(
         name: "ShowsFeatureTests",
