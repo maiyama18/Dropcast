@@ -11,6 +11,7 @@ import Logger
 
 public struct DatabaseClient: Sendable {
     public var fetchShow: @Sendable (URL) -> Result<Show?, DatabaseError>
+    public var fetchFollowedShows: @Sendable () -> Result<IdentifiedArrayOf<Show>, DatabaseError>
     public var followShow: @Sendable (Show) -> Result<Void, DatabaseError>
     public var unfollowShow: @Sendable (URL) -> Result<Void, DatabaseError>
     public var followedShowsStream: @Sendable () -> AsyncChannel<IdentifiedArrayOf<Show>>
@@ -18,12 +19,14 @@ public struct DatabaseClient: Sendable {
 
     public init(
         fetchShow: @escaping @Sendable (URL) -> Result<Show?, DatabaseError>,
+        fetchFollowedShows: @escaping @Sendable () -> Result<IdentifiedArrayOf<Show>, DatabaseError>,
         followShow: @escaping @Sendable (Show) -> Result<Void, DatabaseError>,
         unfollowShow: @escaping @Sendable (URL) -> Result<Void, DatabaseError>,
         followedShowsStream: @escaping @Sendable () -> AsyncChannel<IdentifiedArrayOf<Show>>,
         followedEpisodesStream: @escaping @Sendable () -> AsyncChannel<IdentifiedArrayOf<Episode>>
     ) {
         self.fetchShow = fetchShow
+        self.fetchFollowedShows = fetchFollowedShows
         self.followShow = followShow
         self.unfollowShow = unfollowShow
         self.followedShowsStream = followedShowsStream
@@ -138,6 +141,27 @@ extension DatabaseClient {
 
         return DatabaseClient(
             fetchShow: fetchShow(feedURL:),
+            fetchFollowedShows: {
+                let showsRequest = ShowRecord.fetchRequest()
+                showsRequest.sortDescriptors = [
+                    NSSortDescriptor(keyPath: \ShowRecord.title, ascending: true)
+                ]
+                
+                return persistentProvider.executeInBackground { context in
+                    logger.notice("fetching followed shows")
+                    do {
+                        let records = try context.fetch(showsRequest)
+                        let shows = records.compactMap { $0.toShow() }
+                        let uniquedShows = shows.uniqued(on: { $0.feedURL })
+                        let identifiedShows = IdentifiedArrayOf(uniqueElements: uniquedShows)
+                        logger.notice("followed shows response:\n\(customDump(identifiedShows), privacy: .public)")
+                        return .success(identifiedShows)
+                    } catch {
+                        logger.fault("failed to fetch followed shows: \(error, privacy: .public)")
+                        return .failure(.databaseError)
+                    }
+                }
+            },
             followShow: { show in
                 logger.notice("following show: \(show.feedURL, privacy: .public)")
                 switch fetchShow(feedURL: show.feedURL) {
@@ -216,6 +240,7 @@ extension DatabaseClient: DependencyKey {
     public static let liveValue: DatabaseClient = DatabaseClient.live(persistentProvider: CloudKitPersistentProvider.shared)
     public static let testValue: DatabaseClient = DatabaseClient(
         fetchShow: unimplemented(),
+        fetchFollowedShows: unimplemented(),
         followShow: unimplemented(),
         unfollowShow: unimplemented(),
         followedShowsStream: unimplemented(),

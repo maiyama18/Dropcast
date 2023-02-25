@@ -1,3 +1,4 @@
+import CustomDump
 import DatabaseClient
 import Dependencies
 import Entity
@@ -12,6 +13,22 @@ final class DatabaseClientTests: XCTestCase {
     override func setUp() {
         persistentProvider = InMemoryPersistentProvider()
         client = .live(persistentProvider: persistentProvider)
+    }
+    
+    func test_fetch_followed_shows() async throws {
+        XCTAssertNoDifference(client.fetchFollowedShows(), .success([]))
+        
+        try client.followShow(.fixtureSwiftBySundell).get()
+        
+        XCTAssertNoDifference(client.fetchFollowedShows(), .success([.fixtureSwiftBySundell]))
+        
+        try client.followShow(.fixtureRebuild).get()
+        try client.followShow(.fixtureプログラム雑談).get()
+        
+        XCTAssertNoDifference(
+            client.fetchFollowedShows(),
+            .success([.fixtureRebuild, .fixtureSwiftBySundell, .fixtureプログラム雑談])
+        )
     }
 
     func test_followed_shows_are_received_from_stream_and_ordered_by_title() async throws {
