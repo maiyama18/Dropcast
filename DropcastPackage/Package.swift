@@ -305,7 +305,8 @@ let targets: [PackageDescription.Target] = [
     .target(
         name: "Error",
         dependencies: [],
-        path: "Sources/Core/Error"
+        path: "Sources/Core/Error",
+        plugins: [.swiftgen]
     ),
     .target(
         name: "Formatter",
