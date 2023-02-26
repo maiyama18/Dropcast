@@ -35,37 +35,7 @@
                BlueprintIdentifier = "AppFeatureTests"
                BuildableName = "AppFeatureTests"
                BlueprintName = "AppFeatureTests"
-               ReferencedContainer = "container:../DropcastPackage">
-            </BuildableReference>
-         </TestableReference>
-         <TestableReference
-            skipped = "NO">
-            <BuildableReference
-               BuildableIdentifier = "primary"
-               BlueprintIdentifier = "ITunesClientTests"
-               BuildableName = "ITunesClientTests"
-               BlueprintName = "ITunesClientTests"
-               ReferencedContainer = "container:../DropcastPackage">
-            </BuildableReference>
-         </TestableReference>
-         <TestableReference
-            skipped = "NO">
-            <BuildableReference
-               BuildableIdentifier = "primary"
-               BlueprintIdentifier = "ShowsFeatureTests"
-               BuildableName = "ShowsFeatureTests"
-               BlueprintName = "ShowsFeatureTests"
-               ReferencedContainer = "container:../DropcastPackage">
-            </BuildableReference>
-         </TestableReference>
-         <TestableReference
-            skipped = "NO">
-            <BuildableReference
-               BuildableIdentifier = "primary"
-               BlueprintIdentifier = "RSSClientTests"
-               BuildableName = "RSSClientTests"
-               BlueprintName = "RSSClientTests"
-               ReferencedContainer = "container:../DropcastPackage">
+               ReferencedContainer = "container:../..">
             </BuildableReference>
          </TestableReference>
          <TestableReference
@@ -75,27 +45,7 @@
                BlueprintIdentifier = "DatabaseClientTests"
                BuildableName = "DatabaseClientTests"
                BlueprintName = "DatabaseClientTests"
-               ReferencedContainer = "container:../DropcastPackage">
-            </BuildableReference>
-         </TestableReference>
-         <TestableReference
-            skipped = "NO">
-            <BuildableReference
-               BuildableIdentifier = "primary"
-               BlueprintIdentifier = "ShowDetailFeatureTest"
-               BuildableName = "ShowDetailFeatureTest"
-               BlueprintName = "ShowDetailFeatureTest"
-               ReferencedContainer = "container:../DropcastPackage">
-            </BuildableReference>
-         </TestableReference>
-         <TestableReference
-            skipped = "NO">
-            <BuildableReference
-               BuildableIdentifier = "primary"
-               BlueprintIdentifier = "FormatterTests"
-               BuildableName = "FormatterTests"
-               BlueprintName = "FormatterTests"
-               ReferencedContainer = "container:../DropcastPackage">
+               ReferencedContainer = "container:../..">
             </BuildableReference>
          </TestableReference>
          <TestableReference
@@ -105,17 +55,27 @@
                BlueprintIdentifier = "FeedFeatureTests"
                BuildableName = "FeedFeatureTests"
                BlueprintName = "FeedFeatureTests"
-               ReferencedContainer = "container:../DropcastPackage">
+               ReferencedContainer = "container:../..">
             </BuildableReference>
          </TestableReference>
          <TestableReference
             skipped = "NO">
             <BuildableReference
                BuildableIdentifier = "primary"
-               BlueprintIdentifier = "SoundFileClientTests"
-               BuildableName = "SoundFileClientTests"
-               BlueprintName = "SoundFileClientTests"
-               ReferencedContainer = "container:../DropcastPackage">
+               BlueprintIdentifier = "FormatterTests"
+               BuildableName = "FormatterTests"
+               BlueprintName = "FormatterTests"
+               ReferencedContainer = "container:../..">
+            </BuildableReference>
+         </TestableReference>
+         <TestableReference
+            skipped = "NO">
+            <BuildableReference
+               BuildableIdentifier = "primary"
+               BlueprintIdentifier = "ITunesClientTests"
+               BuildableName = "ITunesClientTests"
+               BlueprintName = "ITunesClientTests"
+               ReferencedContainer = "container:../..">
             </BuildableReference>
          </TestableReference>
          <TestableReference
@@ -125,7 +85,37 @@
                BlueprintIdentifier = "NetworkTests"
                BuildableName = "NetworkTests"
                BlueprintName = "NetworkTests"
-               ReferencedContainer = "container:../DropcastPackage">
+               ReferencedContainer = "container:../..">
+            </BuildableReference>
+         </TestableReference>
+         <TestableReference
+            skipped = "NO">
+            <BuildableReference
+               BuildableIdentifier = "primary"
+               BlueprintIdentifier = "RSSClientTests"
+               BuildableName = "RSSClientTests"
+               BlueprintName = "RSSClientTests"
+               ReferencedContainer = "container:../..">
+            </BuildableReference>
+         </TestableReference>
+         <TestableReference
+            skipped = "NO">
+            <BuildableReference
+               BuildableIdentifier = "primary"
+               BlueprintIdentifier = "ShowDetailFeatureTest"
+               BuildableName = "ShowDetailFeatureTest"
+               BlueprintName = "ShowDetailFeatureTest"
+               ReferencedContainer = "container:../..">
+            </BuildableReference>
+         </TestableReference>
+         <TestableReference
+            skipped = "NO">
+            <BuildableReference
+               BuildableIdentifier = "primary"
+               BlueprintIdentifier = "ShowsFeatureTests"
+               BuildableName = "ShowsFeatureTests"
+               BlueprintName = "ShowsFeatureTests"
+               ReferencedContainer = "container:../..">
             </BuildableReference>
          </TestableReference>
       </Testables>

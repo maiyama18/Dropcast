@@ -2,12 +2,12 @@
 <Workspace
    version = "1.0">
    <FileRef
-      location = "group:DropcastDev/../DropcastPackage">
+      location = "group:">
    </FileRef>
    <FileRef
-      location = "group:DropcastDev/DropcastDev.xcodeproj">
+      location = "group:Apps/DropcastDev/DropcastDev.xcodeproj">
    </FileRef>
    <FileRef
-      location = "group:Dropcast/Dropcast.xcodeproj">
+      location = "group:Apps/Dropcast/Dropcast.xcodeproj">
    </FileRef>
 </Workspace>

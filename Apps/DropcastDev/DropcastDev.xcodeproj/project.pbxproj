@@ -7,58 +7,60 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
-		3819E7EC297D19B80074B17C /* DropcastApp.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3819E7EB297D19B80074B17C /* DropcastApp.swift */; };
-		3819E7F0297D19B90074B17C /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 3819E7EF297D19B90074B17C /* Assets.xcassets */; };
-		3819E820297D1B160074B17C /* App in Frameworks */ = {isa = PBXBuildFile; productRef = 3819E81F297D1B160074B17C /* App */; };
+		3819E806297D19DC0074B17C /* DropcastDevApp.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3819E805297D19DC0074B17C /* DropcastDevApp.swift */; };
+		3819E80A297D19DD0074B17C /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 3819E809297D19DD0074B17C /* Assets.xcassets */; };
+		38C2E0A229AC1DF100182985 /* App in Frameworks */ = {isa = PBXBuildFile; productRef = 38C2E0A129AC1DF100182985 /* App */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
-		3819E7E8297D19B80074B17C /* Dropcast.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = Dropcast.app; sourceTree = BUILT_PRODUCTS_DIR; };
-		3819E7EB297D19B80074B17C /* DropcastApp.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DropcastApp.swift; sourceTree = "<group>"; };
-		3819E7EF297D19B90074B17C /* Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Assets.xcassets; sourceTree = "<group>"; };
-		38B83C442998CA8600B71AEB /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist; path = Info.plist; sourceTree = "<group>"; };
+		3819E802297D19DC0074B17C /* DropcastDev.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = DropcastDev.app; sourceTree = BUILT_PRODUCTS_DIR; };
+		3819E805297D19DC0074B17C /* DropcastDevApp.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DropcastDevApp.swift; sourceTree = "<group>"; };
+		3819E809297D19DD0074B17C /* Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Assets.xcassets; sourceTree = "<group>"; };
+		38DCC9E329873F46003F8B66 /* DropcastDev.entitlements */ = {isa = PBXFileReference; lastKnownFileType = text.plist.entitlements; path = DropcastDev.entitlements; sourceTree = "<group>"; };
+		38DCC9E429873F95003F8B66 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist; path = Info.plist; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
-		3819E7E5297D19B80074B17C /* Frameworks */ = {
+		3819E7FF297D19DC0074B17C /* Frameworks */ = {
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				3819E820297D1B160074B17C /* App in Frameworks */,
+				38C2E0A229AC1DF100182985 /* App in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
 /* End PBXFrameworksBuildPhase section */
 
 /* Begin PBXGroup section */
-		3819E7DF297D19B80074B17C = {
+		3819E7F9297D19DC0074B17C = {
 			isa = PBXGroup;
 			children = (
-				3819E7EF297D19B90074B17C /* Assets.xcassets */,
-				3819E7EA297D19B80074B17C /* Dropcast */,
-				3819E7E9297D19B80074B17C /* Products */,
-				3819E81E297D1B160074B17C /* Frameworks */,
+				3819E809297D19DD0074B17C /* Assets.xcassets */,
+				3819E804297D19DC0074B17C /* DropcastDev */,
+				3819E803297D19DC0074B17C /* Products */,
+				3819E81B297D1AEC0074B17C /* Frameworks */,
 			);
 			sourceTree = "<group>";
 		};
-		3819E7E9297D19B80074B17C /* Products */ = {
+		3819E803297D19DC0074B17C /* Products */ = {
 			isa = PBXGroup;
 			children = (
-				3819E7E8297D19B80074B17C /* Dropcast.app */,
+				3819E802297D19DC0074B17C /* DropcastDev.app */,
 			);
 			name = Products;
 			sourceTree = "<group>";
 		};
-		3819E7EA297D19B80074B17C /* Dropcast */ = {
+		3819E804297D19DC0074B17C /* DropcastDev */ = {
 			isa = PBXGroup;
 			children = (
-				38B83C442998CA8600B71AEB /* Info.plist */,
-				3819E7EB297D19B80074B17C /* DropcastApp.swift */,
+				38DCC9E429873F95003F8B66 /* Info.plist */,
+				38DCC9E329873F46003F8B66 /* DropcastDev.entitlements */,
+				3819E805297D19DC0074B17C /* DropcastDevApp.swift */,
 			);
-			path = Dropcast;
+			path = DropcastDev;
 			sourceTree = "<group>";
 		};
-		3819E81E297D1B160074B17C /* Frameworks */ = {
+		3819E81B297D1AEC0074B17C /* Frameworks */ = {
 			isa = PBXGroup;
 			children = (
 			);
@@ -68,83 +70,83 @@
 /* End PBXGroup section */
 
 /* Begin PBXNativeTarget section */
-		3819E7E7297D19B80074B17C /* Dropcast */ = {
+		3819E801297D19DC0074B17C /* DropcastDev */ = {
 			isa = PBXNativeTarget;
-			buildConfigurationList = 3819E7F6297D19B90074B17C /* Build configuration list for PBXNativeTarget "Dropcast" */;
+			buildConfigurationList = 3819E810297D19DD0074B17C /* Build configuration list for PBXNativeTarget "DropcastDev" */;
 			buildPhases = (
-				3819E7E4297D19B80074B17C /* Sources */,
-				3819E7E5297D19B80074B17C /* Frameworks */,
-				3819E7E6297D19B80074B17C /* Resources */,
+				3819E7FE297D19DC0074B17C /* Sources */,
+				3819E7FF297D19DC0074B17C /* Frameworks */,
+				3819E800297D19DC0074B17C /* Resources */,
 			);
 			buildRules = (
 			);
 			dependencies = (
 			);
-			name = Dropcast;
+			name = DropcastDev;
 			packageProductDependencies = (
-				3819E81F297D1B160074B17C /* App */,
+				38C2E0A129AC1DF100182985 /* App */,
 			);
-			productName = Dropcast;
-			productReference = 3819E7E8297D19B80074B17C /* Dropcast.app */;
+			productName = DropcastDev;
+			productReference = 3819E802297D19DC0074B17C /* DropcastDev.app */;
 			productType = "com.apple.product-type.application";
 		};
 /* End PBXNativeTarget section */
 
 /* Begin PBXProject section */
-		3819E7E0297D19B80074B17C /* Project object */ = {
+		3819E7FA297D19DC0074B17C /* Project object */ = {
 			isa = PBXProject;
 			attributes = {
 				BuildIndependentTargetsInParallel = 1;
 				LastSwiftUpdateCheck = 1420;
 				LastUpgradeCheck = 1420;
 				TargetAttributes = {
-					3819E7E7297D19B80074B17C = {
+					3819E801297D19DC0074B17C = {
 						CreatedOnToolsVersion = 14.2;
 					};
 				};
 			};
-			buildConfigurationList = 3819E7E3297D19B80074B17C /* Build configuration list for PBXProject "Dropcast" */;
+			buildConfigurationList = 3819E7FD297D19DC0074B17C /* Build configuration list for PBXProject "DropcastDev" */;
 			compatibilityVersion = "Xcode 14.0";
 			developmentRegion = en;
 			hasScannedForEncodings = 0;
 			knownRegions = (
 				en,
-				Base,
+				ja,
 			);
-			mainGroup = 3819E7DF297D19B80074B17C;
-			productRefGroup = 3819E7E9297D19B80074B17C /* Products */;
+			mainGroup = 3819E7F9297D19DC0074B17C;
+			productRefGroup = 3819E803297D19DC0074B17C /* Products */;
 			projectDirPath = "";
 			projectRoot = "";
 			targets = (
-				3819E7E7297D19B80074B17C /* Dropcast */,
+				3819E801297D19DC0074B17C /* DropcastDev */,
 			);
 		};
 /* End PBXProject section */
 
 /* Begin PBXResourcesBuildPhase section */
-		3819E7E6297D19B80074B17C /* Resources */ = {
+		3819E800297D19DC0074B17C /* Resources */ = {
 			isa = PBXResourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				3819E7F0297D19B90074B17C /* Assets.xcassets in Resources */,
+				3819E80A297D19DD0074B17C /* Assets.xcassets in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
 /* End PBXResourcesBuildPhase section */
 
 /* Begin PBXSourcesBuildPhase section */
-		3819E7E4297D19B80074B17C /* Sources */ = {
+		3819E7FE297D19DC0074B17C /* Sources */ = {
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				3819E7EC297D19B80074B17C /* DropcastApp.swift in Sources */,
+				3819E806297D19DC0074B17C /* DropcastDevApp.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
 /* End PBXSourcesBuildPhase section */
 
 /* Begin XCBuildConfiguration section */
-		3819E7F4297D19B90074B17C /* Debug */ = {
+		3819E80E297D19DD0074B17C /* Debug */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
 				ALWAYS_SEARCH_USER_PATHS = NO;
@@ -204,7 +206,7 @@
 			};
 			name = Debug;
 		};
-		3819E7F5297D19B90074B17C /* Release */ = {
+		3819E80F297D19DD0074B17C /* Release */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
 				ALWAYS_SEARCH_USER_PATHS = NO;
@@ -258,18 +260,19 @@
 			};
 			name = Release;
 		};
-		3819E7F7297D19B90074B17C /* Debug */ = {
+		3819E811297D19DD0074B17C /* Debug */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME = AccentColor;
+				CODE_SIGN_ENTITLEMENTS = DropcastDev/DropcastDev.entitlements;
 				CODE_SIGN_STYLE = Automatic;
 				CURRENT_PROJECT_VERSION = 1;
 				DEVELOPMENT_ASSET_PATHS = "";
 				DEVELOPMENT_TEAM = 56T4RFDKJR;
 				ENABLE_PREVIEWS = YES;
 				GENERATE_INFOPLIST_FILE = YES;
-				INFOPLIST_FILE = Dropcast/Info.plist;
+				INFOPLIST_FILE = DropcastDev/Info.plist;
 				INFOPLIST_KEY_UIApplicationSceneManifest_Generation = YES;
 				INFOPLIST_KEY_UIApplicationSupportsIndirectInputEvents = YES;
 				INFOPLIST_KEY_UILaunchScreen_Generation = YES;
@@ -281,7 +284,7 @@
 					"@executable_path/Frameworks",
 				);
 				MARKETING_VERSION = 1.0;
-				PRODUCT_BUNDLE_IDENTIFIER = com.muijp.Dropcast;
+				PRODUCT_BUNDLE_IDENTIFIER = com.muijp.DropcastDev;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				SWIFT_EMIT_LOC_STRINGS = YES;
 				SWIFT_VERSION = 5.0;
@@ -289,18 +292,19 @@
 			};
 			name = Debug;
 		};
-		3819E7F8297D19B90074B17C /* Release */ = {
+		3819E812297D19DD0074B17C /* Release */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME = AccentColor;
+				CODE_SIGN_ENTITLEMENTS = DropcastDev/DropcastDev.entitlements;
 				CODE_SIGN_STYLE = Automatic;
 				CURRENT_PROJECT_VERSION = 1;
 				DEVELOPMENT_ASSET_PATHS = "";
 				DEVELOPMENT_TEAM = 56T4RFDKJR;
 				ENABLE_PREVIEWS = YES;
 				GENERATE_INFOPLIST_FILE = YES;
-				INFOPLIST_FILE = Dropcast/Info.plist;
+				INFOPLIST_FILE = DropcastDev/Info.plist;
 				INFOPLIST_KEY_UIApplicationSceneManifest_Generation = YES;
 				INFOPLIST_KEY_UIApplicationSupportsIndirectInputEvents = YES;
 				INFOPLIST_KEY_UILaunchScreen_Generation = YES;
@@ -312,7 +316,7 @@
 					"@executable_path/Frameworks",
 				);
 				MARKETING_VERSION = 1.0;
-				PRODUCT_BUNDLE_IDENTIFIER = com.muijp.Dropcast;
+				PRODUCT_BUNDLE_IDENTIFIER = com.muijp.DropcastDev;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				SWIFT_EMIT_LOC_STRINGS = YES;
 				SWIFT_VERSION = 5.0;
@@ -323,20 +327,20 @@
 /* End XCBuildConfiguration section */
 
 /* Begin XCConfigurationList section */
-		3819E7E3297D19B80074B17C /* Build configuration list for PBXProject "Dropcast" */ = {
+		3819E7FD297D19DC0074B17C /* Build configuration list for PBXProject "DropcastDev" */ = {
 			isa = XCConfigurationList;
 			buildConfigurations = (
-				3819E7F4297D19B90074B17C /* Debug */,
-				3819E7F5297D19B90074B17C /* Release */,
+				3819E80E297D19DD0074B17C /* Debug */,
+				3819E80F297D19DD0074B17C /* Release */,
 			);
 			defaultConfigurationIsVisible = 0;
 			defaultConfigurationName = Release;
 		};
-		3819E7F6297D19B90074B17C /* Build configuration list for PBXNativeTarget "Dropcast" */ = {
+		3819E810297D19DD0074B17C /* Build configuration list for PBXNativeTarget "DropcastDev" */ = {
 			isa = XCConfigurationList;
 			buildConfigurations = (
-				3819E7F7297D19B90074B17C /* Debug */,
-				3819E7F8297D19B90074B17C /* Release */,
+				3819E811297D19DD0074B17C /* Debug */,
+				3819E812297D19DD0074B17C /* Release */,
 			);
 			defaultConfigurationIsVisible = 0;
 			defaultConfigurationName = Release;
@@ -344,11 +348,11 @@
 /* End XCConfigurationList section */
 
 /* Begin XCSwiftPackageProductDependency section */
-		3819E81F297D1B160074B17C /* App */ = {
+		38C2E0A129AC1DF100182985 /* App */ = {
 			isa = XCSwiftPackageProductDependency;
 			productName = App;
 		};
 /* End XCSwiftPackageProductDependency section */
 	};
-	rootObject = 3819E7E0297D19B80074B17C /* Project object */;
+	rootObject = 3819E7FA297D19DC0074B17C /* Project object */;
 }
