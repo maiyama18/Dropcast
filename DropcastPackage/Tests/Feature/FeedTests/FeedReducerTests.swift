@@ -10,6 +10,15 @@ import XCTest
 
 @MainActor
 final class FeedReducerTests: XCTestCase {
+    private let now = Date(timeIntervalSince1970: 1677412800)
+    private let userDefaults = UserDefaults(suiteName: "FeedReducerTests")!
+    
+    override func tearDown() {
+        super.tearDown()
+        
+        userDefaults.removePersistentDomain(forName: "FeedReducerTests")
+    }
+    
     func test_feed_is_initialized_with_episodes_of_followed_shows() async {
         let store = TestStore(
             initialState: FeedReducer.State(),
@@ -26,6 +35,10 @@ final class FeedReducerTests: XCTestCase {
                 XCTAssertNoDifference(feedURL, Show.fixtureRebuild.feedURL)
                 return .success(.fixtureRebuild)
             }
+            
+            $0.userDefaultsClient = .instance(userDefaults: userDefaults)
+            
+            $0.date.now = now
         }
 
         let task = await store.send(.task)
@@ -72,6 +85,10 @@ final class FeedReducerTests: XCTestCase {
                     return .failure(RSSError.invalidFeed)
                 }
             }
+            
+            $0.userDefaultsClient = .instance(userDefaults: userDefaults)
+            
+            $0.date.now = now
         }
 
         let task = await store.send(.task)
@@ -136,6 +153,69 @@ final class FeedReducerTests: XCTestCase {
 
         await task.cancel()
     }
+    
+    func test_new_episodes_are_not_fetched_if_feed_was_recently_refreshed() async throws {
+        let clock = TestClock()
+        let databaseClient: DatabaseClient = .live(persistentProvider: InMemoryPersistentProvider())
+        let store = TestStore(
+            initialState: FeedReducer.State(),
+            reducer: FeedReducer()
+        ) {
+            $0.databaseClient = databaseClient
+            do {
+                var fixtureRebuild: Show = .fixtureRebuild
+                fixtureRebuild.episodes = [.fixtureRebuild350]
+                var fixtureSwiftBySundell: Show = .fixtureSwiftBySundell
+                fixtureSwiftBySundell.episodes = [.fixtureSwiftBySundell121, .fixtureSwiftBySundell122]
+                
+                try $0.databaseClient.followShow(fixtureRebuild).get()
+                try $0.databaseClient.followShow(fixtureSwiftBySundell).get()
+            } catch {
+                XCTFail()
+            }
+            
+            $0.rssClient.fetch = { feedURL in
+                switch feedURL {
+                case Show.fixtureRebuild.feedURL:
+                    try? await clock.sleep(for: .seconds(1))
+                    return .success(.fixtureRebuild)
+                case Show.fixtureSwiftBySundell.feedURL:
+                    try? await clock.sleep(for: .seconds(2))
+                    return .success(.fixtureSwiftBySundell)
+                default:
+                    XCTFail()
+                    return .failure(RSSError.invalidFeed)
+                }
+            }
+            
+            $0.userDefaultsClient = .instance(userDefaults: userDefaults)
+            $0.userDefaultsClient.setFeedRefreshedAt(now.addingTimeInterval(-3600))
+            
+            $0.date.now = now
+        }
+
+        let task = await store.send(.task)
+        await store.receive(.downloadStatesResponse([:])) {
+            $0.downloadStates = [:]
+        }
+        await store.receive(
+            .episodesResponse(IdentifiedArrayOf(uniqueElements: [
+                .fixtureRebuild350,
+                .fixtureSwiftBySundell122,
+                .fixtureSwiftBySundell121,
+            ]))
+        ) {
+            $0.episodes = [
+                .fixtureRebuild350,
+                .fixtureSwiftBySundell122,
+                .fixtureSwiftBySundell121,
+            ]
+        }
+        
+        await clock.advance(by: .seconds(2))
+        
+        await task.cancel()
+    }
 
     func test_episodes_of_followed_shows_are_added_to_feed() async throws {
         let databaseClient: DatabaseClient = .live(persistentProvider: InMemoryPersistentProvider())
@@ -154,6 +234,10 @@ final class FeedReducerTests: XCTestCase {
                 XCTAssertNoDifference(feedURL, Show.fixtureRebuild.feedURL)
                 return .success(.fixtureRebuild)
             }
+            
+            $0.userDefaultsClient = .instance(userDefaults: userDefaults)
+            
+            $0.date.now = now
         }
 
         let task = await store.send(.task)
@@ -213,6 +297,10 @@ final class FeedReducerTests: XCTestCase {
                     return .failure(RSSError.invalidFeed)
                 }
             }
+            
+            $0.userDefaultsClient = .instance(userDefaults: userDefaults)
+            
+            $0.date.now = now
         }
 
         let task = await store.send(.task)
@@ -273,6 +361,10 @@ final class FeedReducerTests: XCTestCase {
                 XCTAssertNoDifference(feedURL, Show.fixtureRebuild.feedURL)
                 return .success(.fixtureRebuild)
             }
+            
+            $0.userDefaultsClient = .instance(userDefaults: userDefaults)
+            
+            $0.date.now = now
         }
 
         let task = await store.send(.task)
@@ -339,6 +431,10 @@ final class FeedReducerTests: XCTestCase {
                 XCTAssertNoDifference(feedURL, Show.fixtureRebuild.feedURL)
                 return .success(.fixtureRebuild)
             }
+            
+            $0.userDefaultsClient = .instance(userDefaults: userDefaults)
+            
+            $0.date.now = now
         }
 
         let task = await store.send(.task)
@@ -413,6 +509,10 @@ final class FeedReducerTests: XCTestCase {
             $0.messageClient.presentError = { message in
                 errorMessage.withValue { $0 = message }
             }
+            
+            $0.userDefaultsClient = .instance(userDefaults: userDefaults)
+            
+            $0.date.now = now
         }
 
         let task = await store.send(.task)

@@ -19,6 +19,10 @@ extension PackageDescription.Target.Dependency {
         name: "CustomDump",
         package: "swift-custom-dump"
     )
+    static let defaults: Self = .product(
+        name: "Defaults",
+        package: "Defaults"
+    )
     static let dependencies: Self = .product(
         name: "Dependencies",
         package: "swift-dependencies"
@@ -53,15 +57,19 @@ extension PackageDescription.Target.PluginUsage {
 }
 
 let dependencies: [PackageDescription.Package.Dependency] = [
+    // libraries
     .package(url: "https://github.com/apple/swift-algorithms", exact: "1.0.0"),
     .package(url: "https://github.com/apple/swift-async-algorithms", exact: "0.0.4"),
     .package(url: "https://github.com/kean/Nuke", exact: "11.6.2"),
     .package(url: "https://github.com/nmdias/FeedKit", exact: "9.1.2"),
     .package(url: "https://github.com/omaralbeik/Drops", exact: "1.6.1"),
+    .package(url: "https://github.com/sindresorhus/Defaults", exact: "7.1.0"),
     .package(url: "https://github.com/pointfreeco/swift-composable-architecture", exact: "0.51.0"),
     .package(url: "https://github.com/pointfreeco/swift-custom-dump", exact: "0.8.0"),
     .package(url: "https://github.com/pointfreeco/swift-dependencies", exact: "0.1.4"),
     .package(url: "https://github.com/pointfreeco/swift-identified-collections", exact: "0.7.0"),
+    
+    // plugins
     .package(url: "https://github.com/maiyama18/SwiftLintPlugins", exact: "0.9.3"),
     .package(url: "https://github.com/SwiftGen/SwiftGenPlugin", exact: "6.6.2"),
 ]
@@ -121,6 +129,7 @@ let targets: [PackageDescription.Target] = [
             "MessageClient",
             "RSSClient",
             "SoundFileClient",
+            "UserDefaultsClient",
         ],
         path: "Sources/Feature/Feed",
         plugins: [.swiftgen]
@@ -295,9 +304,23 @@ let targets: [PackageDescription.Target] = [
         ],
         path: "Tests/Infra/SoundFileClientTests"
     ),
+    .target(
+        name: "UserDefaultsClient",
+        dependencies: [
+            .defaults,
+            .dependencies,
+            "Build",
+        ],
+        path: "Sources/Infra/UserDefaultsClient"
+    ),
 
     // Core module
 
+    .target(
+        name: "Build",
+        dependencies: [],
+        path: "Sources/Core/Build"
+    ),
     .target(
         name: "Entity",
         dependencies: ["Formatter"],

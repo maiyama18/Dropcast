@@ -4,6 +4,7 @@ import Error
 import MessageClient
 import RSSClient
 import SoundFileClient
+import UserDefaultsClient
 
 public struct FeedReducer: ReducerProtocol, Sendable {
     public struct State: Equatable {
@@ -27,11 +28,14 @@ public struct FeedReducer: ReducerProtocol, Sendable {
         case downloadStatesResponse([String: EpisodeDownloadState])
         case downloadErrorResponse(SoundFileClientError)
     }
+    
+    @Dependency(\.date.now) private var now
 
     @Dependency(\.databaseClient) private var databaseClient
     @Dependency(\.messageClient) private var messageClient
     @Dependency(\.rssClient) private var rssClient
     @Dependency(\.soundFileClient) private var soundFileClient
+    @Dependency(\.userDefaultsClient) private var userDefaultsClient
 
     public init() {}
 
@@ -41,6 +45,11 @@ public struct FeedReducer: ReducerProtocol, Sendable {
             case .task:
                 return .merge(
                     .fireAndForget {
+                        if let feedRefreshedAt = userDefaultsClient.getFeedRefreshedAt(),
+                           now.timeIntervalSince(feedRefreshedAt) <= 3600 {
+                            return
+                        }
+                        
                         let shows: [Show]
                         switch databaseClient.fetchFollowedShows() {
                         case .success(let followedShows):
@@ -61,6 +70,8 @@ public struct FeedReducer: ReducerProtocol, Sendable {
                                 }
                             }
                         }
+                        
+                        userDefaultsClient.setFeedRefreshedAt(now)
                     },
                     .run { send in
                         for await episodes in databaseClient.followedEpisodesStream() {
