@@ -14,17 +14,17 @@ final class DatabaseClientTests: XCTestCase {
         persistentProvider = InMemoryPersistentProvider()
         client = .live(persistentProvider: persistentProvider)
     }
-    
+
     func test_fetch_followed_shows() async throws {
         XCTAssertNoDifference(client.fetchFollowedShows(), .success([]))
-        
+
         try client.followShow(.fixtureSwiftBySundell).get()
-        
+
         XCTAssertNoDifference(client.fetchFollowedShows(), .success([.fixtureSwiftBySundell]))
-        
+
         try client.followShow(.fixtureRebuild).get()
         try client.followShow(.fixtureプログラム雑談).get()
-        
+
         XCTAssertNoDifference(
             client.fetchFollowedShows(),
             .success([.fixtureRebuild, .fixtureSwiftBySundell, .fixtureプログラム雑談])
@@ -196,10 +196,10 @@ final class DatabaseClientTests: XCTestCase {
             ]
         )
     }
-    
+
     func test_newly_added_episodes_of_followed_shows_are_received_from_stream() async throws {
         try assertAllEpisodeRecordsCount(expected: 0)
-        
+
         let followedEpisodesSequence = client.followedEpisodesStream()
 
         try await XCTAssertReceive(from: followedEpisodesSequence, [])
@@ -207,14 +207,14 @@ final class DatabaseClientTests: XCTestCase {
         Task { [client = self.client!] in
             var swiftBySundell: Show = .fixtureSwiftBySundell
             swiftBySundell.episodes = [.fixtureSwiftBySundell121]
-            
+
             try client.followShow(swiftBySundell).get()
         }
         try await XCTAssertReceive(
             from: followedEpisodesSequence,
             [.fixtureSwiftBySundell121]
         )
-        
+
         try assertAllEpisodeRecordsCount(expected: 1)
 
         Task { [client = self.client!] in
@@ -228,7 +228,7 @@ final class DatabaseClientTests: XCTestCase {
                 .fixtureSwiftBySundell121,
             ]
         )
-        
+
         try assertAllEpisodeRecordsCount(expected: 3)
     }
 

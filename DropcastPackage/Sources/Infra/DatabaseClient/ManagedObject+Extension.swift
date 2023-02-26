@@ -47,7 +47,7 @@ extension EpisodeRecord {
         soundURL = episode.soundURL
         publishedAt = episode.publishedAt
     }
-    
+
     convenience init(context: NSManagedObjectContext, episode: Episode, show: Show) {
         self.init(context: context, episode: episode)
         self.show = ShowRecord(context: context, show: show)

@@ -29,7 +29,7 @@ public struct FeedReducer: ReducerProtocol, Sendable {
         case downloadStatesResponse([String: EpisodeDownloadState])
         case downloadErrorResponse(SoundFileClientError)
     }
-    
+
     @Dependency(\.date.now) private var now
 
     @Dependency(\.databaseClient) private var databaseClient
@@ -49,7 +49,7 @@ public struct FeedReducer: ReducerProtocol, Sendable {
             messageClient.presentError(L10n.Error.databaseError)
             return
         }
-        
+
         var tasks: [Task<Void, Never>] = []
         for show in shows {
             let task = Task {
@@ -63,14 +63,14 @@ public struct FeedReducer: ReducerProtocol, Sendable {
             }
             tasks.append(task)
         }
-        
+
         for task in tasks {
             await task.value
         }
-        
+
         userDefaultsClient.setFeedRefreshedAt(now)
     }
-    
+
     public var body: some ReducerProtocol<State, Action> {
         Reduce { state, action in
             switch action {
@@ -81,7 +81,7 @@ public struct FeedReducer: ReducerProtocol, Sendable {
                            now.timeIntervalSince(feedRefreshedAt) <= 600 {
                             return
                         }
-                        
+
                         await refreshFeed()
                     },
                     .run { send in

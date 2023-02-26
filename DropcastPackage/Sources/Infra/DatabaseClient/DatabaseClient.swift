@@ -149,7 +149,7 @@ extension DatabaseClient {
                 showsRequest.sortDescriptors = [
                     NSSortDescriptor(keyPath: \ShowRecord.title, ascending: true)
                 ]
-                
+
                 return persistentProvider.executeInBackground { context in
                     logger.notice("fetching followed shows")
                     do {

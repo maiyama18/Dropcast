@@ -16,7 +16,7 @@ final class CloudKitPersistentProvider: PersistentProvider {
     private init(containerIdentifier: String) {
         persistentContainer = LockIsolated({
             @Dependency(\.logger[.database]) var logger
-            
+
             let model = NSManagedObjectModel(contentsOf: Bundle.module.url(forResource: "Model", withExtension: "momd")!)!
             let container = NSPersistentCloudKitContainer(name: "Model", managedObjectModel: model)
 
