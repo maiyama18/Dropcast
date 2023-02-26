@@ -118,7 +118,8 @@ final class FeedReducerTests: XCTestCase {
                 .fixtureRebuild350,
                 .fixtureSwiftBySundell122,
                 .fixtureSwiftBySundell121,
-            ]))
+            ])),
+            timeout: .milliseconds(500)
         ) {
             $0.episodes = [
                 .fixtureRebuild352,
@@ -225,7 +226,8 @@ final class FeedReducerTests: XCTestCase {
                 .fixtureRebuild350,
                 .fixtureSwiftBySundell122,
                 .fixtureSwiftBySundell121,
-            ]))
+            ])),
+            timeout: .milliseconds(500)
         ) {
             $0.episodes = [
                 .fixtureRebuild352,
