@@ -22,6 +22,7 @@ public struct FeedReducer: ReducerProtocol, Sendable {
     public enum Action: Equatable, Sendable {
         case task
         case followShowsButtonTapped
+        case pullToRefreshed
         case downloadEpisodeButtonTapped(episode: Episode)
 
         case episodesResponse(IdentifiedArrayOf<Episode>)
@@ -39,6 +40,37 @@ public struct FeedReducer: ReducerProtocol, Sendable {
 
     public init() {}
 
+    private func refreshFeed() async {
+        let shows: [Show]
+        switch databaseClient.fetchFollowedShows() {
+        case .success(let followedShows):
+            shows = followedShows.elements
+        case .failure:
+            messageClient.presentError(L10n.Error.databaseError)
+            return
+        }
+        
+        var tasks: [Task<Void, Never>] = []
+        for show in shows {
+            let task = Task {
+                switch await rssClient.fetch(show.feedURL) {
+                case .success(let show):
+                    _ = databaseClient.addNewEpisodes(show)
+                case .failure:
+                    // do not show error when update of one of shows failed
+                    break
+                }
+            }
+            tasks.append(task)
+        }
+        
+        for task in tasks {
+            await task.value
+        }
+        
+        userDefaultsClient.setFeedRefreshedAt(now)
+    }
+    
     public var body: some ReducerProtocol<State, Action> {
         Reduce { state, action in
             switch action {
@@ -46,32 +78,11 @@ public struct FeedReducer: ReducerProtocol, Sendable {
                 return .merge(
                     .fireAndForget {
                         if let feedRefreshedAt = userDefaultsClient.getFeedRefreshedAt(),
-                           now.timeIntervalSince(feedRefreshedAt) <= 3600 {
+                           now.timeIntervalSince(feedRefreshedAt) <= 600 {
                             return
                         }
                         
-                        let shows: [Show]
-                        switch databaseClient.fetchFollowedShows() {
-                        case .success(let followedShows):
-                            shows = followedShows.elements
-                        case .failure:
-                            messageClient.presentError(L10n.Error.databaseError)
-                            return
-                        }
-                        
-                        for show in shows {
-                            Task {
-                                switch await rssClient.fetch(show.feedURL) {
-                                case .success(let show):
-                                    _ = databaseClient.addNewEpisodes(show)
-                                case .failure:
-                                    // do not show error when update of one of shows failed
-                                    break
-                                }
-                            }
-                        }
-                        
-                        userDefaultsClient.setFeedRefreshedAt(now)
+                        await refreshFeed()
                     },
                     .run { send in
                         for await episodes in databaseClient.followedEpisodesStream() {
@@ -89,6 +100,10 @@ public struct FeedReducer: ReducerProtocol, Sendable {
                         }
                     }
                 )
+            case .pullToRefreshed:
+                return .fireAndForget {
+                    await refreshFeed()
+                }
             case .followShowsButtonTapped:
                 // handled by parent reducer
                 return .none

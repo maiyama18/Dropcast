@@ -38,6 +38,9 @@ public struct FeedScreen: View {
                                 }
                                 .padding(.horizontal)
                             }
+                            .refreshable {
+                                await viewStore.send(.pullToRefreshed).finish()
+                            }
                         }
                     } else {
                         ProgressView()

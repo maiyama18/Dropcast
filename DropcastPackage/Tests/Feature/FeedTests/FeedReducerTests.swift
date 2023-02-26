@@ -154,7 +154,7 @@ final class FeedReducerTests: XCTestCase {
         await task.cancel()
     }
     
-    func test_new_episodes_are_not_fetched_if_feed_was_recently_refreshed() async throws {
+    func test_new_episodes_are_not_fetched_on_appear_if_feed_was_recently_refreshed_but_ptr_refreshes_feed_forcibly() async throws {
         let clock = TestClock()
         let databaseClient: DatabaseClient = .live(persistentProvider: InMemoryPersistentProvider())
         let store = TestStore(
@@ -189,7 +189,7 @@ final class FeedReducerTests: XCTestCase {
             }
             
             $0.userDefaultsClient = .instance(userDefaults: userDefaults)
-            $0.userDefaultsClient.setFeedRefreshedAt(now.addingTimeInterval(-3600))
+            $0.userDefaultsClient.setFeedRefreshedAt(now.addingTimeInterval(-600))
             
             $0.date.now = now
         }
@@ -214,6 +214,50 @@ final class FeedReducerTests: XCTestCase {
         
         await clock.advance(by: .seconds(2))
         
+        await store.send(.pullToRefreshed)
+        
+        await clock.advance(by: .seconds(1))
+        
+        await store.receive(
+            .episodesResponse(IdentifiedArrayOf(uniqueElements: [
+                .fixtureRebuild352,
+                .fixtureRebuild351,
+                .fixtureRebuild350,
+                .fixtureSwiftBySundell122,
+                .fixtureSwiftBySundell121,
+            ]))
+        ) {
+            $0.episodes = [
+                .fixtureRebuild352,
+                .fixtureRebuild351,
+                .fixtureRebuild350,
+                .fixtureSwiftBySundell122,
+                .fixtureSwiftBySundell121,
+            ]
+        }
+        
+        await clock.advance(by: .seconds(1))
+        
+        await store.receive(
+            .episodesResponse(IdentifiedArrayOf(uniqueElements: [
+                .fixtureRebuild352,
+                .fixtureSwiftBySundell123,
+                .fixtureRebuild351,
+                .fixtureRebuild350,
+                .fixtureSwiftBySundell122,
+                .fixtureSwiftBySundell121,
+            ]))
+        ) {
+            $0.episodes = [
+                .fixtureRebuild352,
+                .fixtureSwiftBySundell123,
+                .fixtureRebuild351,
+                .fixtureRebuild350,
+                .fixtureSwiftBySundell122,
+                .fixtureSwiftBySundell121,
+            ]
+        }
+
         await task.cancel()
     }
 
