@@ -15,9 +15,9 @@
             <BuildableReference
                BuildableIdentifier = "primary"
                BlueprintIdentifier = "3819E801297D19DC0074B17C"
-               BuildableName = "DropcastDev.app"
-               BlueprintName = "DropcastDev"
-               ReferencedContainer = "container:DropcastDev.xcodeproj">
+               BuildableName = "iOSDev.app"
+               BlueprintName = "iOSDev"
+               ReferencedContainer = "container:iOSDev.xcodeproj">
             </BuildableReference>
          </BuildActionEntry>
       </BuildActionEntries>
@@ -135,9 +135,9 @@
          <BuildableReference
             BuildableIdentifier = "primary"
             BlueprintIdentifier = "3819E801297D19DC0074B17C"
-            BuildableName = "DropcastDev.app"
-            BlueprintName = "DropcastDev"
-            ReferencedContainer = "container:DropcastDev.xcodeproj">
+            BuildableName = "iOSDev.app"
+            BlueprintName = "iOSDev"
+            ReferencedContainer = "container:iOSDev.xcodeproj">
          </BuildableReference>
       </BuildableProductRunnable>
       <CommandLineArguments>
@@ -162,9 +162,9 @@
          <BuildableReference
             BuildableIdentifier = "primary"
             BlueprintIdentifier = "3819E801297D19DC0074B17C"
-            BuildableName = "DropcastDev.app"
-            BlueprintName = "DropcastDev"
-            ReferencedContainer = "container:DropcastDev.xcodeproj">
+            BuildableName = "iOSDev.app"
+            BlueprintName = "iOSDev"
+            ReferencedContainer = "container:iOSDev.xcodeproj">
          </BuildableReference>
       </BuildableProductRunnable>
    </ProfileAction>
