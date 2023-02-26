@@ -1,3 +1,4 @@
+import CustomDump
 import DatabaseClient
 import Dependencies
 import Entity
@@ -12,6 +13,22 @@ final class DatabaseClientTests: XCTestCase {
     override func setUp() {
         persistentProvider = InMemoryPersistentProvider()
         client = .live(persistentProvider: persistentProvider)
+    }
+
+    func test_fetch_followed_shows() async throws {
+        XCTAssertNoDifference(client.fetchFollowedShows(), .success([]))
+
+        try client.followShow(.fixtureSwiftBySundell).get()
+
+        XCTAssertNoDifference(client.fetchFollowedShows(), .success([.fixtureSwiftBySundell]))
+
+        try client.followShow(.fixtureRebuild).get()
+        try client.followShow(.fixtureプログラム雑談).get()
+
+        XCTAssertNoDifference(
+            client.fetchFollowedShows(),
+            .success([.fixtureRebuild, .fixtureSwiftBySundell, .fixtureプログラム雑談])
+        )
     }
 
     func test_followed_shows_are_received_from_stream_and_ordered_by_title() async throws {
@@ -178,5 +195,48 @@ final class DatabaseClientTests: XCTestCase {
                 .fixtureRebuild350,
             ]
         )
+    }
+
+    func test_newly_added_episodes_of_followed_shows_are_received_from_stream() async throws {
+        try assertAllEpisodeRecordsCount(expected: 0)
+
+        let followedEpisodesSequence = client.followedEpisodesStream()
+
+        try await XCTAssertReceive(from: followedEpisodesSequence, [])
+
+        Task { [client = self.client!] in
+            var swiftBySundell: Show = .fixtureSwiftBySundell
+            swiftBySundell.episodes = [.fixtureSwiftBySundell121]
+
+            try client.followShow(swiftBySundell).get()
+        }
+        try await XCTAssertReceive(
+            from: followedEpisodesSequence,
+            [.fixtureSwiftBySundell121]
+        )
+
+        try assertAllEpisodeRecordsCount(expected: 1)
+
+        Task { [client = self.client!] in
+            try client.addNewEpisodes(.fixtureSwiftBySundell).get()
+        }
+        try await XCTAssertReceive(
+            from: followedEpisodesSequence,
+            [
+                .fixtureSwiftBySundell123,
+                .fixtureSwiftBySundell122,
+                .fixtureSwiftBySundell121,
+            ]
+        )
+
+        try assertAllEpisodeRecordsCount(expected: 3)
+    }
+
+    private func assertAllEpisodeRecordsCount(expected: Int, file: StaticString = #file, line: UInt = #line) throws {
+        try persistentProvider.executeInBackground { context in
+            let request = EpisodeRecord.fetchRequest()
+            let records = try context.fetch(request)
+            XCTAssertNoDifference(records.count, expected, file: file, line: line)
+        }
     }
 }

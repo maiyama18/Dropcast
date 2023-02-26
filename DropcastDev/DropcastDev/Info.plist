@@ -16,5 +16,7 @@
 		<string>en</string>
 		<string>ja</string>
 	</array>
+	<key>AppGroupID</key>
+	<string>group.com.muijp.DropcastDev</string>
 </dict>
 </plist>

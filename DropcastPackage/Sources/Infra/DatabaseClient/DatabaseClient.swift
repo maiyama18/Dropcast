@@ -11,21 +11,27 @@ import Logger
 
 public struct DatabaseClient: Sendable {
     public var fetchShow: @Sendable (URL) -> Result<Show?, DatabaseError>
+    public var fetchFollowedShows: @Sendable () -> Result<IdentifiedArrayOf<Show>, DatabaseError>
     public var followShow: @Sendable (Show) -> Result<Void, DatabaseError>
     public var unfollowShow: @Sendable (URL) -> Result<Void, DatabaseError>
+    public var addNewEpisodes: @Sendable (Show) -> Result<Void, DatabaseError>
     public var followedShowsStream: @Sendable () -> AsyncChannel<IdentifiedArrayOf<Show>>
     public var followedEpisodesStream: @Sendable () -> AsyncChannel<IdentifiedArrayOf<Episode>>
 
     public init(
         fetchShow: @escaping @Sendable (URL) -> Result<Show?, DatabaseError>,
+        fetchFollowedShows: @escaping @Sendable () -> Result<IdentifiedArrayOf<Show>, DatabaseError>,
         followShow: @escaping @Sendable (Show) -> Result<Void, DatabaseError>,
         unfollowShow: @escaping @Sendable (URL) -> Result<Void, DatabaseError>,
+        addNewEpisodes: @escaping @Sendable (Show) -> Result<Void, DatabaseError>,
         followedShowsStream: @escaping @Sendable () -> AsyncChannel<IdentifiedArrayOf<Show>>,
         followedEpisodesStream: @escaping @Sendable () -> AsyncChannel<IdentifiedArrayOf<Episode>>
     ) {
         self.fetchShow = fetchShow
+        self.fetchFollowedShows = fetchFollowedShows
         self.followShow = followShow
         self.unfollowShow = unfollowShow
+        self.addNewEpisodes = addNewEpisodes
         self.followedShowsStream = followedShowsStream
         self.followedEpisodesStream = followedEpisodesStream
     }
@@ -138,6 +144,27 @@ extension DatabaseClient {
 
         return DatabaseClient(
             fetchShow: fetchShow(feedURL:),
+            fetchFollowedShows: {
+                let showsRequest = ShowRecord.fetchRequest()
+                showsRequest.sortDescriptors = [
+                    NSSortDescriptor(keyPath: \ShowRecord.title, ascending: true)
+                ]
+
+                return persistentProvider.executeInBackground { context in
+                    logger.notice("fetching followed shows")
+                    do {
+                        let records = try context.fetch(showsRequest)
+                        let shows = records.compactMap { $0.toShow() }
+                        let uniquedShows = shows.uniqued(on: { $0.feedURL })
+                        let identifiedShows = IdentifiedArrayOf(uniqueElements: uniquedShows)
+                        logger.notice("followed shows response:\n\(customDump(identifiedShows), privacy: .public)")
+                        return .success(identifiedShows)
+                    } catch {
+                        logger.fault("failed to fetch followed shows: \(error, privacy: .public)")
+                        return .failure(.databaseError)
+                    }
+                }
+            },
             followShow: { show in
                 logger.notice("following show: \(show.feedURL, privacy: .public)")
                 switch fetchShow(feedURL: show.feedURL) {
@@ -196,6 +223,34 @@ extension DatabaseClient {
                     }
                 }
             },
+            addNewEpisodes: { show in
+                return persistentProvider.executeInBackground { context in
+                    logger.notice("adding new episodes: \(show.title, privacy: .public)")
+                    let request = ShowRecord.fetchRequest()
+                    request.predicate = NSPredicate(format: "%K = %@", #keyPath(ShowRecord.feedURL), show.feedURL as NSURL)
+                    do {
+                        guard let showRecord = try context.fetch(request).first else {
+                            logger.notice("show to add new episodes not followed: \(show.title, privacy: .public)")
+                            return .failure(.showNotFollowed)
+                        }
+                        let existingEpisodeRecords = showRecord.episodes?.allObjects as? [EpisodeRecord] ?? []
+                        let existingEpisodeIDs = Set(existingEpisodeRecords.map(\.id))
+                        var addedEpisodeTitles: [String] = []
+                        for episode in show.episodes {
+                            if existingEpisodeIDs.contains(episode.id) { continue }
+                            showRecord.addToEpisodes(EpisodeRecord(context: context, episode: episode))
+                            addedEpisodeTitles.append(episode.title)
+                        }
+                        try context.save()
+                        logger.notice("added new episodes: \(addedEpisodeTitles, privacy: .public)")
+                        return .success(())
+                    } catch {
+                        context.rollback()
+                        logger.fault("failed to add new episodes: \(error, privacy: .public)")
+                        return .failure(.databaseError)
+                    }
+                }
+            },
             followedShowsStream: {
                 showsController.delegate = delegate
                 delegate.sendShowsInitialValue(showsController)
@@ -216,14 +271,14 @@ extension DatabaseClient: DependencyKey {
     public static let liveValue: DatabaseClient = DatabaseClient.live(persistentProvider: CloudKitPersistentProvider.shared)
     public static let testValue: DatabaseClient = DatabaseClient(
         fetchShow: unimplemented(),
+        fetchFollowedShows: unimplemented(),
         followShow: unimplemented(),
         unfollowShow: unimplemented(),
+        addNewEpisodes: unimplemented(),
         followedShowsStream: unimplemented(),
         followedEpisodesStream: unimplemented()
     )
     public static let previewValue: DatabaseClient = DatabaseClient.live(persistentProvider: InMemoryPersistentProvider())
-}
-extension DatabaseClient: TestDependencyKey {
 }
 
 extension DependencyValues {

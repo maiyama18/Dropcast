@@ -15,10 +15,13 @@ final class CloudKitPersistentProvider: PersistentProvider {
 
     private init(containerIdentifier: String) {
         persistentContainer = LockIsolated({
+            @Dependency(\.logger[.database]) var logger
+
             let model = NSManagedObjectModel(contentsOf: Bundle.module.url(forResource: "Model", withExtension: "momd")!)!
             let container = NSPersistentCloudKitContainer(name: "Model", managedObjectModel: model)
 
             let storeURL = Self.storeURL()
+            logger.notice("store url: \(storeURL, privacy: .public)")
             let description = NSPersistentStoreDescription(url: storeURL)
             description.cloudKitContainerOptions = NSPersistentCloudKitContainerOptions(containerIdentifier: containerIdentifier)
             description.setOption(true as NSNumber, forKey: NSPersistentHistoryTrackingKey)

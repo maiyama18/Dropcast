@@ -48,6 +48,11 @@ extension EpisodeRecord {
         publishedAt = episode.publishedAt
     }
 
+    convenience init(context: NSManagedObjectContext, episode: Episode, show: Show) {
+        self.init(context: context, episode: episode)
+        self.show = ShowRecord(context: context, show: show)
+    }
+
     func toEpisode() -> Episode? {
         guard let id,
               let title,
