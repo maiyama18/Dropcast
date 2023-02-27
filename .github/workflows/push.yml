@@ -14,7 +14,7 @@ jobs:
         uses: actions/cache@v3
         with:
           path: .build
-          key: ${{ runner.os }}-swiftpm-plugin-${{ hashFiles('**/Package.resolved') }}
+          key: ${{ runner.os }}-spm-plugin-${{ hashFiles('**/Package.resolved') }}
       - name: Lint Fix
         run: |
           swift package plugin --allow-writing-to-package-directory lint-fix
@@ -44,7 +44,7 @@ jobs:
         uses: actions/cache@v3
         with:
           path: SourcePackages
-          key: ${{ runner.os }}-swiftpm-${{ hashFiles('**/Package.resolved') }}
+          key: ${{ runner.os }}-spm-${{ hashFiles('**/Package.resolved') }}
       - name: Test
         run: |
           xcodebuild -scheme iOSDev -sdk iphonesimulator -destination "platform=iOS Simulator,name=iPhone 14" -clonedSourcePackagesDirPath SourcePackages -resultBundlePath TestResults -skipPackagePluginValidation test
