@@ -13,14 +13,14 @@ jobs:
       - name: SwiftPM Cache
         uses: actions/cache@v3
         with:
-          path: DropcastPackage/.build
-          key: ${{ runner.os }}-swiftpm-plugin-${{ hashFiles('**/Package.resolved') }}
+          path: .build
+          key: ${{ runner.os }}-spm-plugin-${{ hashFiles('**/Package.resolved') }}
       - name: Lint Fix
         run: |
-          swift package --package-path DropcastPackage plugin --allow-writing-to-package-directory lint-fix
+          swift package plugin --allow-writing-to-package-directory lint-fix
       - name: Lint Check
         run: |
-          swift package --package-path DropcastPackage plugin lint-check
+          swift package plugin lint-check
       - name: Push
         run: |
           git remote set-url origin https://github-actions:${GITHUB_TOKEN}@github.com/${GITHUB_REPOSITORY}
@@ -43,11 +43,11 @@ jobs:
       - name: SwiftPM Cache
         uses: actions/cache@v3
         with:
-          path: SourcePackages
-          key: ${{ runner.os }}-swiftpm-${{ hashFiles('**/Package.resolved') }}
+          path: /tmp/SourcePackages
+          key: ${{ runner.os }}-spm-${{ hashFiles('**/Package.resolved') }}
       - name: Test
         run: |
-          xcodebuild -scheme DropcastDev -sdk iphonesimulator -destination "platform=iOS Simulator,name=iPhone 14" -clonedSourcePackagesDirPath SourcePackages -resultBundlePath TestResults -skipPackagePluginValidation test
+          xcodebuild -scheme iOSDev -sdk iphonesimulator -destination "platform=iOS Simulator,name=iPhone 14" -clonedSourcePackagesDirPath /tmp/SourcePackages -resultBundlePath TestResults -skipPackagePluginValidation test
       - uses: kishikawakatsumi/xcresulttool@v1
         with:
           path: TestResults.xcresult

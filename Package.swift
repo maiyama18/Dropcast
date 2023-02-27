@@ -99,13 +99,13 @@ let targets: [PackageDescription.Target] = [
             "FeedFeature",
             "ShowsFeature",
         ],
-        path: "Sources/Feature/App",
+        path: "Sources/Feature/AppFeature",
         plugins: [.swiftgen]
     ),
     .testTarget(
         name: "AppFeatureTests",
         dependencies: ["AppFeature"],
-        path: "Tests/Feature/AppTests"
+        path: "Tests/Feature/AppFeatureTests"
     ),
     .target(
         name: "DebugFeature",
@@ -117,7 +117,7 @@ let targets: [PackageDescription.Target] = [
             "MessageClient",
             "SoundFileClient",
         ],
-        path: "Sources/Feature/Debug"
+        path: "Sources/Feature/DebugFeature"
     ),
     .target(
         name: "FeedFeature",
@@ -131,7 +131,7 @@ let targets: [PackageDescription.Target] = [
             "SoundFileClient",
             "UserDefaultsClient",
         ],
-        path: "Sources/Feature/Feed",
+        path: "Sources/Feature/FeedFeature",
         plugins: [.swiftgen]
     ),
     .testTarget(
@@ -140,7 +140,7 @@ let targets: [PackageDescription.Target] = [
             "FeedFeature",
             "TestHelper",
         ],
-        path: "Tests/Feature/FeedTests"
+        path: "Tests/Feature/FeedFeatureTests"
     ),
     .target(
         name: "ShowsFeature",
@@ -154,7 +154,7 @@ let targets: [PackageDescription.Target] = [
             "RSSClient",
             "ShowDetailFeature",
         ],
-        path: "Sources/Feature/Shows",
+        path: "Sources/Feature/ShowsFeature",
         plugins: [.swiftgen]
     ),
     .testTarget(
@@ -163,7 +163,7 @@ let targets: [PackageDescription.Target] = [
             "ShowsFeature",
             "TestHelper",
         ],
-        path: "Tests/Feature/ShowsTests"
+        path: "Tests/Feature/ShowsFeatureTests"
     ),
     .target(
         name: "ShowDetailFeature",
@@ -178,7 +178,7 @@ let targets: [PackageDescription.Target] = [
             "RSSClient",
             "SoundFileClient",
         ],
-        path: "Sources/Feature/ShowDetail",
+        path: "Sources/Feature/ShowDetailFeature",
         plugins: [.swiftgen]
     ),
     .testTarget(
@@ -188,7 +188,7 @@ let targets: [PackageDescription.Target] = [
             "ShowDetailFeature",
             "TestHelper",
         ],
-        path: "Tests/Feature/ShowDetailTests"
+        path: "Tests/Feature/ShowDetailFeatureTests"
     ),
 
     // UI module
@@ -405,7 +405,7 @@ let targets: [PackageDescription.Target] = [
 }
 
 var package = Package(
-    name: "DropcastPackage",
+    name: "Dropcast",
     defaultLocalization: "en",
     platforms: [.iOS(.v16)],
     products: [

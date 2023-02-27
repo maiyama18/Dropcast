@@ -9,11 +9,11 @@
 /* Begin PBXBuildFile section */
 		3819E806297D19DC0074B17C /* DropcastDevApp.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3819E805297D19DC0074B17C /* DropcastDevApp.swift */; };
 		3819E80A297D19DD0074B17C /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 3819E809297D19DD0074B17C /* Assets.xcassets */; };
-		3819E81D297D1AEC0074B17C /* App in Frameworks */ = {isa = PBXBuildFile; productRef = 3819E81C297D1AEC0074B17C /* App */; };
+		38C2E0A229AC1DF100182985 /* App in Frameworks */ = {isa = PBXBuildFile; productRef = 38C2E0A129AC1DF100182985 /* App */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
-		3819E802297D19DC0074B17C /* DropcastDev.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = DropcastDev.app; sourceTree = BUILT_PRODUCTS_DIR; };
+		3819E802297D19DC0074B17C /* iOSDev.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = iOSDev.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		3819E805297D19DC0074B17C /* DropcastDevApp.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DropcastDevApp.swift; sourceTree = "<group>"; };
 		3819E809297D19DD0074B17C /* Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Assets.xcassets; sourceTree = "<group>"; };
 		38DCC9E329873F46003F8B66 /* DropcastDev.entitlements */ = {isa = PBXFileReference; lastKnownFileType = text.plist.entitlements; path = DropcastDev.entitlements; sourceTree = "<group>"; };
@@ -25,7 +25,7 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				3819E81D297D1AEC0074B17C /* App in Frameworks */,
+				38C2E0A229AC1DF100182985 /* App in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -36,7 +36,7 @@
 			isa = PBXGroup;
 			children = (
 				3819E809297D19DD0074B17C /* Assets.xcassets */,
-				3819E804297D19DC0074B17C /* DropcastDev */,
+				3819E804297D19DC0074B17C /* iOSDev */,
 				3819E803297D19DC0074B17C /* Products */,
 				3819E81B297D1AEC0074B17C /* Frameworks */,
 			);
@@ -45,19 +45,19 @@
 		3819E803297D19DC0074B17C /* Products */ = {
 			isa = PBXGroup;
 			children = (
-				3819E802297D19DC0074B17C /* DropcastDev.app */,
+				3819E802297D19DC0074B17C /* iOSDev.app */,
 			);
 			name = Products;
 			sourceTree = "<group>";
 		};
-		3819E804297D19DC0074B17C /* DropcastDev */ = {
+		3819E804297D19DC0074B17C /* iOSDev */ = {
 			isa = PBXGroup;
 			children = (
 				38DCC9E429873F95003F8B66 /* Info.plist */,
 				38DCC9E329873F46003F8B66 /* DropcastDev.entitlements */,
 				3819E805297D19DC0074B17C /* DropcastDevApp.swift */,
 			);
-			path = DropcastDev;
+			path = iOSDev;
 			sourceTree = "<group>";
 		};
 		3819E81B297D1AEC0074B17C /* Frameworks */ = {
@@ -70,9 +70,9 @@
 /* End PBXGroup section */
 
 /* Begin PBXNativeTarget section */
-		3819E801297D19DC0074B17C /* DropcastDev */ = {
+		3819E801297D19DC0074B17C /* iOSDev */ = {
 			isa = PBXNativeTarget;
-			buildConfigurationList = 3819E810297D19DD0074B17C /* Build configuration list for PBXNativeTarget "DropcastDev" */;
+			buildConfigurationList = 3819E810297D19DD0074B17C /* Build configuration list for PBXNativeTarget "iOSDev" */;
 			buildPhases = (
 				3819E7FE297D19DC0074B17C /* Sources */,
 				3819E7FF297D19DC0074B17C /* Frameworks */,
@@ -82,12 +82,12 @@
 			);
 			dependencies = (
 			);
-			name = DropcastDev;
+			name = iOSDev;
 			packageProductDependencies = (
-				3819E81C297D1AEC0074B17C /* App */,
+				38C2E0A129AC1DF100182985 /* App */,
 			);
 			productName = DropcastDev;
-			productReference = 3819E802297D19DC0074B17C /* DropcastDev.app */;
+			productReference = 3819E802297D19DC0074B17C /* iOSDev.app */;
 			productType = "com.apple.product-type.application";
 		};
 /* End PBXNativeTarget section */
@@ -105,7 +105,7 @@
 					};
 				};
 			};
-			buildConfigurationList = 3819E7FD297D19DC0074B17C /* Build configuration list for PBXProject "DropcastDev" */;
+			buildConfigurationList = 3819E7FD297D19DC0074B17C /* Build configuration list for PBXProject "iOSDev" */;
 			compatibilityVersion = "Xcode 14.0";
 			developmentRegion = en;
 			hasScannedForEncodings = 0;
@@ -118,7 +118,7 @@
 			projectDirPath = "";
 			projectRoot = "";
 			targets = (
-				3819E801297D19DC0074B17C /* DropcastDev */,
+				3819E801297D19DC0074B17C /* iOSDev */,
 			);
 		};
 /* End PBXProject section */
@@ -265,14 +265,15 @@
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME = AccentColor;
-				CODE_SIGN_ENTITLEMENTS = DropcastDev/DropcastDev.entitlements;
+				CODE_SIGN_ENTITLEMENTS = iOSDev/DropcastDev.entitlements;
 				CODE_SIGN_STYLE = Automatic;
 				CURRENT_PROJECT_VERSION = 1;
 				DEVELOPMENT_ASSET_PATHS = "";
 				DEVELOPMENT_TEAM = 56T4RFDKJR;
 				ENABLE_PREVIEWS = YES;
 				GENERATE_INFOPLIST_FILE = YES;
-				INFOPLIST_FILE = DropcastDev/Info.plist;
+				INFOPLIST_FILE = iOSDev/Info.plist;
+				INFOPLIST_KEY_CFBundleDisplayName = DropcastDev;
 				INFOPLIST_KEY_UIApplicationSceneManifest_Generation = YES;
 				INFOPLIST_KEY_UIApplicationSupportsIndirectInputEvents = YES;
 				INFOPLIST_KEY_UILaunchScreen_Generation = YES;
@@ -297,14 +298,15 @@
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME = AccentColor;
-				CODE_SIGN_ENTITLEMENTS = DropcastDev/DropcastDev.entitlements;
+				CODE_SIGN_ENTITLEMENTS = iOSDev/DropcastDev.entitlements;
 				CODE_SIGN_STYLE = Automatic;
 				CURRENT_PROJECT_VERSION = 1;
 				DEVELOPMENT_ASSET_PATHS = "";
 				DEVELOPMENT_TEAM = 56T4RFDKJR;
 				ENABLE_PREVIEWS = YES;
 				GENERATE_INFOPLIST_FILE = YES;
-				INFOPLIST_FILE = DropcastDev/Info.plist;
+				INFOPLIST_FILE = iOSDev/Info.plist;
+				INFOPLIST_KEY_CFBundleDisplayName = DropcastDev;
 				INFOPLIST_KEY_UIApplicationSceneManifest_Generation = YES;
 				INFOPLIST_KEY_UIApplicationSupportsIndirectInputEvents = YES;
 				INFOPLIST_KEY_UILaunchScreen_Generation = YES;
@@ -327,7 +329,7 @@
 /* End XCBuildConfiguration section */
 
 /* Begin XCConfigurationList section */
-		3819E7FD297D19DC0074B17C /* Build configuration list for PBXProject "DropcastDev" */ = {
+		3819E7FD297D19DC0074B17C /* Build configuration list for PBXProject "iOSDev" */ = {
 			isa = XCConfigurationList;
 			buildConfigurations = (
 				3819E80E297D19DD0074B17C /* Debug */,
@@ -336,7 +338,7 @@
 			defaultConfigurationIsVisible = 0;
 			defaultConfigurationName = Release;
 		};
-		3819E810297D19DD0074B17C /* Build configuration list for PBXNativeTarget "DropcastDev" */ = {
+		3819E810297D19DD0074B17C /* Build configuration list for PBXNativeTarget "iOSDev" */ = {
 			isa = XCConfigurationList;
 			buildConfigurations = (
 				3819E811297D19DD0074B17C /* Debug */,
@@ -348,7 +350,7 @@
 /* End XCConfigurationList section */
 
 /* Begin XCSwiftPackageProductDependency section */
-		3819E81C297D1AEC0074B17C /* App */ = {
+		38C2E0A129AC1DF100182985 /* App */ = {
 			isa = XCSwiftPackageProductDependency;
 			productName = App;
 		};

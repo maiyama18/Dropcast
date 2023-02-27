@@ -14,10 +14,10 @@
             buildForAnalyzing = "YES">
             <BuildableReference
                BuildableIdentifier = "primary"
-               BlueprintIdentifier = "3819E7E7297D19B80074B17C"
-               BuildableName = "Dropcast.app"
-               BlueprintName = "Dropcast"
-               ReferencedContainer = "container:Dropcast.xcodeproj">
+               BlueprintIdentifier = "Components"
+               BuildableName = "Components"
+               BlueprintName = "Components"
+               ReferencedContainer = "container:">
             </BuildableReference>
          </BuildActionEntry>
       </BuildActionEntries>
@@ -40,16 +40,6 @@
       debugDocumentVersioning = "YES"
       debugServiceExtension = "internal"
       allowLocationSimulation = "YES">
-      <BuildableProductRunnable
-         runnableDebuggingMode = "0">
-         <BuildableReference
-            BuildableIdentifier = "primary"
-            BlueprintIdentifier = "3819E7E7297D19B80074B17C"
-            BuildableName = "Dropcast.app"
-            BlueprintName = "Dropcast"
-            ReferencedContainer = "container:Dropcast.xcodeproj">
-         </BuildableReference>
-      </BuildableProductRunnable>
    </LaunchAction>
    <ProfileAction
       buildConfiguration = "Release"
@@ -57,16 +47,15 @@
       savedToolIdentifier = ""
       useCustomWorkingDirectory = "NO"
       debugDocumentVersioning = "YES">
-      <BuildableProductRunnable
-         runnableDebuggingMode = "0">
+      <MacroExpansion>
          <BuildableReference
             BuildableIdentifier = "primary"
-            BlueprintIdentifier = "3819E7E7297D19B80074B17C"
-            BuildableName = "Dropcast.app"
-            BlueprintName = "Dropcast"
-            ReferencedContainer = "container:Dropcast.xcodeproj">
+            BlueprintIdentifier = "Components"
+            BuildableName = "Components"
+            BlueprintName = "Components"
+            ReferencedContainer = "container:">
          </BuildableReference>
-      </BuildableProductRunnable>
+      </MacroExpansion>
    </ProfileAction>
    <AnalyzeAction
       buildConfiguration = "Debug">

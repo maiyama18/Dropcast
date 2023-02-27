@@ -9,11 +9,11 @@
 /* Begin PBXBuildFile section */
 		3819E7EC297D19B80074B17C /* DropcastApp.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3819E7EB297D19B80074B17C /* DropcastApp.swift */; };
 		3819E7F0297D19B90074B17C /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 3819E7EF297D19B90074B17C /* Assets.xcassets */; };
-		3819E820297D1B160074B17C /* App in Frameworks */ = {isa = PBXBuildFile; productRef = 3819E81F297D1B160074B17C /* App */; };
+		38C2E0B229AC261300182985 /* App in Frameworks */ = {isa = PBXBuildFile; productRef = 38C2E0B129AC261300182985 /* App */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
-		3819E7E8297D19B80074B17C /* Dropcast.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = Dropcast.app; sourceTree = BUILT_PRODUCTS_DIR; };
+		3819E7E8297D19B80074B17C /* iOSProd.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = iOSProd.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		3819E7EB297D19B80074B17C /* DropcastApp.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DropcastApp.swift; sourceTree = "<group>"; };
 		3819E7EF297D19B90074B17C /* Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Assets.xcassets; sourceTree = "<group>"; };
 		38B83C442998CA8600B71AEB /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist; path = Info.plist; sourceTree = "<group>"; };
@@ -24,7 +24,7 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				3819E820297D1B160074B17C /* App in Frameworks */,
+				38C2E0B229AC261300182985 /* App in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -35,7 +35,7 @@
 			isa = PBXGroup;
 			children = (
 				3819E7EF297D19B90074B17C /* Assets.xcassets */,
-				3819E7EA297D19B80074B17C /* Dropcast */,
+				3819E7EA297D19B80074B17C /* iOSProd */,
 				3819E7E9297D19B80074B17C /* Products */,
 				3819E81E297D1B160074B17C /* Frameworks */,
 			);
@@ -44,18 +44,18 @@
 		3819E7E9297D19B80074B17C /* Products */ = {
 			isa = PBXGroup;
 			children = (
-				3819E7E8297D19B80074B17C /* Dropcast.app */,
+				3819E7E8297D19B80074B17C /* iOSProd.app */,
 			);
 			name = Products;
 			sourceTree = "<group>";
 		};
-		3819E7EA297D19B80074B17C /* Dropcast */ = {
+		3819E7EA297D19B80074B17C /* iOSProd */ = {
 			isa = PBXGroup;
 			children = (
 				38B83C442998CA8600B71AEB /* Info.plist */,
 				3819E7EB297D19B80074B17C /* DropcastApp.swift */,
 			);
-			path = Dropcast;
+			path = iOSProd;
 			sourceTree = "<group>";
 		};
 		3819E81E297D1B160074B17C /* Frameworks */ = {
@@ -68,9 +68,9 @@
 /* End PBXGroup section */
 
 /* Begin PBXNativeTarget section */
-		3819E7E7297D19B80074B17C /* Dropcast */ = {
+		3819E7E7297D19B80074B17C /* iOSProd */ = {
 			isa = PBXNativeTarget;
-			buildConfigurationList = 3819E7F6297D19B90074B17C /* Build configuration list for PBXNativeTarget "Dropcast" */;
+			buildConfigurationList = 3819E7F6297D19B90074B17C /* Build configuration list for PBXNativeTarget "iOSProd" */;
 			buildPhases = (
 				3819E7E4297D19B80074B17C /* Sources */,
 				3819E7E5297D19B80074B17C /* Frameworks */,
@@ -80,12 +80,12 @@
 			);
 			dependencies = (
 			);
-			name = Dropcast;
+			name = iOSProd;
 			packageProductDependencies = (
-				3819E81F297D1B160074B17C /* App */,
+				38C2E0B129AC261300182985 /* App */,
 			);
 			productName = Dropcast;
-			productReference = 3819E7E8297D19B80074B17C /* Dropcast.app */;
+			productReference = 3819E7E8297D19B80074B17C /* iOSProd.app */;
 			productType = "com.apple.product-type.application";
 		};
 /* End PBXNativeTarget section */
@@ -103,7 +103,7 @@
 					};
 				};
 			};
-			buildConfigurationList = 3819E7E3297D19B80074B17C /* Build configuration list for PBXProject "Dropcast" */;
+			buildConfigurationList = 3819E7E3297D19B80074B17C /* Build configuration list for PBXProject "iOSProd" */;
 			compatibilityVersion = "Xcode 14.0";
 			developmentRegion = en;
 			hasScannedForEncodings = 0;
@@ -116,7 +116,7 @@
 			projectDirPath = "";
 			projectRoot = "";
 			targets = (
-				3819E7E7297D19B80074B17C /* Dropcast */,
+				3819E7E7297D19B80074B17C /* iOSProd */,
 			);
 		};
 /* End PBXProject section */
@@ -269,7 +269,8 @@
 				DEVELOPMENT_TEAM = 56T4RFDKJR;
 				ENABLE_PREVIEWS = YES;
 				GENERATE_INFOPLIST_FILE = YES;
-				INFOPLIST_FILE = Dropcast/Info.plist;
+				INFOPLIST_FILE = iOSProd/Info.plist;
+				INFOPLIST_KEY_CFBundleDisplayName = Dropcast;
 				INFOPLIST_KEY_UIApplicationSceneManifest_Generation = YES;
 				INFOPLIST_KEY_UIApplicationSupportsIndirectInputEvents = YES;
 				INFOPLIST_KEY_UILaunchScreen_Generation = YES;
@@ -300,7 +301,8 @@
 				DEVELOPMENT_TEAM = 56T4RFDKJR;
 				ENABLE_PREVIEWS = YES;
 				GENERATE_INFOPLIST_FILE = YES;
-				INFOPLIST_FILE = Dropcast/Info.plist;
+				INFOPLIST_FILE = iOSProd/Info.plist;
+				INFOPLIST_KEY_CFBundleDisplayName = Dropcast;
 				INFOPLIST_KEY_UIApplicationSceneManifest_Generation = YES;
 				INFOPLIST_KEY_UIApplicationSupportsIndirectInputEvents = YES;
 				INFOPLIST_KEY_UILaunchScreen_Generation = YES;
@@ -323,7 +325,7 @@
 /* End XCBuildConfiguration section */
 
 /* Begin XCConfigurationList section */
-		3819E7E3297D19B80074B17C /* Build configuration list for PBXProject "Dropcast" */ = {
+		3819E7E3297D19B80074B17C /* Build configuration list for PBXProject "iOSProd" */ = {
 			isa = XCConfigurationList;
 			buildConfigurations = (
 				3819E7F4297D19B90074B17C /* Debug */,
@@ -332,7 +334,7 @@
 			defaultConfigurationIsVisible = 0;
 			defaultConfigurationName = Release;
 		};
-		3819E7F6297D19B90074B17C /* Build configuration list for PBXNativeTarget "Dropcast" */ = {
+		3819E7F6297D19B90074B17C /* Build configuration list for PBXNativeTarget "iOSProd" */ = {
 			isa = XCConfigurationList;
 			buildConfigurations = (
 				3819E7F7297D19B90074B17C /* Debug */,
@@ -344,7 +346,7 @@
 /* End XCConfigurationList section */
 
 /* Begin XCSwiftPackageProductDependency section */
-		3819E81F297D1B160074B17C /* App */ = {
+		38C2E0B129AC261300182985 /* App */ = {
 			isa = XCSwiftPackageProductDependency;
 			productName = App;
 		};

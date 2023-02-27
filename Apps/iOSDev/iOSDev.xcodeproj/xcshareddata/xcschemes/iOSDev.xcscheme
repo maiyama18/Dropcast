@@ -15,9 +15,9 @@
             <BuildableReference
                BuildableIdentifier = "primary"
                BlueprintIdentifier = "3819E801297D19DC0074B17C"
-               BuildableName = "DropcastDev.app"
-               BlueprintName = "DropcastDev"
-               ReferencedContainer = "container:DropcastDev.xcodeproj">
+               BuildableName = "iOSDev.app"
+               BlueprintName = "iOSDev"
+               ReferencedContainer = "container:iOSDev.xcodeproj">
             </BuildableReference>
          </BuildActionEntry>
       </BuildActionEntries>
@@ -35,37 +35,7 @@
                BlueprintIdentifier = "AppFeatureTests"
                BuildableName = "AppFeatureTests"
                BlueprintName = "AppFeatureTests"
-               ReferencedContainer = "container:../DropcastPackage">
-            </BuildableReference>
-         </TestableReference>
-         <TestableReference
-            skipped = "NO">
-            <BuildableReference
-               BuildableIdentifier = "primary"
-               BlueprintIdentifier = "ITunesClientTests"
-               BuildableName = "ITunesClientTests"
-               BlueprintName = "ITunesClientTests"
-               ReferencedContainer = "container:../DropcastPackage">
-            </BuildableReference>
-         </TestableReference>
-         <TestableReference
-            skipped = "NO">
-            <BuildableReference
-               BuildableIdentifier = "primary"
-               BlueprintIdentifier = "ShowsFeatureTests"
-               BuildableName = "ShowsFeatureTests"
-               BlueprintName = "ShowsFeatureTests"
-               ReferencedContainer = "container:../DropcastPackage">
-            </BuildableReference>
-         </TestableReference>
-         <TestableReference
-            skipped = "NO">
-            <BuildableReference
-               BuildableIdentifier = "primary"
-               BlueprintIdentifier = "RSSClientTests"
-               BuildableName = "RSSClientTests"
-               BlueprintName = "RSSClientTests"
-               ReferencedContainer = "container:../DropcastPackage">
+               ReferencedContainer = "container:../..">
             </BuildableReference>
          </TestableReference>
          <TestableReference
@@ -75,27 +45,7 @@
                BlueprintIdentifier = "DatabaseClientTests"
                BuildableName = "DatabaseClientTests"
                BlueprintName = "DatabaseClientTests"
-               ReferencedContainer = "container:../DropcastPackage">
-            </BuildableReference>
-         </TestableReference>
-         <TestableReference
-            skipped = "NO">
-            <BuildableReference
-               BuildableIdentifier = "primary"
-               BlueprintIdentifier = "ShowDetailFeatureTest"
-               BuildableName = "ShowDetailFeatureTest"
-               BlueprintName = "ShowDetailFeatureTest"
-               ReferencedContainer = "container:../DropcastPackage">
-            </BuildableReference>
-         </TestableReference>
-         <TestableReference
-            skipped = "NO">
-            <BuildableReference
-               BuildableIdentifier = "primary"
-               BlueprintIdentifier = "FormatterTests"
-               BuildableName = "FormatterTests"
-               BlueprintName = "FormatterTests"
-               ReferencedContainer = "container:../DropcastPackage">
+               ReferencedContainer = "container:../..">
             </BuildableReference>
          </TestableReference>
          <TestableReference
@@ -105,17 +55,27 @@
                BlueprintIdentifier = "FeedFeatureTests"
                BuildableName = "FeedFeatureTests"
                BlueprintName = "FeedFeatureTests"
-               ReferencedContainer = "container:../DropcastPackage">
+               ReferencedContainer = "container:../..">
             </BuildableReference>
          </TestableReference>
          <TestableReference
             skipped = "NO">
             <BuildableReference
                BuildableIdentifier = "primary"
-               BlueprintIdentifier = "SoundFileClientTests"
-               BuildableName = "SoundFileClientTests"
-               BlueprintName = "SoundFileClientTests"
-               ReferencedContainer = "container:../DropcastPackage">
+               BlueprintIdentifier = "FormatterTests"
+               BuildableName = "FormatterTests"
+               BlueprintName = "FormatterTests"
+               ReferencedContainer = "container:../..">
+            </BuildableReference>
+         </TestableReference>
+         <TestableReference
+            skipped = "NO">
+            <BuildableReference
+               BuildableIdentifier = "primary"
+               BlueprintIdentifier = "ITunesClientTests"
+               BuildableName = "ITunesClientTests"
+               BlueprintName = "ITunesClientTests"
+               ReferencedContainer = "container:../..">
             </BuildableReference>
          </TestableReference>
          <TestableReference
@@ -125,7 +85,37 @@
                BlueprintIdentifier = "NetworkTests"
                BuildableName = "NetworkTests"
                BlueprintName = "NetworkTests"
-               ReferencedContainer = "container:../DropcastPackage">
+               ReferencedContainer = "container:../..">
+            </BuildableReference>
+         </TestableReference>
+         <TestableReference
+            skipped = "NO">
+            <BuildableReference
+               BuildableIdentifier = "primary"
+               BlueprintIdentifier = "RSSClientTests"
+               BuildableName = "RSSClientTests"
+               BlueprintName = "RSSClientTests"
+               ReferencedContainer = "container:../..">
+            </BuildableReference>
+         </TestableReference>
+         <TestableReference
+            skipped = "NO">
+            <BuildableReference
+               BuildableIdentifier = "primary"
+               BlueprintIdentifier = "ShowDetailFeatureTest"
+               BuildableName = "ShowDetailFeatureTest"
+               BlueprintName = "ShowDetailFeatureTest"
+               ReferencedContainer = "container:../..">
+            </BuildableReference>
+         </TestableReference>
+         <TestableReference
+            skipped = "NO">
+            <BuildableReference
+               BuildableIdentifier = "primary"
+               BlueprintIdentifier = "ShowsFeatureTests"
+               BuildableName = "ShowsFeatureTests"
+               BlueprintName = "ShowsFeatureTests"
+               ReferencedContainer = "container:../..">
             </BuildableReference>
          </TestableReference>
       </Testables>
@@ -145,9 +135,9 @@
          <BuildableReference
             BuildableIdentifier = "primary"
             BlueprintIdentifier = "3819E801297D19DC0074B17C"
-            BuildableName = "DropcastDev.app"
-            BlueprintName = "DropcastDev"
-            ReferencedContainer = "container:DropcastDev.xcodeproj">
+            BuildableName = "iOSDev.app"
+            BlueprintName = "iOSDev"
+            ReferencedContainer = "container:iOSDev.xcodeproj">
          </BuildableReference>
       </BuildableProductRunnable>
       <CommandLineArguments>
@@ -172,9 +162,9 @@
          <BuildableReference
             BuildableIdentifier = "primary"
             BlueprintIdentifier = "3819E801297D19DC0074B17C"
-            BuildableName = "DropcastDev.app"
-            BlueprintName = "DropcastDev"
-            ReferencedContainer = "container:DropcastDev.xcodeproj">
+            BuildableName = "iOSDev.app"
+            BlueprintName = "iOSDev"
+            ReferencedContainer = "container:iOSDev.xcodeproj">
          </BuildableReference>
       </BuildableProductRunnable>
    </ProfileAction>
