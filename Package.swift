@@ -405,7 +405,7 @@ let targets: [PackageDescription.Target] = [
 }
 
 var package = Package(
-    name: "DropcastPackage",
+    name: "Dropcast",
     defaultLocalization: "en",
     platforms: [.iOS(.v16)],
     products: [
