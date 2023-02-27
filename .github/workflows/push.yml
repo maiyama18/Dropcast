@@ -43,11 +43,11 @@ jobs:
       - name: SwiftPM Cache
         uses: actions/cache@v3
         with:
-          path: SourcePackages
+          path: /tmp/SourcePackages
           key: ${{ runner.os }}-spm-${{ hashFiles('**/Package.resolved') }}
       - name: Test
         run: |
-          xcodebuild -scheme iOSDev -sdk iphonesimulator -destination "platform=iOS Simulator,name=iPhone 14" -clonedSourcePackagesDirPath SourcePackages -resultBundlePath TestResults -skipPackagePluginValidation test
+          xcodebuild -scheme iOSDev -sdk iphonesimulator -destination "platform=iOS Simulator,name=iPhone 14" -clonedSourcePackagesDirPath /tmp/SourcePackages -resultBundlePath TestResults -skipPackagePluginValidation test
       - uses: kishikawakatsumi/xcresulttool@v1
         with:
           path: TestResults.xcresult
