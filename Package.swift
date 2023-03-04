@@ -382,6 +382,10 @@ let targets: [PackageDescription.Target] = [
             permissions: [.writeToPackageDirectory(reason: "Make files for localization")]
         )
     ),
+    .plugin(
+        name: "LicensesPlugin",
+        capability: .buildTool()
+    ),
 ].map { (target: PackageDescription.Target) -> PackageDescription.Target in
     guard target.type != .plugin else { return target }
 
