@@ -97,6 +97,7 @@ let targets: [PackageDescription.Target] = [
         dependencies: [
             .composableArchitecture,
             "FeedFeature",
+            "SettingsFeature",
             "ShowsFeature",
         ],
         path: "Sources/Feature/AppFeature",
@@ -141,6 +142,18 @@ let targets: [PackageDescription.Target] = [
             "TestHelper",
         ],
         path: "Tests/Feature/FeedFeatureTests"
+    ),
+    .target(
+        name: "SettingsFeature",
+        dependencies: [
+            .composableArchitecture,
+            "Build",
+        ],
+        path: "Sources/Feature/SettingsFeature",
+        plugins: [
+            .swiftgen,
+            "LicensesPlugin",
+        ]
     ),
     .target(
         name: "ShowsFeature",
@@ -422,6 +435,9 @@ var package = Package(
         .library(
             name: "FeedFeature",
             targets: ["FeedFeature"]),
+        .library(
+            name: "SettingsFeature",
+            targets: ["SettingsFeature"]),
         .library(
             name: "ShowsFeature",
             targets: ["ShowsFeature"]),
