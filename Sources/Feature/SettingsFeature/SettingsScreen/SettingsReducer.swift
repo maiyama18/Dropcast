@@ -3,17 +3,17 @@ import ComposableArchitecture
 public struct SettingsReducer: ReducerProtocol {
     public struct State: Equatable {
         public var destination: Destination?
-        
+
         public init() {}
     }
-    
+
     public enum Destination: Equatable {
         case licenses(LicensesReducer.State)
-        
+
         public enum Tag: Int {
             case licenses
         }
-        
+
         var tag: Tag {
             switch self {
             case .licenses:
@@ -21,17 +21,17 @@ public struct SettingsReducer: ReducerProtocol {
             }
         }
     }
-    
+
     public enum Action: Equatable {
         case destinationSet(tag: Destination.Tag?)
-        
+
         case destination(DestinationAction)
     }
-    
+
     public enum DestinationAction: Equatable {
         case licenses(LicensesReducer.Action)
     }
-    
+
     public var body: some ReducerProtocol<State, Action> {
         Reduce { state, action in
             switch action {
@@ -54,6 +54,6 @@ public struct SettingsReducer: ReducerProtocol {
             }
         }
     }
-    
+
     public init() {}
 }

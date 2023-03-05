@@ -57,7 +57,7 @@ struct AppReducer: ReducerProtocol {
         Scope(state: \.showsState, action: /Action.shows) {
             ShowListReducer()
         }
-        
+
         Scope(state: \.settingsState, action: /Action.settings) {
             SettingsReducer()
         }

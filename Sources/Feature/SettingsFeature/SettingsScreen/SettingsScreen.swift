@@ -3,11 +3,11 @@ import SwiftUI
 
 public struct SettingsScreen: View {
     let store: StoreOf<SettingsReducer>
-    
+
     public init(store: StoreOf<SettingsReducer>) {
         self.store = store
     }
-    
+
     public var body: some View {
         WithViewStore(store, observe: { $0 }) { viewStore in
             NavigationView {
@@ -35,8 +35,8 @@ public struct SettingsScreen: View {
                                     then: LicensesScreen.init(store:)
                                 )
                             }) {
-                                Text(L10n.licenses)
-                            }
+                            Text(L10n.licenses)
+                        }
                     } header: {
                         Text(L10n.aboutApp)
                     }

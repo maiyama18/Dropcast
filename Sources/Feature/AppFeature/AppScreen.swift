@@ -22,7 +22,7 @@ public struct AppScreen: View {
                         .tabItem {
                             Label(L10n.shows, systemImage: "square.stack.3d.down.right")
                         }
-                    
+
                     SettingsScreen(store: store.scope(state: \.settingsState, action: { .settings($0) }))
                         .tag(AppReducer.Tab.settings)
                         .tabItem {

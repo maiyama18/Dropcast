@@ -3,7 +3,7 @@ import SwiftUI
 
 struct LicensesScreen: View {
     let store: StoreOf<LicensesReducer>
-    
+
     var body: some View {
         WithViewStore(store, observe: { $0 }) { viewStore in
             List {
