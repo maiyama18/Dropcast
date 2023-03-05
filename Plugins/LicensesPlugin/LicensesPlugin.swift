@@ -4,26 +4,38 @@ import PackagePlugin
 @main struct Plugin: BuildToolPlugin {
     func createBuildCommands(context: PackagePlugin.PluginContext, target: PackagePlugin.Target) async throws -> [PackagePlugin.Command] {
         let dependencies = context.package.getDependenciesRecursively()
-        let generatedLicensesText = dependencies.map {
-            let licenseText = $0.readLicenseText() ?? "nil"
-            return """
+        let sortedDependencies = Array(dependencies).sorted(by: { $0.displayName < $1.displayName })
+        let generatedLicensesText = sortedDependencies.map {
+            if let licenseText = $0.readLicenseText() {
+                return """
             License(
+                id: \"\($0.id)\",
                 name: \"\($0.displayName)\",
                 licenseText: \"\"\"
             \(licenseText)
             \"\"\"
             )
             """
+            } else {
+                return """
+            License(
+                id: \"\($0.id)\",
+                name: \"\($0.displayName)\",
+                licenseText: nil
+            )
+            """
+            }
         }.joined(separator: ",\n")
         
         let generatedFileContent = """
-        struct License {
-            let name: String
-            let licenseText: String
-        }
+        public enum LicensesPlugin {
+            public struct License: Identifiable, Equatable, Hashable {
+                public let id: String
+                public let name: String
+                public let licenseText: String?
+            }
         
-        enum LicensesPlugin {
-            static let licenses: [License] = [
+            public static let licenses: [License] = [
                 \(generatedLicensesText)
             ]
         }

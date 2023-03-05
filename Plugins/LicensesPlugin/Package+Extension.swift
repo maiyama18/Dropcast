@@ -22,8 +22,16 @@ extension Package {
     }
     
     func readLicenseText() -> String? {
-        let licenseFilePath = directory.appending("LICENSE")
-        guard FileManager.default.fileExists(atPath: licenseFilePath.string) else { return nil }
-        return try? String(contentsOf: URL(fileURLWithPath: licenseFilePath.string))
+        guard let fileURLs = try? FileManager.default.contentsOfDirectory(
+            at: URL(fileURLWithPath: directory.string),
+            includingPropertiesForKeys: nil
+        ) else { return nil }
+        
+        for fileURL in fileURLs {
+            if fileURL.lastPathComponent.lowercased().hasPrefix("license") || fileURL.lastPathComponent.lowercased().hasPrefix("licence") {
+                return try? String(contentsOf: fileURL)
+            }
+        }
+        return nil
     }
 }
