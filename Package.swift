@@ -54,6 +54,10 @@ extension PackageDescription.Target.PluginUsage {
         name: "SwiftGenPlugin",
         package: "SwiftGenPlugin"
     )
+    static let licenses: Self = .plugin(
+        name: "LicensesPlugin",
+        package: "LicensesPlugin"
+    )
 }
 
 let dependencies: [PackageDescription.Package.Dependency] = [
@@ -71,6 +75,7 @@ let dependencies: [PackageDescription.Package.Dependency] = [
 
     // plugins
     .package(url: "https://github.com/maiyama18/SwiftLintPlugins", exact: "0.9.4"),
+    .package(url: "https://github.com/maiyama18/LicensesPlugin", exact: "0.1.0"),
     .package(url: "https://github.com/SwiftGen/SwiftGenPlugin", exact: "6.6.2"),
 ]
 
@@ -151,8 +156,8 @@ let targets: [PackageDescription.Target] = [
         ],
         path: "Sources/Feature/SettingsFeature",
         plugins: [
+            .licenses,
             .swiftgen,
-            "LicensesPlugin",
         ]
     ),
     .target(
@@ -394,10 +399,6 @@ let targets: [PackageDescription.Target] = [
             intent: .custom(verb: "init-localization", description: "Initialize files for localization"),
             permissions: [.writeToPackageDirectory(reason: "Make files for localization")]
         )
-    ),
-    .plugin(
-        name: "LicensesPlugin",
-        capability: .buildTool()
     ),
 ].map { (target: PackageDescription.Target) -> PackageDescription.Target in
     guard target.type != .plugin else { return target }
