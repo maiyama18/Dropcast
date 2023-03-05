@@ -1,5 +1,6 @@
 import ComposableArchitecture
 import FeedFeature
+import SettingsFeature
 import ShowsFeature
 import SwiftUI
 
@@ -20,6 +21,12 @@ public struct AppScreen: View {
                         .tag(AppReducer.Tab.shows)
                         .tabItem {
                             Label(L10n.shows, systemImage: "square.stack.3d.down.right")
+                        }
+
+                    SettingsScreen(store: store.scope(state: \.settingsState, action: { .settings($0) }))
+                        .tag(AppReducer.Tab.settings)
+                        .tabItem {
+                            Label(L10n.settings, systemImage: "gearshape")
                         }
                 }
                 .toolbarBackground(.visible, for: .tabBar)

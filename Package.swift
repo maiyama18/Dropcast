@@ -54,6 +54,10 @@ extension PackageDescription.Target.PluginUsage {
         name: "SwiftGenPlugin",
         package: "SwiftGenPlugin"
     )
+    static let licenses: Self = .plugin(
+        name: "LicensesPlugin",
+        package: "LicensesPlugin"
+    )
 }
 
 let dependencies: [PackageDescription.Package.Dependency] = [
@@ -70,7 +74,8 @@ let dependencies: [PackageDescription.Package.Dependency] = [
     .package(url: "https://github.com/pointfreeco/swift-identified-collections", exact: "0.7.0"),
 
     // plugins
-    .package(url: "https://github.com/maiyama18/SwiftLintPlugins", exact: "0.9.3"),
+    .package(url: "https://github.com/maiyama18/SwiftLintPlugins", exact: "0.9.4"),
+    .package(url: "https://github.com/maiyama18/LicensesPlugin", exact: "0.1.0"),
     .package(url: "https://github.com/SwiftGen/SwiftGenPlugin", exact: "6.6.2"),
 ]
 
@@ -97,6 +102,7 @@ let targets: [PackageDescription.Target] = [
         dependencies: [
             .composableArchitecture,
             "FeedFeature",
+            "SettingsFeature",
             "ShowsFeature",
         ],
         path: "Sources/Feature/AppFeature",
@@ -141,6 +147,18 @@ let targets: [PackageDescription.Target] = [
             "TestHelper",
         ],
         path: "Tests/Feature/FeedFeatureTests"
+    ),
+    .target(
+        name: "SettingsFeature",
+        dependencies: [
+            .composableArchitecture,
+            "Build",
+        ],
+        path: "Sources/Feature/SettingsFeature",
+        plugins: [
+            .licenses,
+            .swiftgen,
+        ]
     ),
     .target(
         name: "ShowsFeature",
@@ -418,6 +436,9 @@ var package = Package(
         .library(
             name: "FeedFeature",
             targets: ["FeedFeature"]),
+        .library(
+            name: "SettingsFeature",
+            targets: ["SettingsFeature"]),
         .library(
             name: "ShowsFeature",
             targets: ["ShowsFeature"]),

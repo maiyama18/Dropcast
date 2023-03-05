@@ -1,11 +1,13 @@
 import ComposableArchitecture
 import FeedFeature
+import SettingsFeature
 import ShowsFeature
 
 extension AppReducer {
     enum Tab {
         case feed
         case shows
+        case settings
     }
 }
 
@@ -15,6 +17,7 @@ struct AppReducer: ReducerProtocol {
 
         var feedState: FeedReducer.State = .init()
         var showsState: ShowListReducer.State = .init()
+        var settingsState: SettingsReducer.State = .init()
     }
 
     enum Action: Equatable {
@@ -22,6 +25,7 @@ struct AppReducer: ReducerProtocol {
 
         case feed(FeedReducer.Action)
         case shows(ShowListReducer.Action)
+        case settings(SettingsReducer.Action)
     }
 
     var body: some ReducerProtocol<State, Action> {
@@ -41,6 +45,8 @@ struct AppReducer: ReducerProtocol {
                 }
             case .shows:
                 return .none
+            case .settings:
+                return .none
             }
         }
 
@@ -50,6 +56,10 @@ struct AppReducer: ReducerProtocol {
 
         Scope(state: \.showsState, action: /Action.shows) {
             ShowListReducer()
+        }
+
+        Scope(state: \.settingsState, action: /Action.settings) {
+            SettingsReducer()
         }
     }
 }
