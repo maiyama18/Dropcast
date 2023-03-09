@@ -279,7 +279,8 @@ let targets: [PackageDescription.Target] = [
             "Logger",
             "Network",
         ],
-        path: "Sources/Infra/ITunesClient"
+        path: "Sources/Infra/ITunesClient",
+        plugins: [.plugin(name: "CheckPermissionsPlugin")]
     ),
     .testTarget(
         name: "ITunesClientTests",
@@ -399,6 +400,10 @@ let targets: [PackageDescription.Target] = [
             intent: .custom(verb: "init-localization", description: "Initialize files for localization"),
             permissions: [.writeToPackageDirectory(reason: "Make files for localization")]
         )
+    ),
+    .plugin(
+        name: "CheckPermissionsPlugin",
+        capability: .buildTool()
     ),
 ].map { (target: PackageDescription.Target) -> PackageDescription.Target in
     guard target.type != .plugin else { return target }
