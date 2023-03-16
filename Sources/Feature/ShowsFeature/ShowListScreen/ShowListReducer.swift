@@ -12,7 +12,7 @@ public struct ShowListReducer: ReducerProtocol, Sendable {
 
         public init() {}
 
-        public var followShowsPresented: Bool { showSearchState != nil }
+        public var showSearchPresented: Bool { showSearchState != nil }
     }
 
     public enum Action: Equatable, Sendable {

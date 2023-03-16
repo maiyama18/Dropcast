@@ -46,7 +46,7 @@ public struct ShowListScreen: View {
             }
             .sheet(
                 isPresented: viewStore.binding(
-                    get: \.followShowsPresented,
+                    get: \.showSearchPresented,
                     send: { _ in .showSearchDismissed }
                 )
             ) {
