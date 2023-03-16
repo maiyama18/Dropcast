@@ -593,7 +593,7 @@ final class FeedReducerTests: XCTestCase {
             $0.downloadStates = [Episode.fixtureRebuild352.id: .notDownloaded]
         }
 
-        XCTAssertEqual(errorMessage.value, "Failed to download the episode")
+        XCTAssertEqual(errorMessage.value, L10n.Error.downloadError)
 
         await task.cancel()
     }

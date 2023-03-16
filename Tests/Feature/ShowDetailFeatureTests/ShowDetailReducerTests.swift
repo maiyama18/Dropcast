@@ -187,7 +187,7 @@ final class ShowDetailReducerTests: XCTestCase {
             $0.episodes = Show.fixtureRebuild.episodes
         }
 
-        XCTAssertEqual(errorMessage.value, "Failed to communicate with database")
+        XCTAssertEqual(errorMessage.value, L10n.Error.databaseError)
 
         await task.cancel()
     }
@@ -209,7 +209,7 @@ final class ShowDetailReducerTests: XCTestCase {
 
             $0.rssClient.fetch = { _ in
                 try? await clock.sleep(for: .seconds(1))
-                return .failure(RSSError.networkError(reason: .offline))
+                return .failure(.invalidFeed)
             }
 
             $0.messageClient.presentError = { message in
@@ -225,11 +225,11 @@ final class ShowDetailReducerTests: XCTestCase {
             $0.downloadStates = [:]
         }
         await clock.advance(by: .seconds(1))
-        await store.receive(.rssShowResponse(.failure(RSSError.networkError(reason: .offline)))) {
+        await store.receive(.rssShowResponse(.failure(.invalidFeed))) {
             $0.taskRequestInFlight = false
         }
 
-        XCTAssertEqual(errorMessage.value, "No internet connection")
+        XCTAssertEqual(errorMessage.value, L10n.Error.invalidRssFeed)
 
         await test.cancel()
     }
@@ -318,7 +318,7 @@ final class ShowDetailReducerTests: XCTestCase {
         await store.send(.toggleFollowButtonTapped)
         await store.receive(.toggleFollowResponse(.failure(.databaseError)))
 
-        XCTAssertEqual(errorMessage.value, "Failed to follow the show")
+        XCTAssertEqual(errorMessage.value, L10n.Error.failedToFollow)
 
         await task.cancel()
     }
@@ -411,7 +411,7 @@ final class ShowDetailReducerTests: XCTestCase {
         await store.send(.copyFeedURLButtonTapped)
 
         XCTAssertEqual(copiedString.value, ITunesShow.fixtureRebuild.feedURL.absoluteString)
-        XCTAssertEqual(successTitle.value, "Copied")
+        XCTAssertEqual(successTitle.value, L10n.Message.copied)
 
         await task.cancel()
     }

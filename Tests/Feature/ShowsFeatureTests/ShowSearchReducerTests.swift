@@ -85,7 +85,7 @@ final class ShowSearchReducerTests: XCTestCase {
             reducer: ShowSearchReducer()
         ) {
             $0.iTunesClient.searchShows = { _ in
-                return .failure(.networkError(reason: .timeout))
+                return .failure(.parseError)
             }
             $0.messageClient.presentError = { message in
                 errorMessage.withValue { $0 = message }
@@ -98,12 +98,12 @@ final class ShowSearchReducerTests: XCTestCase {
         await store.send(.queryChangeDebounced) {
             $0.searchRequestInFlight = true
         }
-        await store.receive(.querySearchResponse(.failure(.networkError(reason: .timeout)))) {
+        await store.receive(.querySearchResponse(.failure(.parseError))) {
             $0.searchRequestInFlight = false
             $0.showsState = .prompt
         }
 
-        XCTAssertEqual(errorMessage.value, "Request timed out")
+        XCTAssertEqual(errorMessage.value, L10n.Error.invalidServerResponse)
     }
 
     func test_search_failure_after_success_shows_error_message_with_previous_search_results() async {
@@ -161,7 +161,7 @@ final class ShowSearchReducerTests: XCTestCase {
             $0.searchRequestInFlight = false
         }
 
-        XCTAssertEqual(errorMessage.value, "Invalid server response")
+        XCTAssertEqual(errorMessage.value, L10n.Error.invalidServerResponse)
     }
 
     func test_query_changed_to_empty_while_searching_cancels_search() async {
