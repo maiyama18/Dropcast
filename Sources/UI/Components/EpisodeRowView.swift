@@ -6,17 +6,20 @@ import SwiftUI
 public struct EpisodeRowView: View {
     var episode: Episode
     var downloadState: EpisodeDownloadState
+    var showsPlayButton: Bool
     var showsImage: Bool
     var onDownloadButtonTapped: () -> Void
 
     public init(
         episode: Episode,
         downloadState: EpisodeDownloadState,
+        showsPlayButton: Bool,
         showsImage: Bool,
         onDownloadButtonTapped: @escaping () -> Void
     ) {
         self.episode = episode
         self.downloadState = downloadState
+        self.showsPlayButton = showsPlayButton
         self.showsImage = showsImage
         self.onDownloadButtonTapped = onDownloadButtonTapped
     }
@@ -76,6 +79,7 @@ public struct EpisodeRowView: View {
                             Image(systemName: "play.circle")
                         }
                     }
+                    .opacity(showsPlayButton ? 1 : 0)
                     .font(.title)
 
                     Spacer()
@@ -106,6 +110,7 @@ struct EpisodeRowView_Previews: PreviewProvider {
                 EpisodeRowView(
                     episode: .fixtureRebuild352,
                     downloadState: .notDownloaded,
+                    showsPlayButton: true,
                     showsImage: true,
                     onDownloadButtonTapped: {}
                 )
@@ -113,6 +118,7 @@ struct EpisodeRowView_Previews: PreviewProvider {
                 EpisodeRowView(
                     episode: .fixtureRebuild351,
                     downloadState: .pushedToDownloadQueue,
+                    showsPlayButton: true,
                     showsImage: true,
                     onDownloadButtonTapped: {}
                 )
@@ -120,6 +126,7 @@ struct EpisodeRowView_Previews: PreviewProvider {
                 EpisodeRowView(
                     episode: .fixtureRebuild351,
                     downloadState: .downloading(progress: 0.4),
+                    showsPlayButton: true,
                     showsImage: true,
                     onDownloadButtonTapped: {}
                 )
@@ -127,6 +134,7 @@ struct EpisodeRowView_Previews: PreviewProvider {
                 EpisodeRowView(
                     episode: .fixtureRebuild350,
                     downloadState: .downloaded,
+                    showsPlayButton: true,
                     showsImage: true,
                     onDownloadButtonTapped: {}
                 )

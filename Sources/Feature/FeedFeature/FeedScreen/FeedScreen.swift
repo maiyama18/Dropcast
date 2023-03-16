@@ -27,6 +27,7 @@ public struct FeedScreen: View {
                                         EpisodeRowView(
                                             episode: episode,
                                             downloadState: viewStore.state.downloadState(id: episode.id),
+                                            showsPlayButton: true,
                                             showsImage: true,
                                             onDownloadButtonTapped: {
                                                 viewStore.send(.downloadEpisodeButtonTapped(episode: episode))

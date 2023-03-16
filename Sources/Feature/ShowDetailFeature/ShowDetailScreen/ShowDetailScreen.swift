@@ -7,9 +7,11 @@ public struct ShowDetailScreen: View {
     @Environment(\.openURL) var openURL
 
     let store: StoreOf<ShowDetailReducer>
+    let showsEpisodePlayButtons: Bool
 
-    public init(store: StoreOf<ShowDetailReducer>) {
+    public init(store: StoreOf<ShowDetailReducer>, showsEpisodePlayButtons: Bool) {
         self.store = store
+        self.showsEpisodePlayButtons = showsEpisodePlayButtons
     }
 
     public var body: some View {
@@ -33,6 +35,7 @@ public struct ShowDetailScreen: View {
                             EpisodeRowView(
                                 episode: .fixtureRebuild352,
                                 downloadState: .notDownloaded,
+                                showsPlayButton: showsEpisodePlayButtons,
                                 showsImage: false,
                                 onDownloadButtonTapped: {}
                             )
@@ -45,6 +48,7 @@ public struct ShowDetailScreen: View {
                             EpisodeRowView(
                                 episode: episode,
                                 downloadState: viewStore.state.downloadState(id: episode.id),
+                                showsPlayButton: showsEpisodePlayButtons,
                                 showsImage: false,
                                 onDownloadButtonTapped: {
                                     viewStore.send(.downloadEpisodeButtonTapped(episode: episode))
@@ -101,7 +105,8 @@ struct ShowDetailScreen_Previews: PreviewProvider {
                         episodes: Show.fixtureRebuild.episodes
                     ),
                     reducer: ShowDetailReducer()
-                )
+                ),
+                showsEpisodePlayButtons: true
             )
         }
         .tint(.orange)

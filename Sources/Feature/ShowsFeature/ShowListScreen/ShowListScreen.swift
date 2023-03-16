@@ -66,7 +66,7 @@ public struct ShowListScreen: View {
                     action: { .showDetail($0) }
                 )
             ) {
-                ShowDetailScreen(store: $0)
+                ShowDetailScreen(store: $0, showsEpisodePlayButtons: true)
             },
             tag: show.feedURL,
             selection: viewStore.binding(
