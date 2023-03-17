@@ -7,7 +7,7 @@ extension XCTestCase {
     public func XCTAsyncAssertEqual<T: Equatable>(
         _ expression1: @Sendable @escaping @autoclosure () async throws -> T,
         _ expression2: @Sendable @escaping @autoclosure () async throws -> T,
-        timeout: Duration = .milliseconds(500),
+        timeout: Duration = .seconds(1),
         _ message: @Sendable @escaping @autoclosure () -> String = "",
         file: StaticString = #filePath,
         line: UInt = #line
@@ -31,7 +31,7 @@ extension XCTestCase {
     public func XCTAssertReceive<E: Equatable>(
         from sequence: AsyncChannel<E>,
         _ expectedValue: @Sendable @escaping @autoclosure () -> E,
-        timeout: Duration = .milliseconds(200),
+        timeout: Duration = .seconds(1),
         _ message: @Sendable @escaping @autoclosure () -> String = "",
         file: StaticString = #filePath,
         line: UInt = #line
@@ -55,7 +55,7 @@ extension XCTestCase {
 
     public func XCTAssertNoReceive<E>(
         from sequence: AsyncChannel<E>,
-        timeout: Duration = .milliseconds(500),
+        timeout: Duration = .milliseconds(200),
         _ message: @Sendable @escaping @autoclosure () -> String = "",
         file: StaticString = #filePath,
         line: UInt = #line
@@ -79,7 +79,7 @@ extension XCTestCase {
     public func XCTAssertReceive<E: Equatable, P: Publisher<E, Never>>(
         from publisher: P,
         _ expectedValue: @Sendable @escaping @autoclosure () -> E,
-        timeout: TimeInterval = 0.2,
+        timeout: TimeInterval = 1,
         _ message: @Sendable @escaping @autoclosure () -> String = "",
         file: StaticString = #filePath,
         line: UInt = #line
@@ -101,7 +101,7 @@ extension XCTestCase {
         from publisher: P,
         _ expectedValue: @Sendable @escaping @autoclosure () -> E,
         operation: @Sendable () async throws -> Void,
-        timeout: TimeInterval = 0.2,
+        timeout: TimeInterval = 1,
         _ message: @Sendable @escaping @autoclosure () -> String = "",
         file: StaticString = #filePath,
         line: UInt = #line

@@ -46,7 +46,7 @@ public struct ShowListScreen: View {
             }
             .sheet(
                 isPresented: viewStore.binding(
-                    get: \.followShowsPresented,
+                    get: \.showSearchPresented,
                     send: { _ in .showSearchDismissed }
                 )
             ) {
@@ -66,7 +66,7 @@ public struct ShowListScreen: View {
                     action: { .showDetail($0) }
                 )
             ) {
-                ShowDetailScreen(store: $0)
+                ShowDetailScreen(store: $0, showsEpisodePlayButtons: true)
             },
             tag: show.feedURL,
             selection: viewStore.binding(

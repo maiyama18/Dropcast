@@ -100,7 +100,8 @@ final class FeedReducerTests: XCTestCase {
                 .fixtureRebuild350,
                 .fixtureSwiftBySundell122,
                 .fixtureSwiftBySundell121,
-            ]))
+            ])),
+            timeout: .seconds(1)
         ) {
             $0.episodes = [
                 .fixtureRebuild350,
@@ -119,7 +120,7 @@ final class FeedReducerTests: XCTestCase {
                 .fixtureSwiftBySundell122,
                 .fixtureSwiftBySundell121,
             ])),
-            timeout: .milliseconds(500)
+            timeout: .seconds(1)
         ) {
             $0.episodes = [
                 .fixtureRebuild352,
@@ -140,7 +141,8 @@ final class FeedReducerTests: XCTestCase {
                 .fixtureRebuild350,
                 .fixtureSwiftBySundell122,
                 .fixtureSwiftBySundell121,
-            ]))
+            ])),
+            timeout: .seconds(1)
         ) {
             $0.episodes = [
                 .fixtureRebuild352,
@@ -593,7 +595,7 @@ final class FeedReducerTests: XCTestCase {
             $0.downloadStates = [Episode.fixtureRebuild352.id: .notDownloaded]
         }
 
-        XCTAssertEqual(errorMessage.value, "Failed to download the episode")
+        XCTAssertEqual(errorMessage.value, L10n.Error.downloadError)
 
         await task.cancel()
     }

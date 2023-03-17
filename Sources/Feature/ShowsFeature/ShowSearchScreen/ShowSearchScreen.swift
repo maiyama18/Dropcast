@@ -26,7 +26,7 @@ struct ShowSearchScreen: View {
                                             action: { .showDetail($0) }
                                         )
                                     ) {
-                                        ShowDetailScreen(store: $0)
+                                        ShowDetailScreen(store: $0, showsEpisodePlayButtons: false)
                                     },
                                     tag: show.feedURL,
                                     selection: viewStore.binding(
