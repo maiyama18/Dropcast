@@ -75,7 +75,7 @@ let dependencies: [PackageDescription.Package.Dependency] = [
 
     // plugins
     .package(url: "https://github.com/maiyama18/SwiftLintPlugins", exact: "0.9.4"),
-    .package(url: "https://github.com/maiyama18/LicensesPlugin", exact: "0.1.0"),
+    .package(url: "https://github.com/maiyama18/LicensesPlugin", exact: "0.1.4"),
     .package(url: "https://github.com/SwiftGen/SwiftGenPlugin", exact: "6.6.2"),
 ]
 
