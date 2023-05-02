@@ -41,8 +41,8 @@
       "kind" : "remoteSourceControl",
       "location" : "https://github.com/maiyama18/LicensesPlugin",
       "state" : {
-        "revision" : "69fd23bfb740b198bf7201e08f26b00c94808cea",
-        "version" : "0.1.4"
+        "revision" : "e7dbcda9f67fdd747c16244f97070a009205e814",
+        "version" : "0.1.5"
       }
     },
     {
