@@ -87,7 +87,9 @@ let targets: [PackageDescription.Target] = [
         name: "iOSApp",
         dependencies: [
             "AppFeature",
+            "SettingsFeature",
             "Logger",
+            "ViewFactory",
         ],
         path: "Sources/App/iOSApp"
     ),
@@ -112,6 +114,7 @@ let targets: [PackageDescription.Target] = [
             "FeedFeature",
             "SettingsFeature",
             "ShowsFeature",
+            "ViewFactory",
         ],
         path: "Sources/Feature/AppFeature",
         plugins: [.swiftgen]
@@ -161,6 +164,7 @@ let targets: [PackageDescription.Target] = [
         dependencies: [
             .composableArchitecture,
             "Build",
+            "Extension",
         ],
         path: "Sources/Feature/SettingsFeature",
         plugins: [
@@ -353,6 +357,11 @@ let targets: [PackageDescription.Target] = [
         path: "Sources/Core/Entity"
     ),
     .target(
+        name: "Extension",
+        dependencies: [.dependencies],
+        path: "Sources/Core/Extension"
+    ),
+    .target(
         name: "Error",
         dependencies: [],
         path: "Sources/Core/Error",
@@ -397,6 +406,13 @@ let targets: [PackageDescription.Target] = [
             .dependencies,
         ],
         path: "Sources/Core/TestHelper"
+    ),
+    .target(
+        name: "ViewFactory",
+        dependencies: [
+            .dependencies,
+        ],
+        path: "Sources/Core/ViewFactory"
     ),
 
     // Plugin module

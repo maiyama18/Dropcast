@@ -1,12 +1,17 @@
+import Dependencies
 import UIKit
+import SettingsFeature
+import ViewFactory
 
-enum Tab: Int {
+internal enum Tab: Int {
     case feed
     case shows
     case settings
 }
 
 public final class MainTabBarController: UITabBarController {
+    @Dependency(\.viewFactory) private var viewFactory
+    
     public init() {
         super.init(nibName: nil, bundle: nil)
     }
@@ -28,7 +33,7 @@ public final class MainTabBarController: UITabBarController {
         let showsViewController = DummyViewController(text: "shows")
         showsViewController.tabBarItem = UITabBarItem(title: L10n.shows, image: UIImage(systemName: "square.stack.3d.down.right"), tag: Tab.shows.rawValue)
         
-        let settingsViewController = DummyViewController(text: "settings")
+        let settingsViewController = UINavigationController(rootViewController: viewFactory.makeSettings())
         settingsViewController.tabBarItem = UITabBarItem(title: L10n.settings, image: UIImage(systemName: "gearshape"), tag: Tab.settings.rawValue)
         
         viewControllers = [feedViewController, showsViewController, settingsViewController]
