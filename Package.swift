@@ -86,7 +86,7 @@ let targets: [PackageDescription.Target] = [
     .target(
         name: "iOSApp",
         dependencies: [
-            "AppFeature",
+            "MainTabFeature",
             "SettingsFeature",
             "MessageClientLive",
             "Logger",
@@ -98,7 +98,7 @@ let targets: [PackageDescription.Target] = [
     // Feature module
 
     .target(
-        name: "AppFeature",
+        name: "MainTabFeature",
         dependencies: [
             .composableArchitecture,
             "FeedFeature",
@@ -106,13 +106,8 @@ let targets: [PackageDescription.Target] = [
             "ShowsFeature",
             "ViewFactory",
         ],
-        path: "Sources/Feature/AppFeature",
+        path: "Sources/Feature/MainTabFeature",
         plugins: [.swiftgen]
-    ),
-    .testTarget(
-        name: "AppFeatureTests",
-        dependencies: ["AppFeature"],
-        path: "Tests/Feature/AppFeatureTests"
     ),
     .target(
         name: "DebugFeature",
@@ -445,8 +440,8 @@ var package = Package(
             name: "iOSApp",
             targets: ["iOSApp"]),
         .library(
-            name: "AppFeature",
-            targets: ["AppFeature"]),
+            name: "MainTabFeature",
+            targets: ["MainTabFeature"]),
         .library(
             name: "FeedFeature",
             targets: ["FeedFeature"]),
