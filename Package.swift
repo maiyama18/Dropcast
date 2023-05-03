@@ -84,6 +84,14 @@ let targets: [PackageDescription.Target] = [
     // App module
 
     .target(
+        name: "iOSApp",
+        dependencies: [
+            "AppFeature",
+            "Logger",
+        ],
+        path: "Sources/App/iOSApp"
+    ),
+    .target(
         name: "App",
         dependencies: [
             .dependencies,
@@ -427,6 +435,9 @@ var package = Package(
     defaultLocalization: "en",
     platforms: [.iOS(.v16)],
     products: [
+        .library(
+            name: "iOSApp",
+            targets: ["iOSApp"]),
         .library(
             name: "App",
             targets: ["App"]),
