@@ -88,21 +88,11 @@ let targets: [PackageDescription.Target] = [
         dependencies: [
             "AppFeature",
             "SettingsFeature",
+            "MessageClientLive",
             "Logger",
             "ViewFactory",
         ],
         path: "Sources/App/iOSApp"
-    ),
-    .target(
-        name: "App",
-        dependencies: [
-            .dependencies,
-            "AppFeature",
-            "DebugFeature",
-            "MessageClientLive",
-            "Logger",
-        ],
-        path: "Sources/App/App"
     ),
 
     // Feature module
@@ -454,9 +444,6 @@ var package = Package(
         .library(
             name: "iOSApp",
             targets: ["iOSApp"]),
-        .library(
-            name: "App",
-            targets: ["App"]),
         .library(
             name: "AppFeature",
             targets: ["AppFeature"]),

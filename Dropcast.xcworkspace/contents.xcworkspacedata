@@ -7,10 +7,4 @@
    <FileRef
       location = "group:">
    </FileRef>
-   <FileRef
-      location = "group:Apps/iOSDev/iOSDev.xcodeproj">
-   </FileRef>
-   <FileRef
-      location = "group:Apps/iOSProd/iOSProd.xcodeproj">
-   </FileRef>
 </Workspace>
