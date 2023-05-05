@@ -1,6 +1,5 @@
 import Dependencies
 import UIKit
-import SettingsFeature
 import ViewFactory
 
 internal enum Tab: Int {
@@ -27,7 +26,7 @@ public final class MainTabBarController: UITabBarController {
     }
 
     private func setupTabs() {
-        let feedViewController = DummyViewController(text: "feed")
+        let feedViewController = UINavigationController(rootViewController: viewFactory.makeFeed())
         feedViewController.tabBarItem = UITabBarItem(title: L10n.feed, image: UIImage(systemName: "dot.radiowaves.up.forward"), tag: Tab.feed.rawValue)
 
         let showsViewController = DummyViewController(text: "shows")

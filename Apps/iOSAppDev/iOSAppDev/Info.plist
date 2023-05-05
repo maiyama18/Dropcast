@@ -19,5 +19,7 @@
 			</array>
 		</dict>
 	</dict>
+	<key>AppGroupID</key>
+	<string>group.com.muijp.DropcastDev</string>
 </dict>
 </plist>

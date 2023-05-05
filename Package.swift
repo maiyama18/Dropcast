@@ -86,6 +86,7 @@ let targets: [PackageDescription.Target] = [
     .target(
         name: "iOSApp",
         dependencies: [
+            "FeedFeature",
             "MainTabFeature",
             "SettingsFeature",
             "MessageClientLive",
@@ -101,9 +102,6 @@ let targets: [PackageDescription.Target] = [
         name: "MainTabFeature",
         dependencies: [
             .composableArchitecture,
-            "FeedFeature",
-            "SettingsFeature",
-            "ShowsFeature",
             "ViewFactory",
         ],
         path: "Sources/Feature/MainTabFeature",
@@ -132,6 +130,7 @@ let targets: [PackageDescription.Target] = [
             "RSSClient",
             "SoundFileClient",
             "UserDefaultsClient",
+            "Extension",
         ],
         path: "Sources/Feature/FeedFeature",
         plugins: [.swiftgen]

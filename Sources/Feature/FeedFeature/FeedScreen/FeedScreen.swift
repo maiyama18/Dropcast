@@ -5,54 +5,45 @@ import Entity
 import SwiftUI
 
 public struct FeedScreen: View {
-    let store: StoreOf<FeedReducer>
-
-    public init(store: StoreOf<FeedReducer>) {
-        self.store = store
-    }
+    @ObservedObject var viewModel: FeedViewModel
 
     public var body: some View {
-        WithViewStore(store, observe: { $0 }) { viewStore in
-            NavigationView {
-                Group {
-                    if let episodes = viewStore.episodes {
-                        if episodes.isEmpty {
-                            emptyView(onButtonTapped: {
-                                viewStore.send(.followShowsButtonTapped)
-                            })
-                        } else {
-                            ScrollView {
-                                LazyVStack(spacing: 0) {
-                                    ForEach(episodes) { episode in
-                                        EpisodeRowView(
-                                            episode: episode,
-                                            downloadState: viewStore.state.downloadState(id: episode.id),
-                                            showsPlayButton: true,
-                                            showsImage: true,
-                                            onDownloadButtonTapped: {
-                                                viewStore.send(.downloadEpisodeButtonTapped(episode: episode))
-                                            }
-                                        )
-
-                                        EpisodeDivider()
+        Group {
+            if let episodes = viewModel.episodes {
+                if episodes.isEmpty {
+                    emptyView(onButtonTapped: {
+                        print("TODO")
+                    })
+                } else {
+                    ScrollView {
+                        LazyVStack(spacing: 0) {
+                            ForEach(episodes) { episode in
+                                EpisodeRowView(
+                                    episode: episode,
+                                    downloadState: viewModel.downloadState(id: episode.id),
+                                    showsPlayButton: true,
+                                    showsImage: true,
+                                    onDownloadButtonTapped: {
+                                        print("TODO")
                                     }
-                                }
-                                .padding(.horizontal)
-                            }
-                            .refreshable {
-                                await viewStore.send(.pullToRefreshed).finish()
+                                )
+                                
+                                EpisodeDivider()
                             }
                         }
-                    } else {
-                        ProgressView()
-                            .scaleEffect(2)
+                        .padding(.horizontal)
+                    }
+                    .refreshable {
+                        await viewModel.handle(action: .pullToRefresh)
                     }
                 }
-                .navigationTitle(L10n.feed)
+            } else {
+                ProgressView()
+                    .scaleEffect(2)
             }
-            .task {
-                viewStore.send(.task)
-            }
+        }
+        .task {
+            await viewModel.handle(action: .appear)
         }
     }
 
@@ -79,22 +70,5 @@ public struct FeedScreen: View {
             .tint(.orange)
         }
         .frame(maxHeight: .infinity, alignment: .center)
-    }
-}
-
-struct FeedScreen_Previews: PreviewProvider {
-    static var previews: some View {
-        FeedScreen(
-            store: StoreOf<FeedReducer>(
-                initialState: FeedReducer.State(),
-                reducer: withDependencies({
-                    _ = $0.databaseClient.followShow(.fixtureRebuild)
-                    _ = $0.databaseClient.followShow(.fixtureSwiftBySundell)
-                }) {
-                    FeedReducer()
-                }
-            )
-        )
-        .tint(.orange)
     }
 }
