@@ -89,6 +89,7 @@ let targets: [PackageDescription.Target] = [
             "FeedFeature",
             "MainTabFeature",
             "SettingsFeature",
+            "ShowListFeature",
             "MessageClientLive",
             "Logger",
             "ViewFactory",
@@ -135,14 +136,6 @@ let targets: [PackageDescription.Target] = [
         path: "Sources/Feature/FeedFeature",
         plugins: [.swiftgen]
     ),
-    .testTarget(
-        name: "FeedFeatureTests",
-        dependencies: [
-            "FeedFeature",
-            "TestHelper",
-        ],
-        path: "Tests/Feature/FeedFeatureTests"
-    ),
     .target(
         name: "SettingsFeature",
         dependencies: [
@@ -157,7 +150,7 @@ let targets: [PackageDescription.Target] = [
         ]
     ),
     .target(
-        name: "ShowsFeature",
+        name: "ShowListFeature",
         dependencies: [
             .composableArchitecture,
             .nukeUI,
@@ -168,16 +161,8 @@ let targets: [PackageDescription.Target] = [
             "RSSClient",
             "ShowDetailFeature",
         ],
-        path: "Sources/Feature/ShowsFeature",
+        path: "Sources/Feature/ShowListFeature",
         plugins: [.swiftgen]
-    ),
-    .testTarget(
-        name: "ShowsFeatureTests",
-        dependencies: [
-            "ShowsFeature",
-            "TestHelper",
-        ],
-        path: "Tests/Feature/ShowsFeatureTests"
     ),
     .target(
         name: "ShowDetailFeature",
@@ -448,8 +433,8 @@ var package = Package(
             name: "SettingsFeature",
             targets: ["SettingsFeature"]),
         .library(
-            name: "ShowsFeature",
-            targets: ["ShowsFeature"]),
+            name: "ShowListFeature",
+            targets: ["ShowListFeature"]),
         .library(
             name: "ShowDetailFeature",
             targets: ["ShowDetailFeature"]),
