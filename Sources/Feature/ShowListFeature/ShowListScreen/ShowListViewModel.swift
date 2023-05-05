@@ -8,12 +8,13 @@ import IdentifiedCollections
 @MainActor
 public final class ShowListViewModel: ObservableObject {
     enum Action {
-        case tapSearchShowsButton
+        case tapAddButton
         case tapShowRow
         case swipeToDeleteShow(feedURL: URL)
     }
     
     enum Event {
+        case presentShowSearch
     }
     
     @Published private(set) var shows: IdentifiedArrayOf<Show>?
@@ -30,8 +31,8 @@ public final class ShowListViewModel: ObservableObject {
     
     func handle(action: Action) async {
         switch action {
-        case .tapSearchShowsButton:
-            print("TODO")
+        case .tapAddButton:
+            eventSubject.send(.presentShowSearch)
         case .tapShowRow:
             print("TODO")
         case .swipeToDeleteShow(let feedURL):

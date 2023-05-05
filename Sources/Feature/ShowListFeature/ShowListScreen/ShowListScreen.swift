@@ -11,7 +11,7 @@ public struct ShowListScreen: View {
                 if shows.isEmpty {
                     emptyView(
                         onButtonTapped: {
-                            Task { await viewModel.handle(action: .tapSearchShowsButton) }
+                            Task { await viewModel.handle(action: .tapAddButton) }
                         }
                     )
                 } else {
@@ -45,7 +45,7 @@ public struct ShowListScreen: View {
         .toolbar {
             ToolbarItem(placement: .navigationBarTrailing) {
                 Button {
-                    Task { await viewModel.handle(action: .tapSearchShowsButton) }
+                    Task { await viewModel.handle(action: .tapAddButton) }
                 } label: {
                     Image(systemName: "plus")
                         .bold()

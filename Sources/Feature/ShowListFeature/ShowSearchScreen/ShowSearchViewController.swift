@@ -1,22 +1,17 @@
 import Combine
 import SwiftUI
 
-public final class ShowListViewController: UIHostingController<ShowListScreen> {
+final class ShowSearchViewController: UIHostingController<ShowSearchScreen> {
     private var cancellables: Set<AnyCancellable> = .init()
     
-    public init() {
-        let viewModel = ShowListViewModel()
-        super.init(rootView: ShowListScreen(viewModel: viewModel))
+    init() {
+        let viewModel = ShowSearchViewModel()
+        super.init(rootView: ShowSearchScreen(viewModel: viewModel))
         
         Task { [weak self] in
             for await event in viewModel.eventStream {
                 guard let self else { return }
                 switch event {
-                case .presentShowSearch:
-                    present(
-                        UINavigationController(rootViewController: ShowSearchViewController()),
-                        animated: true
-                    )
                 }
             }
         }.store(in: &cancellables)
