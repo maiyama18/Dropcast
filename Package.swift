@@ -167,27 +167,18 @@ let targets: [PackageDescription.Target] = [
     .target(
         name: "ShowDetailFeature",
         dependencies: [
-            .composableArchitecture,
             .nukeUI,
             "Components",
             "ClipboardClient",
             "DatabaseClient",
-            "Entity",
             "MessageClient",
             "RSSClient",
             "SoundFileClient",
+            "Extension",
+            "Entity",
         ],
         path: "Sources/Feature/ShowDetailFeature",
         plugins: [.swiftgen]
-    ),
-    .testTarget(
-        name: "ShowDetailFeatureTest",
-        dependencies: [
-            "DatabaseClient",
-            "ShowDetailFeature",
-            "TestHelper",
-        ],
-        path: "Tests/Feature/ShowDetailFeatureTests"
     ),
 
     // UI module
@@ -380,6 +371,7 @@ let targets: [PackageDescription.Target] = [
         name: "ViewFactory",
         dependencies: [
             .dependencies,
+            "Entity",
         ],
         path: "Sources/Core/ViewFactory"
     ),
@@ -459,6 +451,9 @@ var package = Package(
         .library(
             name: "Network",
             targets: ["Network"]),
+        .library(
+            name: "ViewFactory",
+            targets: ["ViewFactory"]),
     ],
     dependencies: dependencies,
     targets: targets

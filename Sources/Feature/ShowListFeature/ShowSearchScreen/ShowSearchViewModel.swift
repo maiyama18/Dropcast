@@ -1,16 +1,18 @@
 import Combine
 import Dependencies
+import Entity
 import Foundation
 import IdentifiedCollections
+import ITunesClient
 
 @MainActor
 final class ShowSearchViewModel: ObservableObject {
     enum SearchState: Equatable {
         case prompt
         case empty
-        case loaded(shows: IdentifiedArrayOf<SimpleShow>)
+        case loaded(shows: IdentifiedArrayOf<ITunesShow>)
 
-        var currentShows: IdentifiedArrayOf<SimpleShow> {
+        var currentShows: IdentifiedArrayOf<ITunesShow> {
             switch self {
             case .prompt, .empty:
                 return []
@@ -23,10 +25,11 @@ final class ShowSearchViewModel: ObservableObject {
     enum Action {
         case changeQuery(query: String)
         case debounceQuery
-        case tapShowRow
+        case tapShowRow(show: ITunesShow)
     }
     
     enum Event {
+        case pushShowDetail(show: ITunesShow)
     }
     
     @Dependency(\.iTunesClient) private var iTunesClient
@@ -60,7 +63,7 @@ final class ShowSearchViewModel: ObservableObject {
                 if let url = URL(string: query), (url.scheme == "https" || url.scheme == "http") {
                     switch await rssClient.fetch(url) {
                     case .success(let show):
-                        searchState = .loaded(shows: [SimpleShow(show: show)])
+                        searchState = .loaded(shows: [ITunesShow(show: show)])
                     case .failure:
                         searchState = .empty
                     }
@@ -69,7 +72,7 @@ final class ShowSearchViewModel: ObservableObject {
                     case .success(let shows):
                         searchState = shows.isEmpty
                         ? .empty
-                        : .loaded(shows: .init(uniqueElements: shows.uniqued(on: \.feedURL).map { SimpleShow(iTunesShow: $0) }))
+                        : .loaded(shows: .init(uniqueElements: shows.uniqued(on: \.feedURL)))
                     case .failure(let error):
                         let message: String
                         switch error {
@@ -85,8 +88,8 @@ final class ShowSearchViewModel: ObservableObject {
                     }
                 }
             }
-        case .tapShowRow:
-            print("TODO")
+        case .tapShowRow(let show):
+            eventSubject.send(.pushShowDetail(show: show))
         }
     }
 }

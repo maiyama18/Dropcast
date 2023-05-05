@@ -7,7 +7,7 @@ struct ShowHeaderView: View {
     var author: String?
     var description: String?
     var followed: Bool?
-    var requestInFlight: Bool
+    var isFetchingShow: Bool
     var toggleFollowButtonTapped: () -> Void
 
     var body: some View {
@@ -35,7 +35,7 @@ struct ShowHeaderView: View {
                     Group {
                         if let author {
                             Text(author)
-                        } else if requestInFlight {
+                        } else if isFetchingShow {
                             Text("Lorem ipsum")
                                 .redacted(reason: .placeholder)
                         }
@@ -68,7 +68,7 @@ struct ShowHeaderView: View {
 
             Text("Maiores et ad ea perspiciatis. Molestias expedita ab autem ad nihil ipsum sed nihil dolorum inventore debitis distinctio velit. Sint magnam dolorum est.")
                 .redacted(reason: .placeholder)
-                .opacity(requestInFlight && description == nil ? 1 : 0)
+                .opacity(isFetchingShow && description == nil ? 1 : 0)
                 .overlay(alignment: .topLeading) {
                     if let description {
                         ScrollView {
@@ -109,7 +109,7 @@ struct ShowHeaderView_Previews: PreviewProvider {
                 author: rebuild.author,
                 description: rebuild.description,
                 followed: false,
-                requestInFlight: false,
+                isFetchingShow: false,
                 toggleFollowButtonTapped: {}
             )
             .padding()
@@ -123,7 +123,7 @@ struct ShowHeaderView_Previews: PreviewProvider {
                 author: swift.author,
                 description: swift.description,
                 followed: true,
-                requestInFlight: false,
+                isFetchingShow: false,
                 toggleFollowButtonTapped: {}
             )
             .padding()
@@ -137,7 +137,7 @@ struct ShowHeaderView_Previews: PreviewProvider {
                 author: program.author,
                 description: program.description,
                 followed: nil,
-                requestInFlight: false,
+                isFetchingShow: false,
                 toggleFollowButtonTapped: {}
             )
             .padding()
