@@ -4,13 +4,13 @@ import SwiftUI
 
 public struct ShowDetailScreen: View {
     @ObservedObject var viewModel: ShowDetailViewModel
-    
+
     /// この画面においてエピソードのダウンロードや再生が可能かどうかを表す。
     /// 検索画面から遷移した場合は false になる。
     let showsEpisodeActionButtons: Bool
-    
+
     @Environment(\.openURL) var openURL
-    
+
     init(
         viewModel: ShowDetailViewModel,
         showsEpisodeActionButtons: Bool
@@ -18,7 +18,7 @@ public struct ShowDetailScreen: View {
         self.viewModel = viewModel
         self.showsEpisodeActionButtons = showsEpisodeActionButtons
     }
-    
+
     public var body: some View {
         ScrollView(showsIndicators: false) {
             LazyVStack(spacing: 0) {
@@ -31,9 +31,9 @@ public struct ShowDetailScreen: View {
                     isFetchingShow: viewModel.isFetchingShow,
                     toggleFollowButtonTapped: { viewModel.handle(action: .tapToggleFollowButton) }
                 )
-                
+
                 EpisodeDivider()
-                
+
                 if viewModel.episodes.isEmpty {
                     ForEach(0..<10) { _ in
                         EpisodeRowView(
@@ -44,7 +44,7 @@ public struct ShowDetailScreen: View {
                             onDownloadButtonTapped: {}
                         )
                         .redacted(reason: .placeholder)
-                        
+
                         EpisodeDivider()
                     }
                 } else {
@@ -58,7 +58,7 @@ public struct ShowDetailScreen: View {
                                 viewModel.handle(action: .tapDownloadEpisodeButton(episode: episode))
                             }
                         )
-                        
+
                         EpisodeDivider()
                     }
                 }

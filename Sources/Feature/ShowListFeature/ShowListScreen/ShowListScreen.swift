@@ -3,7 +3,7 @@ import SwiftUI
 
 public struct ShowListScreen: View {
     @ObservedObject var viewModel: ShowListViewModel
-    
+
     public var body: some View {
         Group {
             if let shows = viewModel.shows {

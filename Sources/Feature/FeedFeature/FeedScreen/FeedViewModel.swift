@@ -18,35 +18,35 @@ final class FeedViewModel: ObservableObject {
         case tapAddShowButton
         case tapDownloadEpisodeButton(episode: Episode)
     }
-    
+
     enum Event {
     }
-    
+
     @Published private(set) var episodes: IdentifiedArrayOf<Episode>? = nil
     @Published private var downloadStates: [Episode.ID: EpisodeDownloadState] = [:]
-    
+
     func downloadState(id: Episode.ID) -> EpisodeDownloadState {
         downloadStates[id] ?? .notDownloaded
     }
-    
+
     @Dependency(\.date.now) private var now
     @Dependency(\.openURL) private var openURL
-    
+
     @Dependency(\.databaseClient) private var databaseClient
     @Dependency(\.messageClient) private var messageClient
     @Dependency(\.rssClient) private var rssClient
     @Dependency(\.soundFileClient) private var soundFileClient
     @Dependency(\.userDefaultsClient) private var userDefaultsClient
-    
+
     private var cancellables: Set<AnyCancellable> = .init()
-    
+
     var eventStream: AsyncStream<Event> { eventSubject.eraseToStream() }
     private let eventSubject: PassthroughSubject<Event, Never> = .init()
-    
+
     init() {
         subscribe()
     }
-    
+
     func handle(action: Action) async {
         switch action {
         case .appear:
@@ -73,7 +73,7 @@ final class FeedViewModel: ObservableObject {
             }
         }
     }
-    
+
     private func subscribe() {
         Task { [weak self, databaseClient] in
             for await episodes in databaseClient.followedEpisodesStream() {
@@ -81,14 +81,14 @@ final class FeedViewModel: ObservableObject {
             }
         }
         .store(in: &cancellables)
-        
+
         Task { [weak self, soundFileClient] in
             for await downloadStates in soundFileClient.downloadStatesPublisher.eraseToStream() {
                 self?.downloadStates = downloadStates
             }
         }
         .store(in: &cancellables)
-        
+
         Task { [messageClient, soundFileClient] in
             for await downloadError in soundFileClient.downloadErrorPublisher.eraseToStream() {
                 let message: String
@@ -103,7 +103,7 @@ final class FeedViewModel: ObservableObject {
         }
         .store(in: &cancellables)
     }
-    
+
     private func refreshFeed() async {
         let shows: [Show]
         switch databaseClient.fetchFollowedShows() {

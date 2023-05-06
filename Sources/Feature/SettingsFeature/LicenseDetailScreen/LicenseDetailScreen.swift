@@ -3,7 +3,7 @@ import SwiftUI
 struct LicenseDetailScreen: View {
     var licenseName: String
     var licenseText: String
-    
+
     var body: some View {
         ScrollView {
             Text(licenseText)

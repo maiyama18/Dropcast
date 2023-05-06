@@ -5,13 +5,13 @@ import ViewFactory
 
 public final class ShowListViewController: UIHostingController<ShowListScreen> {
     private var cancellables: Set<AnyCancellable> = .init()
-    
+
     @Dependency(\.viewFactory) private var viewFactory
-    
+
     public init() {
         let viewModel = ShowListViewModel()
         super.init(rootView: ShowListScreen(viewModel: viewModel))
-        
+
         Task { [weak self] in
             for await event in viewModel.eventStream {
                 guard let self else { return }
@@ -42,11 +42,11 @@ public final class ShowListViewController: UIHostingController<ShowListScreen> {
             }
         }.store(in: &cancellables)
     }
-    
+
     @MainActor dynamic required init?(coder aDecoder: NSCoder) {
         fatalError("init(coder:) has not been implemented")
     }
-    
+
     public func presentShowSearch() {
         Task {
             await rootView.viewModel.handle(action: .tapAddButton)

@@ -6,7 +6,7 @@ public struct ViewFactory: Sendable {
     public var makeShowList: @Sendable @MainActor () -> UIViewController
     public var makeShowDetail: @Sendable @MainActor (ShowDetailInitArguments) -> UIViewController
     public var makeSettings: @Sendable @MainActor () -> UIViewController
-    
+
     public init(
         makeFeed: @escaping @Sendable @MainActor () -> UIViewController,
         makeShowList: @escaping @Sendable @MainActor () -> UIViewController,

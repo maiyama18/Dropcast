@@ -28,7 +28,7 @@ public struct FeedScreen: View {
                                         }
                                     }
                                 )
-                                
+
                                 EpisodeDivider()
                             }
                         }

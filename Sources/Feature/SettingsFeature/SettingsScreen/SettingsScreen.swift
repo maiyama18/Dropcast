@@ -2,7 +2,7 @@ import SwiftUI
 
 public struct SettingsScreen: View {
     @ObservedObject var viewModel: SettingsViewModel
-    
+
     public var body: some View {
         List {
             Section {

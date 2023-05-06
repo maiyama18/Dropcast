@@ -3,11 +3,11 @@ import SwiftUI
 
 struct DebugLogScreen: View {
     @ObservedObject private var viewModel: DebugLogViewModel
-    
+
     init(viewModel: DebugLogViewModel) {
         self.viewModel = viewModel
     }
-    
+
     var body: some View {
         Group {
             if viewModel.loading {
@@ -23,7 +23,7 @@ struct DebugLogScreen: View {
                     } label: {
                         Text("Category")
                     }
-                    
+
                     List {
                         ForEach(viewModel.visibleEntries, id: \.date) { entry in
                             NavigationLink {

@@ -17,39 +17,39 @@ final class ShowDetailViewModel: ObservableObject {
         case tapCopyFeedURLButton
         case tapDownloadEpisodeButton(episode: Episode)
     }
-    
+
     enum Event {
     }
-    
+
     let feedURL: URL
     let imageURL: URL
     let title: String
-    
+
     @Published private(set) var episodes: [Episode]
     @Published private(set) var author: String?
     @Published private(set) var description: String?
     @Published private(set) var linkURL: URL?
     @Published private(set) var followed: Bool?
     @Published private(set) var isFetchingShow: Bool = false
-    
+
     @Published private var downloadStates: [Episode.ID: EpisodeDownloadState]?
 
     func downloadState(id: Episode.ID) -> EpisodeDownloadState {
         guard let downloadStates else { return .notDownloaded }
         return downloadStates[id] ?? .notDownloaded
     }
-    
+
     private var cancellables: Set<AnyCancellable> = .init()
-    
+
     var eventStream: AsyncStream<Event> { eventSubject.eraseToStream() }
     private let eventSubject: PassthroughSubject<Event, Never> = .init()
-    
+
     @Dependency(\.clipboardClient) private var clipboardClient
     @Dependency(\.databaseClient) private var databaseClient
     @Dependency(\.messageClient) private var messageClient
     @Dependency(\.rssClient) private var rssClient
     @Dependency(\.soundFileClient) private var soundFileClient
-    
+
     init(
         feedURL: URL,
         imageURL: URL,
@@ -68,14 +68,14 @@ final class ShowDetailViewModel: ObservableObject {
         self.description = description
         self.linkURL = linkURL
         self.followed = followed
-        
+
         Task { [weak self, soundFileClient] in
             for await downloadStates in soundFileClient.downloadStatesPublisher.eraseToStream() {
                 self?.downloadStates = downloadStates
             }
         }
         .store(in: &cancellables)
-        
+
         Task { [soundFileClient, messageClient] in
             for await downloadError in soundFileClient.downloadErrorPublisher.eraseToStream() {
                 let message: String
@@ -85,13 +85,13 @@ final class ShowDetailViewModel: ObservableObject {
                 case .downloadError:
                     message = L10n.Error.downloadError
                 }
-                
+
                 messageClient.presentError(message)
             }
         }
         .store(in: &cancellables)
     }
-    
+
     func handle(action: Action) {
         switch action {
         case .appear:
@@ -106,7 +106,7 @@ final class ShowDetailViewModel: ObservableObject {
             case .failure:
                 messageClient.presentError(L10n.Error.databaseError)
             }
-            
+
             Task {
                 isFetchingShow = true
                 defer { isFetchingShow = false }
@@ -121,7 +121,7 @@ final class ShowDetailViewModel: ObservableObject {
                     case .networkError(reason: let error):
                         message = error.localizedDescription
                     }
-                    
+
                     messageClient.presentError(message)
                 }
             }
@@ -169,7 +169,7 @@ final class ShowDetailViewModel: ObservableObject {
             }
         }
     }
-    
+
     private func reflectShow(_ show: Show) {
         author = show.author
         linkURL = show.linkURL

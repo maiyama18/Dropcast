@@ -21,45 +21,45 @@ final class ShowSearchViewModel: ObservableObject {
             }
         }
     }
-    
+
     enum Action {
         case changeQuery(query: String)
         case debounceQuery
         case tapShowRow(show: ITunesShow)
     }
-    
+
     enum Event {
         case pushShowDetail(show: ITunesShow)
     }
-    
+
     @Dependency(\.iTunesClient) private var iTunesClient
     @Dependency(\.messageClient) private var messageClient
     @Dependency(\.rssClient) private var rssClient
-    
+
     @Published private(set) var searchState: SearchState = .prompt
     @Published private var searchTask: Task<Void, Never>? = nil
     @Published private(set) var query: String = ""
-    
+
     var isSearching: Bool { searchTask?.isCancelled == false }
-    
+
     var eventStream: AsyncStream<Event> { eventSubject.eraseToStream() }
     private let eventSubject: PassthroughSubject<Event, Never> = .init()
-    
+
     func handle(action: Action) {
         switch action {
         case .changeQuery(query: let query):
             self.query = query
-            
+
             if query.isEmpty {
                 searchTask?.cancel()
                 self.searchState = .prompt
             }
         case .debounceQuery:
             guard !query.isEmpty else { return }
-            
+
             searchTask = Task {
                 defer { searchTask = nil }
-                
+
                 if let url = URL(string: query), (url.scheme == "https" || url.scheme == "http") {
                     switch await rssClient.fetch(url) {
                     case .success(let show):
@@ -71,8 +71,8 @@ final class ShowSearchViewModel: ObservableObject {
                     switch await self.iTunesClient.searchShows(query) {
                     case .success(let shows):
                         searchState = shows.isEmpty
-                        ? .empty
-                        : .loaded(shows: .init(uniqueElements: shows.uniqued(on: \.feedURL)))
+                            ? .empty
+                            : .loaded(shows: .init(uniqueElements: shows.uniqued(on: \.feedURL)))
                     case .failure(let error):
                         let message: String
                         switch error {
@@ -83,7 +83,7 @@ final class ShowSearchViewModel: ObservableObject {
                         case .networkError(reason: let error):
                             message = error.localizedDescription
                         }
-                        
+
                         messageClient.presentError(message)
                     }
                 }

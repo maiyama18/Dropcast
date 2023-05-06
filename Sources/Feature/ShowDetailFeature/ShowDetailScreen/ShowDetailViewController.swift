@@ -3,9 +3,9 @@ import Entity
 import SwiftUI
 
 public final class ShowDetailViewController: UIHostingController<ShowDetailScreen> {
-    
+
     private var cancellables: Set<AnyCancellable> = .init()
-    
+
     public init(
         showsEpisodeActionButtons: Bool,
         feedURL: URL,
@@ -33,7 +33,7 @@ public final class ShowDetailViewController: UIHostingController<ShowDetailScree
                 showsEpisodeActionButtons: showsEpisodeActionButtons
             )
         )
-        
+
         Task { [weak self] in
             for await event in viewModel.eventStream {
                 guard let self else { return }
@@ -42,9 +42,8 @@ public final class ShowDetailViewController: UIHostingController<ShowDetailScree
             }
         }.store(in: &cancellables)
     }
-    
+
     @MainActor dynamic required init?(coder aDecoder: NSCoder) {
         fatalError("init(coder:) has not been implemented")
     }
 }
-

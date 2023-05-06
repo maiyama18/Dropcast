@@ -11,7 +11,7 @@ public struct ShowDetailInitArguments: Sendable {
     public let description: String?
     public let linkURL: URL?
     public let followed: Bool?
-    
+
     public init(
         showsEpisodeActionButtons: Bool,
         feedURL: URL,
