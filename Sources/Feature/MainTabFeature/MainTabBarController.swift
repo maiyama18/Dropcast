@@ -2,7 +2,7 @@ import Dependencies
 import UIKit
 import ViewFactory
 
-internal enum Tab: Int {
+public enum Tab: Int {
     case feed
     case shows
     case settings
@@ -23,6 +23,11 @@ public final class MainTabBarController: UITabBarController {
         super.viewDidLoad()
 
         setupTabs()
+    }
+    
+    public func changeTab(to tab: Tab) -> UIViewController? {
+        selectedIndex = tab.rawValue
+        return selectedViewController
     }
 
     private func setupTabs() {

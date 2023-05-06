@@ -2,6 +2,7 @@ import Combine
 import Dependencies
 import Entity
 import Extension
+import Foundation
 import IdentifiedCollections
 import MessageClient
 import RSSClient
@@ -28,6 +29,7 @@ final class FeedViewModel: ObservableObject {
     }
     
     @Dependency(\.date.now) private var now
+    @Dependency(\.openURL) private var openURL
     
     @Dependency(\.databaseClient) private var databaseClient
     @Dependency(\.messageClient) private var messageClient
@@ -55,7 +57,7 @@ final class FeedViewModel: ObservableObject {
         case .pullToRefresh:
             await refreshFeed()
         case .tapAddShowButton:
-            print("TODO")
+            await openURL(URL(string: "dropcastdev://show-search")!)
         case .tapDownloadEpisodeButton(let episode):
             switch downloadState(id: episode.id) {
             case .notDownloaded:

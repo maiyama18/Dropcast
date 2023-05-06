@@ -4,6 +4,19 @@
 <dict>
 	<key>AppGroupID</key>
 	<string>group.com.muijp.DropcastDev</string>
+	<key>CFBundleURLTypes</key>
+	<array>
+		<dict>
+			<key>CFBundleTypeRole</key>
+			<string>Viewer</string>
+			<key>CFBundleURLName</key>
+			<string>com.muijp.DropcastDev</string>
+			<key>CFBundleURLSchemes</key>
+			<array>
+				<string>dropcastdev</string>
+			</array>
+		</dict>
+	</array>
 	<key>NSAppTransportSecurity</key>
 	<dict>
 		<key>NSAllowsArbitraryLoads</key>

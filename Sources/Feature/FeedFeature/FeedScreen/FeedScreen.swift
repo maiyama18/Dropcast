@@ -11,7 +11,7 @@ public struct FeedScreen: View {
             if let episodes = viewModel.episodes {
                 if episodes.isEmpty {
                     emptyView(onButtonTapped: {
-                        print("TODO")
+                        Task { await viewModel.handle(action: .tapAddShowButton) }
                     })
                 } else {
                     ScrollView {
