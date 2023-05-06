@@ -31,10 +31,6 @@ extension PackageDescription.Target.Dependency {
         name: "AsyncAlgorithms",
         package: "swift-async-algorithms"
     )
-    static let composableArchitecture: Self = .product(
-        name: "ComposableArchitecture",
-        package: "swift-composable-architecture"
-    )
     static let customDump: Self = .product(
         name: "CustomDump",
         package: "swift-custom-dump"
@@ -108,7 +104,6 @@ let targets: [PackageDescription.Target] = [
     .target(
         name: "MainTabFeature",
         dependencies: [
-            .composableArchitecture,
             "ViewFactory",
         ],
         path: "Sources/Feature/MainTabFeature",
@@ -129,7 +124,6 @@ let targets: [PackageDescription.Target] = [
     .target(
         name: "FeedFeature",
         dependencies: [
-            .composableArchitecture,
             "Components",
             "DatabaseClient",
             "Entity",
@@ -145,7 +139,6 @@ let targets: [PackageDescription.Target] = [
     .target(
         name: "SettingsFeature",
         dependencies: [
-            .composableArchitecture,
             "Build",
             "Extension",
         ],
@@ -158,7 +151,6 @@ let targets: [PackageDescription.Target] = [
     .target(
         name: "ShowListFeature",
         dependencies: [
-            .composableArchitecture,
             .nukeUI,
             "Entity",
             "Error",

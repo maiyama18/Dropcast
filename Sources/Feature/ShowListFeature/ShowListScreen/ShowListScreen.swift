@@ -1,4 +1,3 @@
-import ComposableArchitecture
 import ShowDetailFeature
 import SwiftUI
 

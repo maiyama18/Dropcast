@@ -1,8 +1,12 @@
 import Combine
 import Dependencies
 import Entity
-import IdentifiedCollections
 import Extension
+import IdentifiedCollections
+import MessageClient
+import RSSClient
+import SoundFileClient
+import UserDefaultsClient
 
 @MainActor
 final class FeedViewModel: ObservableObject {
