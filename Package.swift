@@ -11,7 +11,6 @@ let dependencies: [PackageDescription.Package.Dependency] = [
     .package(url: "https://github.com/maiyama18/DebugMenu", branch: "fix/crash-on-viewcontroller-debug-item"),
     .package(url: "https://github.com/omaralbeik/Drops", exact: "1.6.1"),
     .package(url: "https://github.com/sindresorhus/Defaults", exact: "7.1.0"),
-    .package(url: "https://github.com/pointfreeco/swift-composable-architecture", exact: "0.51.0"),
     .package(url: "https://github.com/pointfreeco/swift-custom-dump", exact: "0.8.0"),
     .package(url: "https://github.com/pointfreeco/swift-dependencies", exact: "0.1.4"),
     .package(url: "https://github.com/pointfreeco/swift-identified-collections", exact: "0.7.0"),
