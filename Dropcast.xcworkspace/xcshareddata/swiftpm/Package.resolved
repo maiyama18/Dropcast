@@ -10,6 +10,15 @@
       }
     },
     {
+      "identity" : "debugmenu",
+      "kind" : "remoteSourceControl",
+      "location" : "https://github.com/maiyama18/DebugMenu",
+      "state" : {
+        "branch" : "fix/crash-on-viewcontroller-debug-item",
+        "revision" : "8212cd1bd29cb257f65b905feaba527a32d1fe48"
+      }
+    },
+    {
       "identity" : "defaults",
       "kind" : "remoteSourceControl",
       "location" : "https://github.com/sindresorhus/Defaults",

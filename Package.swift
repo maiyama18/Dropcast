@@ -2,6 +2,26 @@
 
 import PackageDescription
 
+let dependencies: [PackageDescription.Package.Dependency] = [
+    // libraries
+    .package(url: "https://github.com/apple/swift-algorithms", exact: "1.0.0"),
+    .package(url: "https://github.com/apple/swift-async-algorithms", exact: "0.0.4"),
+    .package(url: "https://github.com/kean/Nuke", exact: "11.6.2"),
+    .package(url: "https://github.com/nmdias/FeedKit", exact: "9.1.2"),
+    .package(url: "https://github.com/maiyama18/DebugMenu", branch: "fix/crash-on-viewcontroller-debug-item"),
+    .package(url: "https://github.com/omaralbeik/Drops", exact: "1.6.1"),
+    .package(url: "https://github.com/sindresorhus/Defaults", exact: "7.1.0"),
+    .package(url: "https://github.com/pointfreeco/swift-composable-architecture", exact: "0.51.0"),
+    .package(url: "https://github.com/pointfreeco/swift-custom-dump", exact: "0.8.0"),
+    .package(url: "https://github.com/pointfreeco/swift-dependencies", exact: "0.1.4"),
+    .package(url: "https://github.com/pointfreeco/swift-identified-collections", exact: "0.7.0"),
+
+    // plugins
+    .package(url: "https://github.com/maiyama18/SwiftLintPlugins", exact: "0.9.4"),
+    .package(url: "https://github.com/maiyama18/LicensesPlugin", exact: "0.1.5"),
+    .package(url: "https://github.com/SwiftGen/SwiftGenPlugin", exact: "6.6.2"),
+]
+
 extension PackageDescription.Target.Dependency {
     static let algorithms: Self = .product(
         name: "Algorithms",
@@ -18,6 +38,10 @@ extension PackageDescription.Target.Dependency {
     static let customDump: Self = .product(
         name: "CustomDump",
         package: "swift-custom-dump"
+    )
+    static let debugMenu: Self = .product(
+        name: "DebugMenu",
+        package: "DebugMenu"
     )
     static let defaults: Self = .product(
         name: "Defaults",
@@ -60,25 +84,6 @@ extension PackageDescription.Target.PluginUsage {
     )
 }
 
-let dependencies: [PackageDescription.Package.Dependency] = [
-    // libraries
-    .package(url: "https://github.com/apple/swift-algorithms", exact: "1.0.0"),
-    .package(url: "https://github.com/apple/swift-async-algorithms", exact: "0.0.4"),
-    .package(url: "https://github.com/kean/Nuke", exact: "11.6.2"),
-    .package(url: "https://github.com/nmdias/FeedKit", exact: "9.1.2"),
-    .package(url: "https://github.com/omaralbeik/Drops", exact: "1.6.1"),
-    .package(url: "https://github.com/sindresorhus/Defaults", exact: "7.1.0"),
-    .package(url: "https://github.com/pointfreeco/swift-composable-architecture", exact: "0.51.0"),
-    .package(url: "https://github.com/pointfreeco/swift-custom-dump", exact: "0.8.0"),
-    .package(url: "https://github.com/pointfreeco/swift-dependencies", exact: "0.1.4"),
-    .package(url: "https://github.com/pointfreeco/swift-identified-collections", exact: "0.7.0"),
-
-    // plugins
-    .package(url: "https://github.com/maiyama18/SwiftLintPlugins", exact: "0.9.4"),
-    .package(url: "https://github.com/maiyama18/LicensesPlugin", exact: "0.1.5"),
-    .package(url: "https://github.com/SwiftGen/SwiftGenPlugin", exact: "6.6.2"),
-]
-
 let targets: [PackageDescription.Target] = [
 
     // App module
@@ -86,6 +91,7 @@ let targets: [PackageDescription.Target] = [
     .target(
         name: "iOSApp",
         dependencies: [
+            "DebugFeature",
             "FeedFeature",
             "MainTabFeature",
             "SettingsFeature",
@@ -111,7 +117,7 @@ let targets: [PackageDescription.Target] = [
     .target(
         name: "DebugFeature",
         dependencies: [
-            .dependencies,
+            .debugMenu,
             "ClipboardClient",
             "Formatter",
             "Logger",

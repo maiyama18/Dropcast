@@ -1,3 +1,4 @@
+import DebugFeature
 import MainTabFeature
 import UIKit
 
@@ -9,6 +10,9 @@ class SceneDelegate: UIResponder, UIWindowSceneDelegate {
         let window = UIWindow(windowScene: windowScene)
         window.rootViewController = MainTabBarController()
         self.window = window
+        #if DEBUG
+        installDebugMenu(windowScene: windowScene)
+        #endif
         window.makeKeyAndVisible()
     }
 

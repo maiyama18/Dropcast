@@ -32,7 +32,7 @@ final class ShowDetailViewModel: ObservableObject {
     @Published private(set) var followed: Bool?
     @Published private(set) var isFetchingShow: Bool = false
     
-    private var downloadStates: [Episode.ID: EpisodeDownloadState]?
+    @Published private var downloadStates: [Episode.ID: EpisodeDownloadState]?
 
     func downloadState(id: Episode.ID) -> EpisodeDownloadState {
         guard let downloadStates else { return .notDownloaded }
