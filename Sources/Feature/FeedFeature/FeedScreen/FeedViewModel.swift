@@ -13,6 +13,8 @@ final class FeedViewModel: ObservableObject {
     enum Action {
         case appear
         case pullToRefresh
+        case tapAddShowButton
+        case tapDownloadEpisodeButton(episode: Episode)
     }
     
     enum Event {
@@ -52,6 +54,20 @@ final class FeedViewModel: ObservableObject {
             await refreshFeed()
         case .pullToRefresh:
             await refreshFeed()
+        case .tapAddShowButton:
+            print("TODO")
+        case .tapDownloadEpisodeButton(let episode):
+            switch downloadState(id: episode.id) {
+            case .notDownloaded:
+                Task { try await soundFileClient.download(episode) }
+            case .pushedToDownloadQueue:
+                break
+            case .downloading:
+                Task { try await soundFileClient.cancelDownload(episode) }
+            case .downloaded:
+                // TODO: play sound
+                break
+            }
         }
     }
     

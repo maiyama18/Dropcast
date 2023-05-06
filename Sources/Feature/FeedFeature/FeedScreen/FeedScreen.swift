@@ -23,7 +23,9 @@ public struct FeedScreen: View {
                                     showsPlayButton: true,
                                     showsImage: true,
                                     onDownloadButtonTapped: {
-                                        print("TODO")
+                                        Task {
+                                            await viewModel.handle(action: .tapDownloadEpisodeButton(episode: episode))
+                                        }
                                     }
                                 )
                                 
