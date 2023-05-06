@@ -1,8 +1,12 @@
 import Combine
+import Dependencies
 import SwiftUI
+import ViewFactory
 
 public final class ShowListViewController: UIHostingController<ShowListScreen> {
     private var cancellables: Set<AnyCancellable> = .init()
+    
+    @Dependency(\.viewFactory) private var viewFactory
     
     public init() {
         let viewModel = ShowListViewModel()
@@ -15,6 +19,23 @@ public final class ShowListViewController: UIHostingController<ShowListScreen> {
                 case .presentShowSearch:
                     present(
                         UINavigationController(rootViewController: ShowSearchViewController()),
+                        animated: true
+                    )
+                case .pushShowDetail(let show):
+                    navigationController?.pushViewController(
+                        viewFactory.makeShowDetail(
+                            .init(
+                                showsEpisodeActionButtons: true,
+                                feedURL: show.feedURL,
+                                imageURL: show.imageURL,
+                                title: show.title,
+                                episodes: show.episodes,
+                                author: show.author,
+                                description: show.description,
+                                linkURL: show.linkURL,
+                                followed: true
+                            )
+                        ),
                         animated: true
                     )
                 }

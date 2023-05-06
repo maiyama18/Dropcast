@@ -42,6 +42,7 @@ public struct FeedScreen: View {
                     .scaleEffect(2)
             }
         }
+        .navigationTitle(L10n.feed)
         .task {
             await viewModel.handle(action: .appear)
         }

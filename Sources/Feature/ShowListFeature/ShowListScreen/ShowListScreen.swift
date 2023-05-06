@@ -20,7 +20,7 @@ public struct ShowListScreen: View {
                             ShowRowView(show: SimpleShow(show: show))
                                 .onTapGesture {
                                     Task {
-                                        await viewModel.handle(action: .tapShowRow)
+                                        await viewModel.handle(action: .tapShowRow(show: show))
                                     }
                                 }
                                 .swipeActions(allowsFullSwipe: false) {

@@ -19,3 +19,5 @@
 "no_shows" = "No shows";
 
 "follow_favorite_shows" = "Follow your favorite shows!";
+
+"error.failed_to_unfollow" = "Failed to unfollow the show";

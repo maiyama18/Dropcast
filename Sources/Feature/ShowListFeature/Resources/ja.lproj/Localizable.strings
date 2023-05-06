@@ -19,3 +19,5 @@
 "no_shows" = "フォローしている番組がありません";
 
 "follow_favorite_shows" = "好きな番組をフォローしましょう！";
+
+"error.failed_to_unfollow" = "フォロー解除に失敗しました";

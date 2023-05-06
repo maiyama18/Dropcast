@@ -9,12 +9,13 @@ import IdentifiedCollections
 public final class ShowListViewModel: ObservableObject {
     enum Action {
         case tapAddButton
-        case tapShowRow
+        case tapShowRow(show: Show)
         case swipeToDeleteShow(feedURL: URL)
     }
     
     enum Event {
         case presentShowSearch
+        case pushShowDetail(show: Show)
     }
     
     @Published private(set) var shows: IdentifiedArrayOf<Show>?
@@ -33,10 +34,14 @@ public final class ShowListViewModel: ObservableObject {
         switch action {
         case .tapAddButton:
             eventSubject.send(.presentShowSearch)
-        case .tapShowRow:
-            print("TODO")
+        case .tapShowRow(let show):
+            eventSubject.send(.pushShowDetail(show: show))
         case .swipeToDeleteShow(let feedURL):
-            print("TODO")
+            do {
+                try databaseClient.unfollowShow(feedURL).get()
+            } catch {
+                messageClient.presentError(L10n.Error.failedToUnfollow)
+            }
         }
     }
     
