@@ -11,9 +11,9 @@ let dependencies: [PackageDescription.Package.Dependency] = [
     .package(url: "https://github.com/maiyama18/DebugMenu", branch: "fix/crash-on-viewcontroller-debug-item"),
     .package(url: "https://github.com/omaralbeik/Drops", exact: "1.6.1"),
     .package(url: "https://github.com/sindresorhus/Defaults", exact: "7.1.0"),
-    .package(url: "https://github.com/pointfreeco/swift-custom-dump", exact: "0.8.0"),
-    .package(url: "https://github.com/pointfreeco/swift-dependencies", exact: "0.1.4"),
-    .package(url: "https://github.com/pointfreeco/swift-identified-collections", exact: "0.7.0"),
+    .package(url: "https://github.com/pointfreeco/swift-custom-dump", exact: "0.10.2"),
+    .package(url: "https://github.com/pointfreeco/swift-dependencies", exact: "0.4.2"),
+    .package(url: "https://github.com/pointfreeco/swift-identified-collections", exact: "0.7.1"),
 
     // plugins
     .package(url: "https://github.com/maiyama18/SwiftLintPlugins", exact: "0.9.4"),
