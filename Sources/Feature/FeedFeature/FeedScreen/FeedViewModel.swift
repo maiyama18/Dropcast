@@ -1,4 +1,5 @@
 import Combine
+import DeepLink
 import Dependencies
 import Entity
 import Extension
@@ -57,7 +58,7 @@ final class FeedViewModel: ObservableObject {
         case .pullToRefresh:
             await refreshFeed()
         case .tapAddShowButton:
-            await openURL(URL(string: "dropcastdev://show-search")!)
+            await openURL(DeepLink.showSearch)
         case .tapDownloadEpisodeButton(let episode):
             switch downloadState(id: episode.id) {
             case .notDownloaded:

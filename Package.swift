@@ -125,6 +125,7 @@ let targets: [PackageDescription.Target] = [
         dependencies: [
             "Components",
             "DatabaseClient",
+            "DeepLink",
             "Entity",
             "MessageClient",
             "RSSClient",
@@ -309,9 +310,21 @@ let targets: [PackageDescription.Target] = [
         path: "Sources/Core/Build"
     ),
     .target(
+        name: "DeepLink",
+        dependencies: [
+            "Environment"
+        ],
+        path: "Sources/Core/DeepLink"
+    ),
+    .target(
         name: "Entity",
         dependencies: ["Formatter"],
         path: "Sources/Core/Entity"
+    ),
+    .target(
+        name: "Environment",
+        dependencies: [.dependencies],
+        path: "Sources/Core/Environment"
     ),
     .target(
         name: "Extension",
