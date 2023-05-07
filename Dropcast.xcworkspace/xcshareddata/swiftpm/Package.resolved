@@ -12,10 +12,10 @@
     {
       "identity" : "debugmenu",
       "kind" : "remoteSourceControl",
-      "location" : "https://github.com/maiyama18/DebugMenu",
+      "location" : "https://github.com/noppefoxwolf/DebugMenu",
       "state" : {
-        "branch" : "fix/crash-on-viewcontroller-debug-item",
-        "revision" : "8212cd1bd29cb257f65b905feaba527a32d1fe48"
+        "revision" : "f150f7668920e2fc1363e4a8f47b0e14c8dfbc3a",
+        "version" : "2.0.5"
       }
     },
     {

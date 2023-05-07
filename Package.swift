@@ -8,7 +8,7 @@ let dependencies: [PackageDescription.Package.Dependency] = [
     .package(url: "https://github.com/apple/swift-async-algorithms", exact: "0.0.4"),
     .package(url: "https://github.com/kean/Nuke", exact: "11.6.2"),
     .package(url: "https://github.com/nmdias/FeedKit", exact: "9.1.2"),
-    .package(url: "https://github.com/maiyama18/DebugMenu", branch: "fix/crash-on-viewcontroller-debug-item"),
+    .package(url: "https://github.com/noppefoxwolf/DebugMenu", exact: "2.0.5"),
     .package(url: "https://github.com/omaralbeik/Drops", exact: "1.6.1"),
     .package(url: "https://github.com/sindresorhus/Defaults", exact: "7.1.0"),
     .package(url: "https://github.com/pointfreeco/swift-custom-dump", exact: "0.10.2"),
