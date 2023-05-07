@@ -19,7 +19,7 @@
 		382D24B02A01F707004F71B7 /* Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Assets.xcassets; sourceTree = "<group>"; };
 		382D24B32A01F707004F71B7 /* Base */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; name = Base; path = Base.lproj/LaunchScreen.storyboard; sourceTree = "<group>"; };
 		382D24B52A01F707004F71B7 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
-		382D24BC2A01F72F004F71B7 /* DropcastDev.entitlements */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.entitlements; path = DropcastDev.entitlements; sourceTree = "<group>"; };
+		382D24BC2A01F72F004F71B7 /* iOSAppDev.entitlements */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.entitlements; path = iOSAppDev.entitlements; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -54,7 +54,7 @@
 		382D24A62A01F706004F71B7 /* iOSAppDev */ = {
 			isa = PBXGroup;
 			children = (
-				382D24BC2A01F72F004F71B7 /* DropcastDev.entitlements */,
+				382D24BC2A01F72F004F71B7 /* iOSAppDev.entitlements */,
 				382D24A72A01F706004F71B7 /* main.swift */,
 				382D24B02A01F707004F71B7 /* Assets.xcassets */,
 				382D24B22A01F707004F71B7 /* LaunchScreen.storyboard */,
@@ -280,7 +280,7 @@
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME = AccentColor;
-				CODE_SIGN_ENTITLEMENTS = iOSAppDev/DropcastDev.entitlements;
+				CODE_SIGN_ENTITLEMENTS = iOSAppDev/iOSAppDev.entitlements;
 				CODE_SIGN_STYLE = Automatic;
 				CURRENT_PROJECT_VERSION = 1;
 				DEVELOPMENT_TEAM = 56T4RFDKJR;
@@ -309,7 +309,7 @@
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME = AccentColor;
-				CODE_SIGN_ENTITLEMENTS = iOSAppDev/DropcastDev.entitlements;
+				CODE_SIGN_ENTITLEMENTS = iOSAppDev/iOSAppDev.entitlements;
 				CODE_SIGN_STYLE = Automatic;
 				CURRENT_PROJECT_VERSION = 1;
 				DEVELOPMENT_TEAM = 56T4RFDKJR;
