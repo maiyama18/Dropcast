@@ -223,6 +223,10 @@ public actor SoundFileClientLive: SoundFileClient {
     }
 
     private func initializeDownloadStates() {
+        if !FileManager.default.fileExists(atPath: soundFilesRootDirectoryURL.path()) {
+            try? FileManager.default.createDirectory(at: soundFilesRootDirectoryURL, withIntermediateDirectories: true)
+        }
+
         guard let enumerator = FileManager.default.enumerator(
             at: self.soundFilesRootDirectoryURL,
             includingPropertiesForKeys: [.isRegularFileKey],

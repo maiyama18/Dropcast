@@ -2,6 +2,25 @@
 
 import PackageDescription
 
+let dependencies: [PackageDescription.Package.Dependency] = [
+    // libraries
+    .package(url: "https://github.com/apple/swift-algorithms", exact: "1.0.0"),
+    .package(url: "https://github.com/apple/swift-async-algorithms", exact: "0.0.4"),
+    .package(url: "https://github.com/kean/Nuke", exact: "11.6.2"),
+    .package(url: "https://github.com/nmdias/FeedKit", exact: "9.1.2"),
+    .package(url: "https://github.com/noppefoxwolf/DebugMenu", exact: "2.0.5"),
+    .package(url: "https://github.com/omaralbeik/Drops", exact: "1.6.1"),
+    .package(url: "https://github.com/sindresorhus/Defaults", exact: "7.1.0"),
+    .package(url: "https://github.com/pointfreeco/swift-custom-dump", exact: "0.10.2"),
+    .package(url: "https://github.com/pointfreeco/swift-dependencies", exact: "0.4.2"),
+    .package(url: "https://github.com/pointfreeco/swift-identified-collections", exact: "0.7.1"),
+
+    // plugins
+    .package(url: "https://github.com/maiyama18/SwiftLintPlugins", exact: "0.9.4"),
+    .package(url: "https://github.com/maiyama18/LicensesPlugin", exact: "0.1.5"),
+    .package(url: "https://github.com/SwiftGen/SwiftGenPlugin", exact: "6.6.2"),
+]
+
 extension PackageDescription.Target.Dependency {
     static let algorithms: Self = .product(
         name: "Algorithms",
@@ -11,13 +30,13 @@ extension PackageDescription.Target.Dependency {
         name: "AsyncAlgorithms",
         package: "swift-async-algorithms"
     )
-    static let composableArchitecture: Self = .product(
-        name: "ComposableArchitecture",
-        package: "swift-composable-architecture"
-    )
     static let customDump: Self = .product(
         name: "CustomDump",
         package: "swift-custom-dump"
+    )
+    static let debugMenu: Self = .product(
+        name: "DebugMenu",
+        package: "DebugMenu"
     )
     static let defaults: Self = .product(
         name: "Defaults",
@@ -60,63 +79,40 @@ extension PackageDescription.Target.PluginUsage {
     )
 }
 
-let dependencies: [PackageDescription.Package.Dependency] = [
-    // libraries
-    .package(url: "https://github.com/apple/swift-algorithms", exact: "1.0.0"),
-    .package(url: "https://github.com/apple/swift-async-algorithms", exact: "0.0.4"),
-    .package(url: "https://github.com/kean/Nuke", exact: "11.6.2"),
-    .package(url: "https://github.com/nmdias/FeedKit", exact: "9.1.2"),
-    .package(url: "https://github.com/omaralbeik/Drops", exact: "1.6.1"),
-    .package(url: "https://github.com/sindresorhus/Defaults", exact: "7.1.0"),
-    .package(url: "https://github.com/pointfreeco/swift-composable-architecture", exact: "0.51.0"),
-    .package(url: "https://github.com/pointfreeco/swift-custom-dump", exact: "0.8.0"),
-    .package(url: "https://github.com/pointfreeco/swift-dependencies", exact: "0.1.4"),
-    .package(url: "https://github.com/pointfreeco/swift-identified-collections", exact: "0.7.0"),
-
-    // plugins
-    .package(url: "https://github.com/maiyama18/SwiftLintPlugins", exact: "0.9.4"),
-    .package(url: "https://github.com/maiyama18/LicensesPlugin", exact: "0.1.5"),
-    .package(url: "https://github.com/SwiftGen/SwiftGenPlugin", exact: "6.6.2"),
-]
-
 let targets: [PackageDescription.Target] = [
 
     // App module
 
     .target(
-        name: "App",
+        name: "iOSApp",
         dependencies: [
-            .dependencies,
-            "AppFeature",
             "DebugFeature",
+            "FeedFeature",
+            "MainTabFeature",
+            "SettingsFeature",
+            "ShowDetailFeature",
+            "ShowListFeature",
             "MessageClientLive",
             "Logger",
+            "ViewFactory",
         ],
-        path: "Sources/App/App"
+        path: "Sources/App/iOSApp"
     ),
 
     // Feature module
 
     .target(
-        name: "AppFeature",
+        name: "MainTabFeature",
         dependencies: [
-            .composableArchitecture,
-            "FeedFeature",
-            "SettingsFeature",
-            "ShowsFeature",
+            "ViewFactory",
         ],
-        path: "Sources/Feature/AppFeature",
+        path: "Sources/Feature/MainTabFeature",
         plugins: [.swiftgen]
-    ),
-    .testTarget(
-        name: "AppFeatureTests",
-        dependencies: ["AppFeature"],
-        path: "Tests/Feature/AppFeatureTests"
     ),
     .target(
         name: "DebugFeature",
         dependencies: [
-            .dependencies,
+            .debugMenu,
             "ClipboardClient",
             "Formatter",
             "Logger",
@@ -128,31 +124,24 @@ let targets: [PackageDescription.Target] = [
     .target(
         name: "FeedFeature",
         dependencies: [
-            .composableArchitecture,
             "Components",
             "DatabaseClient",
+            "DeepLink",
             "Entity",
             "MessageClient",
             "RSSClient",
             "SoundFileClient",
             "UserDefaultsClient",
+            "Extension",
         ],
         path: "Sources/Feature/FeedFeature",
         plugins: [.swiftgen]
     ),
-    .testTarget(
-        name: "FeedFeatureTests",
-        dependencies: [
-            "FeedFeature",
-            "TestHelper",
-        ],
-        path: "Tests/Feature/FeedFeatureTests"
-    ),
     .target(
         name: "SettingsFeature",
         dependencies: [
-            .composableArchitecture,
             "Build",
+            "Extension",
         ],
         path: "Sources/Feature/SettingsFeature",
         plugins: [
@@ -161,52 +150,34 @@ let targets: [PackageDescription.Target] = [
         ]
     ),
     .target(
-        name: "ShowsFeature",
+        name: "ShowListFeature",
         dependencies: [
-            .composableArchitecture,
             .nukeUI,
             "Entity",
             "Error",
+            "DatabaseClient",
             "ITunesClient",
             "MessageClient",
             "RSSClient",
-            "ShowDetailFeature",
         ],
-        path: "Sources/Feature/ShowsFeature",
+        path: "Sources/Feature/ShowListFeature",
         plugins: [.swiftgen]
-    ),
-    .testTarget(
-        name: "ShowsFeatureTests",
-        dependencies: [
-            "ShowsFeature",
-            "TestHelper",
-        ],
-        path: "Tests/Feature/ShowsFeatureTests"
     ),
     .target(
         name: "ShowDetailFeature",
         dependencies: [
-            .composableArchitecture,
             .nukeUI,
             "Components",
             "ClipboardClient",
             "DatabaseClient",
-            "Entity",
             "MessageClient",
             "RSSClient",
             "SoundFileClient",
+            "Extension",
+            "Entity",
         ],
         path: "Sources/Feature/ShowDetailFeature",
         plugins: [.swiftgen]
-    ),
-    .testTarget(
-        name: "ShowDetailFeatureTest",
-        dependencies: [
-            "DatabaseClient",
-            "ShowDetailFeature",
-            "TestHelper",
-        ],
-        path: "Tests/Feature/ShowDetailFeatureTests"
     ),
 
     // UI module
@@ -340,9 +311,26 @@ let targets: [PackageDescription.Target] = [
         path: "Sources/Core/Build"
     ),
     .target(
+        name: "DeepLink",
+        dependencies: [
+            "Environment"
+        ],
+        path: "Sources/Core/DeepLink"
+    ),
+    .target(
         name: "Entity",
         dependencies: ["Formatter"],
         path: "Sources/Core/Entity"
+    ),
+    .target(
+        name: "Environment",
+        dependencies: [.dependencies],
+        path: "Sources/Core/Environment"
+    ),
+    .target(
+        name: "Extension",
+        dependencies: [.dependencies],
+        path: "Sources/Core/Extension"
     ),
     .target(
         name: "Error",
@@ -390,6 +378,14 @@ let targets: [PackageDescription.Target] = [
         ],
         path: "Sources/Core/TestHelper"
     ),
+    .target(
+        name: "ViewFactory",
+        dependencies: [
+            .dependencies,
+            "Entity",
+        ],
+        path: "Sources/Core/ViewFactory"
+    ),
 
     // Plugin module
 
@@ -428,11 +424,11 @@ var package = Package(
     platforms: [.iOS(.v16)],
     products: [
         .library(
-            name: "App",
-            targets: ["App"]),
+            name: "iOSApp",
+            targets: ["iOSApp"]),
         .library(
-            name: "AppFeature",
-            targets: ["AppFeature"]),
+            name: "MainTabFeature",
+            targets: ["MainTabFeature"]),
         .library(
             name: "FeedFeature",
             targets: ["FeedFeature"]),
@@ -440,8 +436,8 @@ var package = Package(
             name: "SettingsFeature",
             targets: ["SettingsFeature"]),
         .library(
-            name: "ShowsFeature",
-            targets: ["ShowsFeature"]),
+            name: "ShowListFeature",
+            targets: ["ShowListFeature"]),
         .library(
             name: "ShowDetailFeature",
             targets: ["ShowDetailFeature"]),
@@ -466,6 +462,9 @@ var package = Package(
         .library(
             name: "Network",
             targets: ["Network"]),
+        .library(
+            name: "ViewFactory",
+            targets: ["ViewFactory"]),
     ],
     dependencies: dependencies,
     targets: targets

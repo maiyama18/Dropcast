@@ -2,9 +2,11 @@ import Logger
 import SwiftUI
 
 struct DebugLogScreen: View {
-    @StateObject private var viewModel: DebugLogViewModel = .init()
+    @ObservedObject private var viewModel: DebugLogViewModel
 
-    var onMessageTapped: (String) -> Void
+    init(viewModel: DebugLogViewModel) {
+        self.viewModel = viewModel
+    }
 
     var body: some View {
         Group {
@@ -24,12 +26,12 @@ struct DebugLogScreen: View {
 
                     List {
                         ForEach(viewModel.visibleEntries, id: \.date) { entry in
-                            DebugLogRowView(entry: entry)
-                                .listRowInsets(.init(top: 0, leading: 0, bottom: 0, trailing: 0))
-                                .containerShape(Rectangle())
-                                .onTapGesture {
-                                    onMessageTapped(entry.message)
-                                }
+                            NavigationLink {
+                                DebugLogDetailScreen(message: entry.message)
+                            } label: {
+                                DebugLogRowView(entry: entry)
+                            }
+                            .listRowInsets(.init(top: 0, leading: 0, bottom: 0, trailing: 0))
                         }
                     }
                     .listStyle(.plain)
@@ -41,8 +43,5 @@ struct DebugLogScreen: View {
             await viewModel.task()
         }
         .navigationTitle("Log")
-        .onChange(of: viewModel.searchScope) {
-            print($0)
-        }
     }
 }

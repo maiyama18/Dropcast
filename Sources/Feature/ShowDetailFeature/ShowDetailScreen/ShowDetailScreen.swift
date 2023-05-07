@@ -1,114 +1,92 @@
 import Components
-import ComposableArchitecture
 import Entity
 import SwiftUI
 
 public struct ShowDetailScreen: View {
+    @ObservedObject var viewModel: ShowDetailViewModel
+
+    /// この画面においてエピソードのダウンロードや再生が可能かどうかを表す。
+    /// 検索画面から遷移した場合は false になる。
+    let showsEpisodeActionButtons: Bool
+
     @Environment(\.openURL) var openURL
 
-    let store: StoreOf<ShowDetailReducer>
-    let showsEpisodePlayButtons: Bool
-
-    public init(store: StoreOf<ShowDetailReducer>, showsEpisodePlayButtons: Bool) {
-        self.store = store
-        self.showsEpisodePlayButtons = showsEpisodePlayButtons
+    init(
+        viewModel: ShowDetailViewModel,
+        showsEpisodeActionButtons: Bool
+    ) {
+        self.viewModel = viewModel
+        self.showsEpisodeActionButtons = showsEpisodeActionButtons
     }
 
     public var body: some View {
-        WithViewStore(store, observe: { $0 }) { viewStore in
-            ScrollView(showsIndicators: false) {
-                LazyVStack(spacing: 0) {
-                    ShowHeaderView(
-                        imageURL: viewStore.imageURL,
-                        title: viewStore.title,
-                        author: viewStore.author,
-                        description: viewStore.description,
-                        followed: viewStore.followed,
-                        requestInFlight: viewStore.taskRequestInFlight,
-                        toggleFollowButtonTapped: { viewStore.send(.toggleFollowButtonTapped) }
-                    )
+        ScrollView(showsIndicators: false) {
+            LazyVStack(spacing: 0) {
+                ShowHeaderView(
+                    imageURL: viewModel.imageURL,
+                    title: viewModel.title,
+                    author: viewModel.author,
+                    description: viewModel.description,
+                    followed: viewModel.followed,
+                    isFetchingShow: viewModel.isFetchingShow,
+                    toggleFollowButtonTapped: { viewModel.handle(action: .tapToggleFollowButton) }
+                )
 
-                    EpisodeDivider()
+                EpisodeDivider()
 
-                    if viewStore.taskRequestInFlight, viewStore.episodes.isEmpty {
-                        ForEach(0..<10) { _ in
-                            EpisodeRowView(
-                                episode: .fixtureRebuild352,
-                                downloadState: .notDownloaded,
-                                showsPlayButton: showsEpisodePlayButtons,
-                                showsImage: false,
-                                onDownloadButtonTapped: {}
-                            )
-                            .redacted(reason: .placeholder)
+                if viewModel.episodes.isEmpty {
+                    ForEach(0..<10) { _ in
+                        EpisodeRowView(
+                            episode: .fixtureRebuild352,
+                            downloadState: .notDownloaded,
+                            showsPlayButton: showsEpisodeActionButtons,
+                            showsImage: false,
+                            onDownloadButtonTapped: {}
+                        )
+                        .redacted(reason: .placeholder)
 
-                            EpisodeDivider()
-                        }
-                    } else {
-                        ForEach(viewStore.episodes) { episode in
-                            EpisodeRowView(
-                                episode: episode,
-                                downloadState: viewStore.state.downloadState(id: episode.id),
-                                showsPlayButton: showsEpisodePlayButtons,
-                                showsImage: false,
-                                onDownloadButtonTapped: {
-                                    viewStore.send(.downloadEpisodeButtonTapped(episode: episode))
-                                }
-                            )
-
-                            EpisodeDivider()
-                        }
+                        EpisodeDivider()
                     }
-                }
-            }
-            .padding(.horizontal)
-            .task {
-                viewStore.send(.task)
-            }
-            .onDisappear {
-                viewStore.send(.disappear)
-            }
-            .toolbar {
-                ToolbarItem(placement: .navigationBarTrailing) {
-                    Menu {
-                        Button {
-                            viewStore.send(.copyFeedURLButtonTapped)
-                        } label: {
-                            Label(L10n.copyFeedUrl, systemImage: "doc")
-                        }
-                        if let linkURL = viewStore.linkURL {
-                            Button {
-                                openURL(linkURL)
-                            } label: {
-                                Label(L10n.openInBrowser, systemImage: "globe")
+                } else {
+                    ForEach(viewModel.episodes) { episode in
+                        EpisodeRowView(
+                            episode: episode,
+                            downloadState: viewModel.downloadState(id: episode.id),
+                            showsPlayButton: showsEpisodeActionButtons,
+                            showsImage: false,
+                            onDownloadButtonTapped: {
+                                viewModel.handle(action: .tapDownloadEpisodeButton(episode: episode))
                             }
-                        }
-                    } label: {
-                        Image(systemName: "ellipsis")
+                        )
+
+                        EpisodeDivider()
                     }
                 }
             }
-            .navigationBarTitleDisplayMode(.inline)
-            .navigationTitle(viewStore.title)
         }
-    }
-}
-
-struct ShowDetailScreen_Previews: PreviewProvider {
-    static var previews: some View {
-        NavigationStack {
-            ShowDetailScreen(
-                store: .init(
-                    initialState: .init(
-                        feedURL: Show.fixtureRebuild.feedURL,
-                        imageURL: Show.fixtureRebuild.imageURL,
-                        title: Show.fixtureRebuild.title,
-                        episodes: Show.fixtureRebuild.episodes
-                    ),
-                    reducer: ShowDetailReducer()
-                ),
-                showsEpisodePlayButtons: true
-            )
+        .padding(.horizontal)
+        .onAppear { viewModel.handle(action: .appear) }
+        .toolbar {
+            ToolbarItem(placement: .navigationBarTrailing) {
+                Menu {
+                    Button {
+                        viewModel.handle(action: .tapCopyFeedURLButton)
+                    } label: {
+                        Label(L10n.copyFeedUrl, systemImage: "doc")
+                    }
+                    if let linkURL = viewModel.linkURL {
+                        Button {
+                            openURL(linkURL)
+                        } label: {
+                            Label(L10n.openInBrowser, systemImage: "globe")
+                        }
+                    }
+                } label: {
+                    Image(systemName: "ellipsis")
+                }
+            }
         }
-        .tint(.orange)
+        .navigationBarTitleDisplayMode(.inline)
+        .navigationTitle(viewModel.title)
     }
 }

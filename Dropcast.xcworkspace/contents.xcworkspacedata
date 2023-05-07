@@ -2,12 +2,9 @@
 <Workspace
    version = "1.0">
    <FileRef
+      location = "group:Apps/iOSAppDev/iOSAppDev.xcodeproj">
+   </FileRef>
+   <FileRef
       location = "group:">
-   </FileRef>
-   <FileRef
-      location = "group:Apps/iOSDev/iOSDev.xcodeproj">
-   </FileRef>
-   <FileRef
-      location = "group:Apps/iOSProd/iOSProd.xcodeproj">
    </FileRef>
 </Workspace>
