@@ -14,6 +14,7 @@
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
+		381F341A2A07347800F9D733 /* iOSAppDev.xctestplan */ = {isa = PBXFileReference; lastKnownFileType = text; path = iOSAppDev.xctestplan; sourceTree = "<group>"; };
 		382D24A42A01F706004F71B7 /* iOSAppDev.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = iOSAppDev.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		382D24A72A01F706004F71B7 /* main.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = main.swift; sourceTree = "<group>"; };
 		382D24B02A01F707004F71B7 /* Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Assets.xcassets; sourceTree = "<group>"; };
@@ -55,6 +56,7 @@
 			isa = PBXGroup;
 			children = (
 				382D24BC2A01F72F004F71B7 /* iOSAppDev.entitlements */,
+				381F341A2A07347800F9D733 /* iOSAppDev.xctestplan */,
 				382D24A72A01F706004F71B7 /* main.swift */,
 				382D24B02A01F707004F71B7 /* Assets.xcassets */,
 				382D24B22A01F707004F71B7 /* LaunchScreen.storyboard */,
