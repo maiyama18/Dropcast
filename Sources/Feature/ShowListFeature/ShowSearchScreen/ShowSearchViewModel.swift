@@ -4,6 +4,8 @@ import Entity
 import Foundation
 import IdentifiedCollections
 import ITunesClient
+import MessageClient
+import RSSClient
 
 @MainActor
 final class ShowSearchViewModel: ObservableObject {

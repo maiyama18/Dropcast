@@ -90,6 +90,7 @@ let targets: [PackageDescription.Target] = [
             "FeedFeature",
             "MainTabFeature",
             "SettingsFeature",
+            "ShowDetailFeature",
             "ShowListFeature",
             "MessageClientLive",
             "Logger",
@@ -157,7 +158,6 @@ let targets: [PackageDescription.Target] = [
             "ITunesClient",
             "MessageClient",
             "RSSClient",
-            "ShowDetailFeature",
         ],
         path: "Sources/Feature/ShowListFeature",
         plugins: [.swiftgen]

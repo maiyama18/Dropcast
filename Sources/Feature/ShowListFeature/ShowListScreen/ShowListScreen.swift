@@ -1,4 +1,3 @@
-import ShowDetailFeature
 import SwiftUI
 
 public struct ShowListScreen: View {
