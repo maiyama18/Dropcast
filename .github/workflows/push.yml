@@ -47,7 +47,7 @@ jobs:
           key: ${{ runner.os }}-spm-${{ hashFiles('**/Package.resolved') }}
       - name: Test
         run: |
-          xcodebuild -scheme iOSDev -sdk iphonesimulator -destination "platform=iOS Simulator,name=iPhone 14" -clonedSourcePackagesDirPath /tmp/SourcePackages -resultBundlePath TestResults -skipPackagePluginValidation test
+          xcodebuild -scheme iOSAppDev -sdk iphonesimulator -destination "platform=iOS Simulator,name=iPhone 14" -clonedSourcePackagesDirPath /tmp/SourcePackages -resultBundlePath TestResults -skipPackagePluginValidation test
       - uses: kishikawakatsumi/xcresulttool@v1
         with:
           path: TestResults.xcresult
