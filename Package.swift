@@ -155,6 +155,7 @@ let targets: [PackageDescription.Target] = [
             .nukeUI,
             "Entity",
             "Error",
+            "DatabaseClient",
             "ITunesClient",
             "MessageClient",
             "RSSClient",
