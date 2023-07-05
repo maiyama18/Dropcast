@@ -3,7 +3,7 @@ import Dependencies
 
 /// A component to instruct screens to do some transitions for handling deep links.
 public struct ScreenTransitionCoordinator: Sendable {
-    public var changeTabToShows: AsyncChannel<Void> = .init()
+    public var changeTabToLibrary: AsyncChannel<Void> = .init()
     public var openShowSearch: AsyncChannel<Void> = .init()
 }
 

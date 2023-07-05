@@ -91,7 +91,7 @@ let targets: [PackageDescription.Target] = [
             "MainTabFeature",
             "SettingsFeature",
             "ShowDetailFeature",
-            "ShowListFeature",
+            "LibraryFeature",
             "MessageClientLive",
             "Logger",
             "ScreenTransitionCoordinator",
@@ -105,7 +105,7 @@ let targets: [PackageDescription.Target] = [
         name: "MainTabFeature",
         dependencies: [
             "FeedFeature",
-            "ShowListFeature",
+            "LibraryFeature",
             "SettingsFeature",
         ],
         path: "Sources/Feature/MainTabFeature",
@@ -153,7 +153,7 @@ let targets: [PackageDescription.Target] = [
         ]
     ),
     .target(
-        name: "ShowListFeature",
+        name: "LibraryFeature",
         dependencies: [
             .nukeUI,
             "ShowDetailFeature",
@@ -165,7 +165,7 @@ let targets: [PackageDescription.Target] = [
             "RSSClient",
             "ScreenTransitionCoordinator",
         ],
-        path: "Sources/Feature/ShowListFeature",
+        path: "Sources/Feature/LibraryFeature",
         plugins: [.swiftgen]
     ),
     .target(
@@ -441,8 +441,8 @@ var package = Package(
             name: "SettingsFeature",
             targets: ["SettingsFeature"]),
         .library(
-            name: "ShowListFeature",
-            targets: ["ShowListFeature"]),
+            name: "LibraryFeature",
+            targets: ["LibraryFeature"]),
         .library(
             name: "ShowDetailFeature",
             targets: ["ShowDetailFeature"]),

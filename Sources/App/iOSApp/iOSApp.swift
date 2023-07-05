@@ -22,7 +22,7 @@ public struct IOSApp: App {
                     Task {
                         switch url {
                         case DeepLink.showSearch:
-                            await coordinator.changeTabToShows.send(())
+                            await coordinator.changeTabToLibrary.send(())
                             await coordinator.openShowSearch.send(())
                         default:
                             break

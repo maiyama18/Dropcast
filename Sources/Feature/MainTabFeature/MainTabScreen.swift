@@ -1,13 +1,13 @@
 import Dependencies
 import FeedFeature
+import LibraryFeature
 import ScreenTransitionCoordinator
 import SettingsFeature
-import ShowListFeature
 import SwiftUI
 
 enum Tab: Int {
     case feed
-    case showList
+    case library
     case settings
 }
 
@@ -25,16 +25,16 @@ public struct MainTabScreen: View {
                 .tag(Tab.feed)
             
             ShowListScreen()
-                .tabItem { Label(L10n.shows, systemImage: "square.stack.3d.down.right") }
-                .tag(Tab.showList)
+                .tabItem { Label(L10n.library, systemImage: "square.stack.3d.down.right") }
+                .tag(Tab.library)
             
             SettingsScreen()
                 .tabItem { Label(L10n.settings, systemImage: "gearshape") }
                 .tag(Tab.settings)
         }
         .task {
-            for await _ in coordinator.changeTabToShows {
-                tab = .showList
+            for await _ in coordinator.changeTabToLibrary {
+                tab = .library
             }
         }
     }
