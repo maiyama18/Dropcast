@@ -1,3 +1,4 @@
+import DebugFeature
 import MainTabFeature
 import SwiftUI
 
@@ -7,6 +8,11 @@ public struct IOSApp: App {
     public var body: some Scene {
         WindowGroup {
             MainTabScreen()
+                .onAppear {
+                    #if DEBUG
+                    installDebugMenu()
+                    #endif
+                }
         }
     }
 }

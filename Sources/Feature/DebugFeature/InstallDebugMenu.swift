@@ -2,7 +2,12 @@
 import DebugMenu
 import UIKit
 
-public func installDebugMenu(windowScene: UIWindowScene) {
+@MainActor
+public func installDebugMenu() {
+    guard let windowScene = UIApplication.shared.connectedScenes.first as? UIWindowScene else {
+        return
+    }
+    
     DebugMenu.install(
         windowScene: windowScene,
         items: [
