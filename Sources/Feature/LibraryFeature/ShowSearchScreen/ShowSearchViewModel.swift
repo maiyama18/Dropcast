@@ -27,25 +27,18 @@ final class ShowSearchViewModel: ObservableObject {
     enum Action {
         case changeQuery(query: String)
         case debounceQuery
-        case tapShowRow(show: ITunesShow)
-    }
-
-    enum Event {
-        case pushShowDetail(show: ITunesShow)
     }
 
     @Dependency(\.iTunesClient) private var iTunesClient
     @Dependency(\.messageClient) private var messageClient
     @Dependency(\.rssClient) private var rssClient
 
+    @Published var path: [ShowSearchRoute] = []
     @Published private(set) var searchState: SearchState = .prompt
     @Published private var searchTask: Task<Void, Never>? = nil
     @Published private(set) var query: String = ""
 
     var isSearching: Bool { searchTask?.isCancelled == false }
-
-    var eventStream: AsyncStream<Event> { eventSubject.eraseToStream() }
-    private let eventSubject: PassthroughSubject<Event, Never> = .init()
 
     func handle(action: Action) {
         switch action {
@@ -90,8 +83,6 @@ final class ShowSearchViewModel: ObservableObject {
                     }
                 }
             }
-        case .tapShowRow(let show):
-            eventSubject.send(.pushShowDetail(show: show))
         }
     }
 }

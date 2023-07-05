@@ -3,20 +3,24 @@ import Entity
 import SwiftUI
 
 public struct ShowDetailScreen: View {
-    @ObservedObject var viewModel: ShowDetailViewModel
-
-    /// この画面においてエピソードのダウンロードや再生が可能かどうかを表す。
-    /// 検索画面から遷移した場合は false になる。
-    let showsEpisodeActionButtons: Bool
+    @StateObject var viewModel: ShowDetailViewModel
 
     @Environment(\.openURL) var openURL
 
-    init(
-        viewModel: ShowDetailViewModel,
-        showsEpisodeActionButtons: Bool
-    ) {
-        self.viewModel = viewModel
-        self.showsEpisodeActionButtons = showsEpisodeActionButtons
+    public init(args: ShowDetailInitArguments) {
+        self._viewModel = .init(
+            wrappedValue: .init(
+                feedURL: args.feedURL,
+                imageURL: args.imageURL,
+                title: args.title,
+                showsEpisodeActionButtons: args.showsEpisodeActionButtons,
+                episodes: args.episodes,
+                author: args.author,
+                description: args.description,
+                linkURL: args.linkURL,
+                followed: args.followed
+            )
+        )
     }
 
     public var body: some View {
@@ -39,7 +43,7 @@ public struct ShowDetailScreen: View {
                         EpisodeRowView(
                             episode: .fixtureRebuild352,
                             downloadState: .notDownloaded,
-                            showsPlayButton: showsEpisodeActionButtons,
+                            showsPlayButton: viewModel.showsEpisodeActionButtons,
                             showsImage: false,
                             onDownloadButtonTapped: {}
                         )
@@ -52,7 +56,7 @@ public struct ShowDetailScreen: View {
                         EpisodeRowView(
                             episode: episode,
                             downloadState: viewModel.downloadState(id: episode.id),
-                            showsPlayButton: showsEpisodeActionButtons,
+                            showsPlayButton: viewModel.showsEpisodeActionButtons,
                             showsImage: false,
                             onDownloadButtonTapped: {
                                 viewModel.handle(action: .tapDownloadEpisodeButton(episode: episode))

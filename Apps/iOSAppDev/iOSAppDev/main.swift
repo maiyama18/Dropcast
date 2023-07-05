@@ -1,6 +1,6 @@
 import Environment
 import iOSApp
-import UIKit
+import SwiftUI
 
 setEnvironment(.develop)
-UIApplicationMain(CommandLine.argc, CommandLine.unsafeArgv, nil, NSStringFromClass(AppDelegate.self))
+IOSApp.main()

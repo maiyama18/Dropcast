@@ -4,7 +4,9 @@ import Entity
 import SwiftUI
 
 public struct FeedScreen: View {
-    @ObservedObject var viewModel: FeedViewModel
+    @StateObject var viewModel: FeedViewModel = .init()
+
+    public init() {}
 
     public var body: some View {
         Group {

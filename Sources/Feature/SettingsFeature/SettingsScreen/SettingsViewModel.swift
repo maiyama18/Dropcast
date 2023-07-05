@@ -2,21 +2,9 @@ import Combine
 
 @MainActor
 final class SettingsViewModel: ObservableObject {
-    enum Action {
-        case tapLicenses
-    }
+    enum Action {}
 
-    enum Event {
-        case pushLicenses
-    }
+    @Published var path: [SettingsRoute] = []
 
-    var eventStream: AsyncStream<Event> { eventSubject.eraseToStream() }
-    private let eventSubject: PassthroughSubject<Event, Never> = .init()
-
-    func handle(action: Action) {
-        switch action {
-        case .tapLicenses:
-            eventSubject.send(.pushLicenses)
-        }
-    }
+    func handle(action: Action) {}
 }

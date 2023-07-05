@@ -1,14 +1,14 @@
 import SwiftUI
 
 struct LicensesScreen: View {
-    @ObservedObject var viewModel: LicensesViewModel
+    private var licenses: [LicensesPlugin.License] = LicensesPlugin.licenses
 
     var body: some View {
         List {
-            ForEach(viewModel.licenses) { license in
-                if license.licenseText != nil {
-                    Button(license.name) {
-                        viewModel.handle(action: .tapLicense(license: license))
+            ForEach(licenses) { license in
+                if let licenseText = license.licenseText {
+                    NavigationLink(value: SettingsRoute.licenseDetail(licenseName: license.name, licenseText: licenseText)) {
+                        Text(license.name)
                     }
                 } else {
                     Text(license.name)

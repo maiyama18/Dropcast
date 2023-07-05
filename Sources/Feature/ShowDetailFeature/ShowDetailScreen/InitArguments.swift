@@ -1,7 +1,7 @@
 import Entity
 import Foundation
 
-public struct ShowDetailInitArguments: Sendable {
+public struct ShowDetailInitArguments: Hashable, Sendable {
     public let showsEpisodeActionButtons: Bool
     public let feedURL: URL
     public let imageURL: URL

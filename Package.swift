@@ -91,10 +91,10 @@ let targets: [PackageDescription.Target] = [
             "MainTabFeature",
             "SettingsFeature",
             "ShowDetailFeature",
-            "ShowListFeature",
+            "LibraryFeature",
             "MessageClientLive",
             "Logger",
-            "ViewFactory",
+            "ScreenTransitionCoordinator",
         ],
         path: "Sources/App/iOSApp"
     ),
@@ -104,7 +104,9 @@ let targets: [PackageDescription.Target] = [
     .target(
         name: "MainTabFeature",
         dependencies: [
-            "ViewFactory",
+            "FeedFeature",
+            "LibraryFeature",
+            "SettingsFeature",
         ],
         path: "Sources/Feature/MainTabFeature",
         plugins: [.swiftgen]
@@ -124,6 +126,7 @@ let targets: [PackageDescription.Target] = [
     .target(
         name: "FeedFeature",
         dependencies: [
+            "ShowDetailFeature",
             "Components",
             "DatabaseClient",
             "DeepLink",
@@ -150,17 +153,19 @@ let targets: [PackageDescription.Target] = [
         ]
     ),
     .target(
-        name: "ShowListFeature",
+        name: "LibraryFeature",
         dependencies: [
             .nukeUI,
+            "ShowDetailFeature",
             "Entity",
             "Error",
             "DatabaseClient",
             "ITunesClient",
             "MessageClient",
             "RSSClient",
+            "ScreenTransitionCoordinator",
         ],
-        path: "Sources/Feature/ShowListFeature",
+        path: "Sources/Feature/LibraryFeature",
         plugins: [.swiftgen]
     ),
     .target(
@@ -190,6 +195,14 @@ let targets: [PackageDescription.Target] = [
             "Formatter",
         ],
         path: "Sources/UI/Components"
+    ),
+    .target(
+        name: "ScreenTransitionCoordinator",
+        dependencies: [
+            .asyncAlgorithms,
+            .dependencies,
+        ],
+        path: "Sources/UI/ScreenTransitionCoordinator"
     ),
 
     // Infra module
@@ -378,14 +391,6 @@ let targets: [PackageDescription.Target] = [
         ],
         path: "Sources/Core/TestHelper"
     ),
-    .target(
-        name: "ViewFactory",
-        dependencies: [
-            .dependencies,
-            "Entity",
-        ],
-        path: "Sources/Core/ViewFactory"
-    ),
 
     // Plugin module
 
@@ -436,8 +441,8 @@ var package = Package(
             name: "SettingsFeature",
             targets: ["SettingsFeature"]),
         .library(
-            name: "ShowListFeature",
-            targets: ["ShowListFeature"]),
+            name: "LibraryFeature",
+            targets: ["LibraryFeature"]),
         .library(
             name: "ShowDetailFeature",
             targets: ["ShowDetailFeature"]),
@@ -462,9 +467,6 @@ var package = Package(
         .library(
             name: "Network",
             targets: ["Network"]),
-        .library(
-            name: "ViewFactory",
-            targets: ["ViewFactory"]),
     ],
     dependencies: dependencies,
     targets: targets

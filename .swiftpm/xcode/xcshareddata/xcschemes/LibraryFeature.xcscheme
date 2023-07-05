@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <Scheme
-   LastUpgradeVersion = "1430"
+   LastUpgradeVersion = "1500"
    version = "1.7">
    <BuildAction
       parallelizeBuildables = "YES"
@@ -14,9 +14,9 @@
             buildForAnalyzing = "YES">
             <BuildableReference
                BuildableIdentifier = "primary"
-               BlueprintIdentifier = "ViewFactory"
-               BuildableName = "ViewFactory"
-               BlueprintName = "ViewFactory"
+               BlueprintIdentifier = "LibraryFeature"
+               BuildableName = "LibraryFeature"
+               BlueprintName = "LibraryFeature"
                ReferencedContainer = "container:">
             </BuildableReference>
          </BuildActionEntry>
@@ -49,9 +49,9 @@
       <MacroExpansion>
          <BuildableReference
             BuildableIdentifier = "primary"
-            BlueprintIdentifier = "ViewFactory"
-            BuildableName = "ViewFactory"
-            BlueprintName = "ViewFactory"
+            BlueprintIdentifier = "LibraryFeature"
+            BuildableName = "LibraryFeature"
+            BlueprintName = "LibraryFeature"
             ReferencedContainer = "container:">
          </BuildableReference>
       </MacroExpansion>
