@@ -7,9 +7,9 @@ import SwiftUI
 
 public struct IOSApp: App {
     @Dependency(\.screenTransitionCoordinator) private var coordinator
-    
+
     public init() {}
-    
+
     public var body: some Scene {
         WindowGroup {
             MainTabScreen()

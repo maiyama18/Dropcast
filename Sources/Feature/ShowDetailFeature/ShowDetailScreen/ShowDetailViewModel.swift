@@ -21,7 +21,7 @@ final class ShowDetailViewModel: ObservableObject {
     let feedURL: URL
     let imageURL: URL
     let title: String
-    
+
     /// この画面においてエピソードのダウンロードや再生が可能かどうかを表す。
     /// 検索画面から遷移した場合は false になる。
     let showsEpisodeActionButtons: Bool

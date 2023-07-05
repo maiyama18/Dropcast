@@ -7,7 +7,7 @@ public func installDebugMenu() {
     guard let windowScene = UIApplication.shared.connectedScenes.first as? UIWindowScene else {
         return
     }
-    
+
     DebugMenu.install(
         windowScene: windowScene,
         items: [

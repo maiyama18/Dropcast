@@ -5,7 +5,7 @@ import SwiftUI
 
 public struct FeedScreen: View {
     @StateObject var viewModel: FeedViewModel = .init()
-    
+
     public init() {}
 
     public var body: some View {

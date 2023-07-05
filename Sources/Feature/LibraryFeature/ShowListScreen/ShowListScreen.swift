@@ -5,11 +5,11 @@ import SwiftUI
 
 public struct ShowListScreen: View {
     @StateObject private var viewModel: ShowListViewModel = .init()
-    
+
     @Dependency(\.screenTransitionCoordinator) private var coordinator
-    
+
     public init() {}
-    
+
     public var body: some View {
         NavigationStack(path: $viewModel.path) {
             Group {
@@ -86,24 +86,24 @@ public struct ShowListScreen: View {
             }
         }
     }
-    
+
     @ViewBuilder
     private func emptyView(onButtonTapped: @escaping () -> Void) -> some View {
         VStack(spacing: 0) {
             Image(systemName: "face.dashed")
                 .font(.largeTitle)
                 .foregroundStyle(.secondary)
-            
+
             Spacer()
                 .frame(height: 8)
-            
+
             Text(L10n.noShows)
                 .font(.title3.bold())
                 .foregroundStyle(.secondary)
-            
+
             Spacer()
                 .frame(height: 16)
-            
+
             Button(L10n.followFavoriteShows) {
                 onButtonTapped()
             }

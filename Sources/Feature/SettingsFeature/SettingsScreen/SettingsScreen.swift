@@ -2,9 +2,9 @@ import SwiftUI
 
 public struct SettingsScreen: View {
     @StateObject var viewModel: SettingsViewModel = .init()
-    
+
     public init() {}
-    
+
     public var body: some View {
         NavigationStack(path: $viewModel.path) {
             List {
