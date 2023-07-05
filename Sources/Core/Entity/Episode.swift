@@ -1,7 +1,7 @@
 import Formatter
 import Foundation
 
-public struct Episode: Sendable, Identifiable, Equatable {
+public struct Episode: Sendable, Identifiable, Equatable, Hashable {
     public var id: String
     public var title: String
     public var subtitle: String?

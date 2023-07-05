@@ -24,6 +24,10 @@ final class ShowDetailViewModel: ObservableObject {
     let feedURL: URL
     let imageURL: URL
     let title: String
+    
+    /// この画面においてエピソードのダウンロードや再生が可能かどうかを表す。
+    /// 検索画面から遷移した場合は false になる。
+    let showsEpisodeActionButtons: Bool
 
     @Published private(set) var episodes: [Episode]
     @Published private(set) var author: String?
@@ -54,6 +58,7 @@ final class ShowDetailViewModel: ObservableObject {
         feedURL: URL,
         imageURL: URL,
         title: String,
+        showsEpisodeActionButtons: Bool,
         episodes: [Episode],
         author: String?,
         description: String?,
@@ -63,6 +68,7 @@ final class ShowDetailViewModel: ObservableObject {
         self.feedURL = feedURL
         self.imageURL = imageURL
         self.title = title
+        self.showsEpisodeActionButtons = showsEpisodeActionButtons
         self.episodes = episodes
         self.author = author
         self.description = description

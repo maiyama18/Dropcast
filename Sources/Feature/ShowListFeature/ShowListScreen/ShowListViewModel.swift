@@ -20,13 +20,12 @@ public final class ShowListViewModel: ObservableObject {
         case pushShowDetail(show: Show)
     }
 
+    @Published var path: [ShowListRoute] = []
+    @Published var showSearchPresented: Bool = false
     @Published private(set) var shows: IdentifiedArrayOf<Show>?
 
     @Dependency(\.databaseClient) private var databaseClient
     @Dependency(\.messageClient) private var messageClient
-
-    var eventStream: AsyncStream<Event> { eventSubject.eraseToStream() }
-    private let eventSubject: PassthroughSubject<Event, Never> = .init()
 
     public init() {
         subscribe()
@@ -35,9 +34,23 @@ public final class ShowListViewModel: ObservableObject {
     func handle(action: Action) async {
         switch action {
         case .tapAddButton:
-            eventSubject.send(.presentShowSearch)
+            showSearchPresented = true
         case .tapShowRow(let show):
-            eventSubject.send(.pushShowDetail(show: show))
+            path.append(
+                .showDetail(
+                    args: .init(
+                        showsEpisodeActionButtons: true,
+                        feedURL: show.feedURL,
+                        imageURL: show.imageURL,
+                        title: show.title,
+                        episodes: show.episodes,
+                        author: show.author,
+                        description: show.description,
+                        linkURL: show.linkURL,
+                        followed: true
+                    )
+                )
+            )
         case .swipeToDeleteShow(let feedURL):
             do {
                 try databaseClient.unfollowShow(feedURL).get()

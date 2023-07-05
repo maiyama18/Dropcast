@@ -4,7 +4,9 @@ import Entity
 import SwiftUI
 
 public struct FeedScreen: View {
-    @ObservedObject var viewModel: FeedViewModel
+    @StateObject var viewModel: FeedViewModel = .init()
+    
+    public init() {}
 
     public var body: some View {
         Group {
@@ -46,6 +48,11 @@ public struct FeedScreen: View {
         .navigationTitle(L10n.feed)
         .task {
             await viewModel.handle(action: .appear)
+        }
+        .task {
+            for await event in viewModel.eventStream {
+                switch event {}
+            }
         }
     }
 

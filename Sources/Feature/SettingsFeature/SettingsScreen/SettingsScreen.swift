@@ -1,24 +1,36 @@
 import SwiftUI
 
 public struct SettingsScreen: View {
-    @ObservedObject var viewModel: SettingsViewModel
-
+    @StateObject var viewModel: SettingsViewModel = .init()
+    
+    public init() {}
+    
     public var body: some View {
-        List {
-            Section {
-                Button(L10n.licenses) {
-                    viewModel.handle(action: .tapLicenses)
+        NavigationStack(path: $viewModel.path) {
+            List {
+                Section {
+                    NavigationLink(value: SettingsRoute.licenses) {
+                        Text(L10n.licenses)
+                    }
+                } header: {
+                    Text(L10n.aboutApp)
                 }
-            } header: {
-                Text(L10n.aboutApp)
+            }
+            .navigationTitle(L10n.settings)
+            .navigationDestination(for: SettingsRoute.self) { route in
+                switch route {
+                case .licenses:
+                    LicensesScreen()
+                case .licenseDetail(let licenseName, let licenseText):
+                    LicenseDetailScreen(licenseName: licenseName, licenseText: licenseText)
+                }
             }
         }
-        .navigationTitle(L10n.settings)
     }
 }
 
 struct SettingsScreen_Previews: PreviewProvider {
     static var previews: some View {
-        SettingsScreen(viewModel: .init())
+        SettingsScreen()
     }
 }

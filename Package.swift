@@ -104,6 +104,9 @@ let targets: [PackageDescription.Target] = [
     .target(
         name: "MainTabFeature",
         dependencies: [
+            "FeedFeature",
+            "ShowListFeature",
+            "SettingsFeature",
             "ViewFactory",
         ],
         path: "Sources/Feature/MainTabFeature",
@@ -124,6 +127,7 @@ let targets: [PackageDescription.Target] = [
     .target(
         name: "FeedFeature",
         dependencies: [
+            "ShowDetailFeature",
             "Components",
             "DatabaseClient",
             "DeepLink",
@@ -153,6 +157,7 @@ let targets: [PackageDescription.Target] = [
         name: "ShowListFeature",
         dependencies: [
             .nukeUI,
+            "ShowDetailFeature",
             "Entity",
             "Error",
             "DatabaseClient",
