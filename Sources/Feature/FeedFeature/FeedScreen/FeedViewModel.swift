@@ -19,9 +19,6 @@ final class FeedViewModel: ObservableObject {
         case tapDownloadEpisodeButton(episode: Episode)
     }
 
-    enum Event {
-    }
-
     @Published private(set) var episodes: IdentifiedArrayOf<Episode>? = nil
     @Published private var downloadStates: [Episode.ID: EpisodeDownloadState] = [:]
 
@@ -39,9 +36,6 @@ final class FeedViewModel: ObservableObject {
     @Dependency(\.userDefaultsClient) private var userDefaultsClient
 
     private var cancellables: Set<AnyCancellable> = .init()
-
-    var eventStream: AsyncStream<Event> { eventSubject.eraseToStream() }
-    private let eventSubject: PassthroughSubject<Event, Never> = .init()
 
     init() {
         subscribe()

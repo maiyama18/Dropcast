@@ -18,9 +18,6 @@ final class ShowDetailViewModel: ObservableObject {
         case tapDownloadEpisodeButton(episode: Episode)
     }
 
-    enum Event {
-    }
-
     let feedURL: URL
     let imageURL: URL
     let title: String
@@ -44,9 +41,6 @@ final class ShowDetailViewModel: ObservableObject {
     }
 
     private var cancellables: Set<AnyCancellable> = .init()
-
-    var eventStream: AsyncStream<Event> { eventSubject.eraseToStream() }
-    private let eventSubject: PassthroughSubject<Event, Never> = .init()
 
     @Dependency(\.clipboardClient) private var clipboardClient
     @Dependency(\.databaseClient) private var databaseClient

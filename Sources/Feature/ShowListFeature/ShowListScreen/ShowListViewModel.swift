@@ -15,11 +15,6 @@ public final class ShowListViewModel: ObservableObject {
         case swipeToDeleteShow(feedURL: URL)
     }
 
-    enum Event {
-        case presentShowSearch
-        case pushShowDetail(show: Show)
-    }
-
     @Published var path: [ShowListRoute] = []
     @Published var showSearchPresented: Bool = false
     @Published private(set) var shows: IdentifiedArrayOf<Show>?

@@ -94,7 +94,6 @@ let targets: [PackageDescription.Target] = [
             "ShowListFeature",
             "MessageClientLive",
             "Logger",
-            "ViewFactory",
             "ScreenTransitionCoordinator",
         ],
         path: "Sources/App/iOSApp"
@@ -108,7 +107,6 @@ let targets: [PackageDescription.Target] = [
             "FeedFeature",
             "ShowListFeature",
             "SettingsFeature",
-            "ViewFactory",
         ],
         path: "Sources/Feature/MainTabFeature",
         plugins: [.swiftgen]
@@ -393,14 +391,6 @@ let targets: [PackageDescription.Target] = [
         ],
         path: "Sources/Core/TestHelper"
     ),
-    .target(
-        name: "ViewFactory",
-        dependencies: [
-            .dependencies,
-            "Entity",
-        ],
-        path: "Sources/Core/ViewFactory"
-    ),
 
     // Plugin module
 
@@ -477,9 +467,6 @@ var package = Package(
         .library(
             name: "Network",
             targets: ["Network"]),
-        .library(
-            name: "ViewFactory",
-            targets: ["ViewFactory"]),
     ],
     dependencies: dependencies,
     targets: targets

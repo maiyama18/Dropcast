@@ -1,7 +1,6 @@
 import Components
 import Entity
 import SwiftUI
-import ViewFactory
 
 public struct ShowDetailScreen: View {
     @StateObject var viewModel: ShowDetailViewModel

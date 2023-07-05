@@ -49,11 +49,6 @@ public struct FeedScreen: View {
         .task {
             await viewModel.handle(action: .appear)
         }
-        .task {
-            for await event in viewModel.eventStream {
-                switch event {}
-            }
-        }
     }
 
     @ViewBuilder
