@@ -95,6 +95,7 @@ let targets: [PackageDescription.Target] = [
             "MessageClientLive",
             "Logger",
             "ViewFactory",
+            "ScreenTransitionCoordinator",
         ],
         path: "Sources/App/iOSApp"
     ),
@@ -164,6 +165,7 @@ let targets: [PackageDescription.Target] = [
             "ITunesClient",
             "MessageClient",
             "RSSClient",
+            "ScreenTransitionCoordinator",
         ],
         path: "Sources/Feature/ShowListFeature",
         plugins: [.swiftgen]
@@ -195,6 +197,14 @@ let targets: [PackageDescription.Target] = [
             "Formatter",
         ],
         path: "Sources/UI/Components"
+    ),
+    .target(
+        name: "ScreenTransitionCoordinator",
+        dependencies: [
+            .asyncAlgorithms,
+            .dependencies,
+        ],
+        path: "Sources/UI/ScreenTransitionCoordinator"
     ),
 
     // Infra module

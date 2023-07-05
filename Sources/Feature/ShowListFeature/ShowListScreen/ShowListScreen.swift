@@ -1,8 +1,12 @@
+import Dependencies
+import ScreenTransitionCoordinator
 import ShowDetailFeature
 import SwiftUI
 
 public struct ShowListScreen: View {
     @StateObject private var viewModel: ShowListViewModel = .init()
+    
+    @Dependency(\.screenTransitionCoordinator) private var coordinator
     
     public init() {}
     
@@ -74,6 +78,11 @@ public struct ShowListScreen: View {
             }
             .sheet(isPresented: $viewModel.showSearchPresented) {
                 ShowSearchScreen()
+            }
+            .task {
+                for await _ in coordinator.openShowSearch {
+                    await viewModel.handle(action: .tapAddButton)
+                }
             }
         }
     }
