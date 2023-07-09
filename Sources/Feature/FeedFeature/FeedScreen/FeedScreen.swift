@@ -3,8 +3,9 @@ import DatabaseClient
 import Entity
 import SwiftUI
 
+@MainActor
 public struct FeedScreen: View {
-    @StateObject var viewModel: FeedViewModel = .init()
+    @State var viewModel: FeedViewModel = .init()
 
     public init() {}
 

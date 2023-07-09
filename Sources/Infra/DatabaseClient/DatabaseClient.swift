@@ -144,6 +144,7 @@ extension DatabaseClient {
 
         return DatabaseClient(
             fetchShow: fetchShow(feedURL:),
+            // TODO: executeInBackground が main thread で実行されているため feed の PTR に hitch が発生している
             fetchFollowedShows: {
                 let showsRequest = ShowRecord.fetchRequest()
                 showsRequest.sortDescriptors = [

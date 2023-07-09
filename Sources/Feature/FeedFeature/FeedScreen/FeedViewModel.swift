@@ -6,12 +6,14 @@ import Extension
 import Foundation
 import IdentifiedCollections
 import MessageClient
+import Observation
 import RSSClient
 import SoundFileClient
 import UserDefaultsClient
 
 @MainActor
-final class FeedViewModel: ObservableObject {
+@Observable
+final class FeedViewModel {
     enum Action {
         case appear
         case pullToRefresh
@@ -19,21 +21,21 @@ final class FeedViewModel: ObservableObject {
         case tapDownloadEpisodeButton(episode: Episode)
     }
 
-    @Published private(set) var episodes: IdentifiedArrayOf<Episode>? = nil
-    @Published private var downloadStates: [Episode.ID: EpisodeDownloadState] = [:]
+    private(set) var episodes: IdentifiedArrayOf<Episode>? = nil
+    private var downloadStates: [Episode.ID: EpisodeDownloadState] = [:]
 
     func downloadState(id: Episode.ID) -> EpisodeDownloadState {
         downloadStates[id] ?? .notDownloaded
     }
 
-    @Dependency(\.date.now) private var now
-    @Dependency(\.openURL) private var openURL
-
-    @Dependency(\.databaseClient) private var databaseClient
-    @Dependency(\.messageClient) private var messageClient
-    @Dependency(\.rssClient) private var rssClient
-    @Dependency(\.soundFileClient) private var soundFileClient
-    @Dependency(\.userDefaultsClient) private var userDefaultsClient
+    @ObservationIgnored @Dependency(\.date.now) private var now
+    @ObservationIgnored @Dependency(\.openURL) private var openURL
+    
+    @ObservationIgnored @Dependency(\.databaseClient) private var databaseClient
+    @ObservationIgnored @Dependency(\.messageClient) private var messageClient
+    @ObservationIgnored @Dependency(\.rssClient) private var rssClient
+    @ObservationIgnored @Dependency(\.soundFileClient) private var soundFileClient
+    @ObservationIgnored @Dependency(\.userDefaultsClient) private var userDefaultsClient
 
     private var cancellables: Set<AnyCancellable> = .init()
 
