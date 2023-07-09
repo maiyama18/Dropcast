@@ -34,9 +34,14 @@ struct ShowSearchScreen: View {
                 Group {
                     switch viewModel.searchState {
                     case .prompt:
-                        labelView(title: String(localized: "Search shows", bundle: .module))
-                    case .empty:
-                        labelView(title: String(localized: "No results", bundle: .module))
+                        ContentUnavailableView(label: {
+                            Label(
+                                title: { Text("Search podcasts", bundle: .module) },
+                                icon: { Image(systemName: "magnifyingglass") }
+                            )
+                        })
+                    case .empty(let query):
+                        ContentUnavailableView.search(text: query)
                     case .loaded(let shows):
                         List {
                             ForEach(shows) { show in
@@ -79,18 +84,5 @@ struct ShowSearchScreen: View {
                 viewModel.handle(action: .debounceQuery)
             } catch {}
         }
-    }
-
-    @ViewBuilder
-    private func labelView(title: String) -> some View {
-        VStack(spacing: 12) {
-            Image(systemName: "magnifyingglass")
-                .font(.largeTitle.bold())
-
-            Text(title)
-                .font(.title2)
-        }
-        .foregroundStyle(.secondary)
-        .frame(maxHeight: .infinity, alignment: .center)
     }
 }

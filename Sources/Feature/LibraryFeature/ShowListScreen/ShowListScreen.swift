@@ -15,9 +15,17 @@ public struct ShowListScreen: View {
             Group {
                 if let shows = viewModel.shows {
                     if shows.isEmpty {
-                        emptyView(
-                            onButtonTapped: {
-                                Task { await viewModel.handle(action: .tapAddButton) }
+                        ContentUnavailableView(
+                            label: {
+                                Label(
+                                    title: { Text("No shows", bundle: .module) },
+                                    icon: { Image(systemName: "music.quarternote.3") }
+                                )
+                            },
+                            actions: {
+                                Button(action: { Task { await viewModel.handle(action: .tapAddButton) } }) {
+                                    Text("Follow your favorite shows!", bundle: .module)
+                                }
                             }
                         )
                     } else {
@@ -85,30 +93,5 @@ public struct ShowListScreen: View {
                 }
             }
         }
-    }
-
-    @ViewBuilder
-    private func emptyView(onButtonTapped: @escaping () -> Void) -> some View {
-        VStack(spacing: 0) {
-            Image(systemName: "face.dashed")
-                .font(.largeTitle)
-                .foregroundStyle(.secondary)
-
-            Spacer()
-                .frame(height: 8)
-
-            Text("No shows", bundle: .module)
-                .font(.title3.bold())
-                .foregroundStyle(.secondary)
-
-            Spacer()
-                .frame(height: 16)
-
-            Button(action: { Task { await viewModel.handle(action: .tapAddButton) } }) {
-                Text("Follow your favorite shows!", bundle: .module)
-            }
-            .tint(.orange)
-        }
-        .frame(maxHeight: .infinity, alignment: .center)
     }
 }

@@ -11,7 +11,7 @@ import RSSClient
 final class ShowSearchViewModel: ObservableObject {
     enum SearchState: Equatable {
         case prompt
-        case empty
+        case empty(query: String)
         case loaded(shows: IdentifiedArrayOf<ITunesShow>)
 
         var currentShows: IdentifiedArrayOf<ITunesShow> {
@@ -60,13 +60,13 @@ final class ShowSearchViewModel: ObservableObject {
                     case .success(let show):
                         searchState = .loaded(shows: [ITunesShow(show: show)])
                     case .failure:
-                        searchState = .empty
+                        searchState = .empty(query: query)
                     }
                 } else {
                     switch await self.iTunesClient.searchShows(query) {
                     case .success(let shows):
                         searchState = shows.isEmpty
-                            ? .empty
+                            ? .empty(query: query)
                             : .loaded(shows: .init(uniqueElements: shows.uniqued(on: \.feedURL)))
                     case .failure(let error):
                         let message: String

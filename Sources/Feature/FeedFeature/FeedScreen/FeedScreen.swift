@@ -12,9 +12,19 @@ public struct FeedScreen: View {
         Group {
             if let episodes = viewModel.episodes {
                 if episodes.isEmpty {
-                    emptyView(onButtonTapped: {
-                        Task { await viewModel.handle(action: .tapAddShowButton) }
-                    })
+                    ContentUnavailableView(
+                        label: {
+                            Label(
+                                title: { Text("No episodes in feed", bundle: .module) },
+                                icon: { Image(systemName: "list.dash") }
+                            )
+                        },
+                        actions: {
+                            Button(action: { Task { await viewModel.handle(action: .tapAddShowButton) } }) {
+                                Text("Follow your favorite shows!", bundle: .module)
+                            }
+                        }
+                    )
                 } else {
                     ScrollView {
                         LazyVStack(spacing: 0) {
@@ -49,30 +59,5 @@ public struct FeedScreen: View {
         .task {
             await viewModel.handle(action: .appear)
         }
-    }
-
-    @ViewBuilder
-    private func emptyView(onButtonTapped: @escaping () -> Void) -> some View {
-        VStack(spacing: 0) {
-            Image(systemName: "face.dashed")
-                .font(.largeTitle)
-                .foregroundStyle(.secondary)
-
-            Spacer()
-                .frame(height: 8)
-
-            Text("No episodes in feed", bundle: .module)
-                .font(.title3.bold())
-                .foregroundStyle(.secondary)
-
-            Spacer()
-                .frame(height: 16)
-
-            Button(action: { onButtonTapped() }) {
-                Text("Follow your favorite shows!", bundle: .module)
-            }
-            .tint(.orange)
-        }
-        .frame(maxHeight: .infinity, alignment: .center)
     }
 }

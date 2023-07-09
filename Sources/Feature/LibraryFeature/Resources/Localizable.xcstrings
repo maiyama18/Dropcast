@@ -16,7 +16,7 @@
         "ja" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "好きな番組をフォローしましょう！"
+            "value" : "好きな番組をフォロー"
           }
         }
       }
@@ -37,16 +37,6 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "サーバーからのレスポンスが不正です"
-          }
-        }
-      }
-    },
-    "No results" : {
-      "localizations" : {
-        "ja" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "検索結果が見つかりませんでした"
           }
         }
       }
@@ -81,12 +71,12 @@
         }
       }
     },
-    "Search shows" : {
+    "Search podcasts" : {
       "localizations" : {
         "ja" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "番組を検索しましょう"
+            "value" : "Podcast を検索"
           }
         }
       }
