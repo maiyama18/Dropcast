@@ -21,15 +21,21 @@ public struct MainTabScreen: View {
     public var body: some View {
         TabView(selection: $tab) {
             FeedScreen()
-                .tabItem { Label(L10n.feed, systemImage: "dot.radiowaves.up.forward") }
+                .tabItem {
+                    Label(title: { Text("Feed", bundle: .module) }, icon: { Image(systemName: "dot.radiowaves.up.forward") })
+                }
                 .tag(Tab.feed)
 
             ShowListScreen()
-                .tabItem { Label(L10n.library, systemImage: "square.stack.3d.down.right") }
+                .tabItem {
+                    Label(title: { Text("Library", bundle: .module) }, icon: { Image(systemName: "square.stack.3d.down.right") })
+                }
                 .tag(Tab.library)
 
             SettingsScreen()
-                .tabItem { Label(L10n.settings, systemImage: "gearshape") }
+                .tabItem {
+                    Label(title: { Text("Settings", bundle: .module) }, icon: { Image(systemName: "gearshape") })
+                }
                 .tag(Tab.settings)
         }
         .task {

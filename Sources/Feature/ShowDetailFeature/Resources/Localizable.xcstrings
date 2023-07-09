@@ -1,0 +1,146 @@
+{
+  "sourceLanguage" : "en",
+  "strings" : {
+    "Copied" : {
+      "localizations" : {
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "コピーしました"
+          }
+        }
+      }
+    },
+    "Copy Feed URL" : {
+      "localizations" : {
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Feed の URL をコピー"
+          }
+        }
+      }
+    },
+    "Failed to connect to database" : {
+      "localizations" : {
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "データベースとの通信に失敗しました"
+          }
+        }
+      }
+    },
+    "Failed to download the episode" : {
+      "localizations" : {
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "エピソードをダウンロードできませんでした"
+          }
+        }
+      }
+    },
+    "Failed to follow the show" : {
+      "localizations" : {
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "フォローに失敗しました"
+          }
+        }
+      }
+    },
+    "Failed to unfollow the show" : {
+      "localizations" : {
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "フォロー解除に失敗しました"
+          }
+        }
+      }
+    },
+    "Follow" : {
+      "localizations" : {
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "フォローする"
+          }
+        }
+      }
+    },
+    "Followed" : {
+      "localizations" : {
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "フォロー中"
+          }
+        }
+      }
+    },
+    "Invalid RSS feed" : {
+      "localizations" : {
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "不正な RSS Feed です"
+          }
+        }
+      }
+    },
+    "Loading" : {
+      "localizations" : {
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "ロード中"
+          }
+        }
+      }
+    },
+    "Lorem ipsum" : {
+      "localizations" : {
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Lorem ipsum"
+          }
+        }
+      }
+    },
+    "Maiores et ad ea perspiciatis. Molestias expedita ab autem ad nihil ipsum sed nihil dolorum inventore debitis distinctio velit. Sint magnam dolorum est." : {
+      "localizations" : {
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Maiores et ad ea perspiciatis. Molestias expedita ab autem ad nihil ipsum sed nihil dolorum inventore debitis distinctio velit. Sint magnam dolorum est."
+          }
+        }
+      }
+    },
+    "Open in Browser" : {
+      "localizations" : {
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "ブラウザで開く"
+          }
+        }
+      }
+    },
+    "Something went wrong" : {
+      "localizations" : {
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "予期しないエラーが発生しました"
+          }
+        }
+      }
+    }
+  },
+  "version" : "1.0"
+}

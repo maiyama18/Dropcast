@@ -1,0 +1,106 @@
+{
+  "sourceLanguage" : "en",
+  "strings" : {
+    "Failed to unfollow the show" : {
+      "localizations" : {
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "フォロー解除に失敗しました"
+          }
+        }
+      }
+    },
+    "Follow your favorite shows!" : {
+      "localizations" : {
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "好きな番組をフォローしましょう！"
+          }
+        }
+      }
+    },
+    "Invalid query" : {
+      "localizations" : {
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "検索ワードが不正です"
+          }
+        }
+      }
+    },
+    "Invalid server response" : {
+      "localizations" : {
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "サーバーからのレスポンスが不正です"
+          }
+        }
+      }
+    },
+    "No results" : {
+      "localizations" : {
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "検索結果が見つかりませんでした"
+          }
+        }
+      }
+    },
+    "No shows" : {
+      "localizations" : {
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "フォローしている番組がありません"
+          }
+        }
+      }
+    },
+    "Podcast Title, Feed URL, Author..." : {
+      "localizations" : {
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "タイトル, Feed の URL, ホスト..."
+          }
+        }
+      }
+    },
+    "Search" : {
+      "localizations" : {
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "番組検索"
+          }
+        }
+      }
+    },
+    "Search shows" : {
+      "localizations" : {
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "番組を検索しましょう"
+          }
+        }
+      }
+    },
+    "Shows" : {
+      "localizations" : {
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "番組一覧"
+          }
+        }
+      }
+    }
+  },
+  "version" : "1.0"
+}

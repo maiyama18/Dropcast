@@ -17,7 +17,7 @@ struct ShowSearchScreen: View {
                     TextField(
                         "Search",
                         text: .init(get: { viewModel.query }, set: { viewModel.handle(action: .changeQuery(query: $0)) }),
-                        prompt: Text("Podcast Title, Feed URL, Author...")
+                        prompt: Text("Podcast Title, Feed URL, Author...", bundle: .module)
                     )
                     .autocorrectionDisabled(true)
                     .textInputAutocapitalization(.never)
@@ -34,9 +34,9 @@ struct ShowSearchScreen: View {
                 Group {
                     switch viewModel.searchState {
                     case .prompt:
-                        labelView(title: L10n.searchShows)
+                        labelView(title: String(localized: "Search shows", bundle: .module))
                     case .empty:
-                        labelView(title: L10n.noResults)
+                        labelView(title: String(localized: "No results", bundle: .module))
                     case .loaded(let shows):
                         List {
                             ForEach(shows) { show in
@@ -65,7 +65,7 @@ struct ShowSearchScreen: View {
                         .scaleEffect(2)
                 }
             }
-            .navigationTitle(L10n.followShows)
+            .navigationTitle(Text("Search", bundle: .module))
             .navigationDestination(for: ShowSearchRoute.self) { route in
                 switch route {
                 case .showDetail(let args):

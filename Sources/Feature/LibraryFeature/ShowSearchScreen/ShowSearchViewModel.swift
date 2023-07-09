@@ -72,9 +72,9 @@ final class ShowSearchViewModel: ObservableObject {
                         let message: String
                         switch error {
                         case .parseError:
-                            message = L10n.Error.invalidServerResponse
+                            message = String(localized: "Invalid server response", bundle: .module)
                         case .invalidQuery:
-                            message = L10n.Error.invalidQuery
+                            message = String(localized: "Invalid query", bundle: .module)
                         case .networkError(reason: let error):
                             message = error.localizedDescription
                         }

@@ -4,6 +4,8 @@
 <dict>
 	<key>AppGroupID</key>
 	<string>group.com.muijp.DropcastDev</string>
+	<key>CFBundleAllowMixedLocalizations</key>
+	<true/>
 	<key>CFBundleURLTypes</key>
 	<array>
 		<dict>

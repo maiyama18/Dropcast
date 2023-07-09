@@ -76,13 +76,19 @@ public struct ShowDetailScreen: View {
                     Button {
                         viewModel.handle(action: .tapCopyFeedURLButton)
                     } label: {
-                        Label(L10n.copyFeedUrl, systemImage: "doc")
+                        Label(
+                            title: { Text("Copy Feed URL", bundle: .module) },
+                            icon: { Image(systemName: "doc") }
+                        )
                     }
                     if let linkURL = viewModel.linkURL {
                         Button {
                             openURL(linkURL)
                         } label: {
-                            Label(L10n.openInBrowser, systemImage: "globe")
+                            Label(
+                                title: { Text("Open in Browser", bundle: .module) },
+                                icon: { Image(systemName: "globe") }
+                            )
                         }
                     }
                 } label: {

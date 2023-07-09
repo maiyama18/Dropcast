@@ -15,6 +15,6 @@ struct LicensesScreen: View {
                 }
             }
         }
-        .navigationTitle(L10n.licenses)
+        .navigationTitle("Licenses")
     }
 }
