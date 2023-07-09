@@ -2,11 +2,7 @@ import Logger
 import SwiftUI
 
 struct DebugLogScreen: View {
-    @ObservedObject private var viewModel: DebugLogViewModel
-
-    init(viewModel: DebugLogViewModel) {
-        self.viewModel = viewModel
-    }
+    @Bindable var viewModel: DebugLogViewModel
 
     var body: some View {
         Group {

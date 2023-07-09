@@ -1,7 +1,7 @@
-import Combine
 import Dependencies
 import Logger
 import MessageClient
+import Observation
 
 enum SearchScope: Hashable {
     case all
@@ -9,12 +9,14 @@ enum SearchScope: Hashable {
 }
 
 @MainActor
-final class DebugLogViewModel: ObservableObject {
-    @Published private(set) var loading: Bool = false
-    @Published private(set) var allLogEntries: [LogEntry] = []
-    @Published var query: String = ""
-    @Published var searchScope: SearchScope = .all
+@Observable
+final class DebugLogViewModel {
+    private(set) var loading: Bool = false
+    private(set) var allLogEntries: [LogEntry] = []
+    var query: String = ""
+    var searchScope: SearchScope = .all
 
+    @ObservationIgnored
     @Dependency(\.messageClient) private var messageClient
 
     private let logStore = LogStore()
