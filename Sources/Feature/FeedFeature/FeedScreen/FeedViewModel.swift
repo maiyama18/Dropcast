@@ -88,9 +88,9 @@ final class FeedViewModel: ObservableObject {
                 let message: String
                 switch downloadError {
                 case .unexpectedError:
-                    message = L10n.Error.somethingWentWrong
+                    message = String(localized: "Something went wrong", bundle: .module)
                 case .downloadError:
-                    message = L10n.Error.downloadError
+                    message = String(localized: "Failed to download the episode", bundle: .module)
                 }
                 messageClient.presentError(message)
             }
@@ -104,7 +104,7 @@ final class FeedViewModel: ObservableObject {
         case .success(let followedShows):
             shows = followedShows.elements
         case .failure:
-            messageClient.presentError(L10n.Error.databaseError)
+            messageClient.presentError(String(localized: "Failed to communicate with database", bundle: .module))
             return
         }
 

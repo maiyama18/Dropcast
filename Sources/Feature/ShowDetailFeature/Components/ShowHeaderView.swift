@@ -52,12 +52,21 @@ struct ShowHeaderView: View {
                     } label: {
                         if let followed {
                             if followed {
-                                Label(L10n.followed, systemImage: "checkmark")
+                                Label(
+                                    title: { Text("Followed", bundle: .module) },
+                                    icon: { Image(systemName: "checkmark") }
+                                )
                             } else {
-                                Label(L10n.follow, systemImage: "plus")
+                                Label(
+                                    title: { Text("Follow", bundle: .module) },
+                                    icon: { Image(systemName: "plus") }
+                                )
                             }
                         } else {
-                            Label(L10n.loading, systemImage: "circle.dashed")
+                            Label(
+                                title: { Text("Loading", bundle: .module) },
+                                icon: { Image(systemName: "circle.dashed") }
+                            )
                         }
                     }
                     .followButtonStyle(followed: followed)

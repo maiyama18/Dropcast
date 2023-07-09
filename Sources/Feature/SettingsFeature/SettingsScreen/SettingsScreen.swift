@@ -10,13 +10,13 @@ public struct SettingsScreen: View {
             List {
                 Section {
                     NavigationLink(value: SettingsRoute.licenses) {
-                        Text(L10n.licenses)
+                        Text("Licenses", bundle: .module)
                     }
                 } header: {
-                    Text(L10n.aboutApp)
+                    Text("About App", bundle: .module)
                 }
             }
-            .navigationTitle(L10n.settings)
+            .navigationTitle(Text("Settings", bundle: .module))
             .navigationDestination(for: SettingsRoute.self) { route in
                 switch route {
                 case .licenses:

@@ -10,20 +10,20 @@ public enum NetworkError: LocalizedError, Equatable {
     public var errorDescription: String? {
         switch self {
         case .offline:
-            return L10n.offline
+            return String(localized: "No internet connection", bundle: .module)
         case .timeout:
-            return L10n.timeout
+            return String(localized: "Request timed out", bundle: .module)
         case .cancelled:
-            return L10n.cancelled
+            return String(localized: "Request cancelled", bundle: .module)
         case .serverError(let status):
             switch status {
             case 400..<500:
-                return L10n.invalidRequest
+                return String(localized: "Invalid request", bundle: .module)
             default:
-                return L10n.serverError
+                return String(localized: "Server returns error", bundle: .module)
             }
         case .unknownError:
-            return L10n.somethingWentWrong
+            return String(localized: "Something went wrong", bundle: .module)
         }
     }
 }

@@ -69,7 +69,7 @@ public struct ShowListScreen: View {
                     }
                 }
             }
-            .navigationTitle(L10n.shows)
+            .navigationTitle(Text("Shows", bundle: .module))
             .navigationDestination(for: ShowListRoute.self) { route in
                 switch route {
                 case .showDetail(let args):
@@ -97,15 +97,15 @@ public struct ShowListScreen: View {
             Spacer()
                 .frame(height: 8)
 
-            Text(L10n.noShows)
+            Text("No shows", bundle: .module)
                 .font(.title3.bold())
                 .foregroundStyle(.secondary)
 
             Spacer()
                 .frame(height: 16)
 
-            Button(L10n.followFavoriteShows) {
-                onButtonTapped()
+            Button(action: { Task { await viewModel.handle(action: .tapAddButton) } }) {
+                Text("Follow your favorite shows!", bundle: .module)
             }
             .tint(.orange)
         }

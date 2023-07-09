@@ -81,9 +81,9 @@ final class ShowDetailViewModel: ObservableObject {
                 let message: String
                 switch downloadError {
                 case .unexpectedError:
-                    message = L10n.Error.somethingWentWrong
+                    message = String(localized: "Something went wrong", bundle: .module)
                 case .downloadError:
-                    message = L10n.Error.downloadError
+                    message = String(localized: "Failed to download the episode", bundle: .module)
                 }
 
                 messageClient.presentError(message)
@@ -104,7 +104,7 @@ final class ShowDetailViewModel: ObservableObject {
                     followed = false
                 }
             case .failure:
-                messageClient.presentError(L10n.Error.databaseError)
+                messageClient.presentError(String(localized: "Failed to connect to database", bundle: .module))
             }
 
             Task {
@@ -117,7 +117,7 @@ final class ShowDetailViewModel: ObservableObject {
                     let message: String
                     switch error {
                     case .invalidFeed:
-                        message = L10n.Error.invalidRssFeed
+                        message = String(localized: "Invalid RSS feed", bundle: .module)
                     case .networkError(reason: let error):
                         message = error.localizedDescription
                     }
@@ -127,7 +127,7 @@ final class ShowDetailViewModel: ObservableObject {
             }
         case .tapCopyFeedURLButton:
             clipboardClient.copy(feedURL.absoluteString)
-            messageClient.presentSuccess(L10n.Message.copied)
+            messageClient.presentSuccess(String(localized: "Copied", bundle: .module))
         case .tapDownloadEpisodeButton(let episode):
             switch downloadState(id: episode.id) {
             case .notDownloaded:
@@ -147,7 +147,7 @@ final class ShowDetailViewModel: ObservableObject {
                     try databaseClient.unfollowShow(feedURL).get()
                     self.followed = false
                 } catch {
-                    messageClient.presentError(L10n.Error.failedToUnfollow)
+                    messageClient.presentError(String(localized: "Failed to unfollow the show", bundle: .module))
                 }
             } else {
                 do {
@@ -164,7 +164,7 @@ final class ShowDetailViewModel: ObservableObject {
                     ).get()
                     self.followed = true
                 } catch {
-                    messageClient.presentError(L10n.Error.failedToFollow)
+                    messageClient.presentError(String(localized: "Failed to follow the show", bundle: .module))
                 }
             }
         }

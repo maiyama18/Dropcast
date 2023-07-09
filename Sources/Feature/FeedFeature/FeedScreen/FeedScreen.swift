@@ -45,7 +45,7 @@ public struct FeedScreen: View {
                     .scaleEffect(2)
             }
         }
-        .navigationTitle(L10n.feed)
+        .navigationTitle(Text("Feed", bundle: .module))
         .task {
             await viewModel.handle(action: .appear)
         }
@@ -61,15 +61,15 @@ public struct FeedScreen: View {
             Spacer()
                 .frame(height: 8)
 
-            Text(L10n.noFeed)
+            Text("No episodes in feed", bundle: .module)
                 .font(.title3.bold())
                 .foregroundStyle(.secondary)
 
             Spacer()
                 .frame(height: 16)
 
-            Button(L10n.followShows) {
-                onButtonTapped()
+            Button(action: { onButtonTapped() }) {
+                Text("Follow your favorite shows!", bundle: .module)
             }
             .tint(.orange)
         }

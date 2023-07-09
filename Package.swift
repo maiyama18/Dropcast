@@ -1,4 +1,4 @@
-// swift-tools-version: 5.7
+// swift-tools-version: 5.9
 
 import PackageDescription
 
@@ -69,10 +69,6 @@ extension PackageDescription.Target.PluginUsage {
         name: "LintCheckBuildToolPlugin",
         package: "SwiftLintPlugins"
     )
-    static let swiftgen: Self = .plugin(
-        name: "SwiftGenPlugin",
-        package: "SwiftGenPlugin"
-    )
     static let licenses: Self = .plugin(
         name: "LicensesPlugin",
         package: "LicensesPlugin"
@@ -108,8 +104,7 @@ let targets: [PackageDescription.Target] = [
             "LibraryFeature",
             "SettingsFeature",
         ],
-        path: "Sources/Feature/MainTabFeature",
-        plugins: [.swiftgen]
+        path: "Sources/Feature/MainTabFeature"
     ),
     .target(
         name: "DebugFeature",
@@ -137,8 +132,7 @@ let targets: [PackageDescription.Target] = [
             "UserDefaultsClient",
             "Extension",
         ],
-        path: "Sources/Feature/FeedFeature",
-        plugins: [.swiftgen]
+        path: "Sources/Feature/FeedFeature"
     ),
     .target(
         name: "SettingsFeature",
@@ -147,10 +141,7 @@ let targets: [PackageDescription.Target] = [
             "Extension",
         ],
         path: "Sources/Feature/SettingsFeature",
-        plugins: [
-            .licenses,
-            .swiftgen,
-        ]
+        plugins: [.licenses]
     ),
     .target(
         name: "LibraryFeature",
@@ -165,8 +156,7 @@ let targets: [PackageDescription.Target] = [
             "RSSClient",
             "ScreenTransitionCoordinator",
         ],
-        path: "Sources/Feature/LibraryFeature",
-        plugins: [.swiftgen]
+        path: "Sources/Feature/LibraryFeature"
     ),
     .target(
         name: "ShowDetailFeature",
@@ -181,8 +171,7 @@ let targets: [PackageDescription.Target] = [
             "Extension",
             "Entity",
         ],
-        path: "Sources/Feature/ShowDetailFeature",
-        plugins: [.swiftgen]
+        path: "Sources/Feature/ShowDetailFeature"
     ),
 
     // UI module
@@ -348,8 +337,7 @@ let targets: [PackageDescription.Target] = [
     .target(
         name: "Error",
         dependencies: [],
-        path: "Sources/Core/Error",
-        plugins: [.swiftgen]
+        path: "Sources/Core/Error"
     ),
     .target(
         name: "Formatter",

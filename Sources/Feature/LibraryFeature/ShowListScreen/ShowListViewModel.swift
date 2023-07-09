@@ -50,7 +50,7 @@ public final class ShowListViewModel: ObservableObject {
             do {
                 try databaseClient.unfollowShow(feedURL).get()
             } catch {
-                messageClient.presentError(L10n.Error.failedToUnfollow)
+                messageClient.presentError(String(localized: "Failed to unfollow the show", bundle: .module))
             }
         }
     }
