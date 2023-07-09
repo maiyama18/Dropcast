@@ -2,8 +2,9 @@ import Components
 import Entity
 import SwiftUI
 
+@MainActor
 public struct ShowDetailScreen: View {
-    @StateObject var viewModel: ShowDetailViewModel
+    @State var viewModel: ShowDetailViewModel
 
     @Environment(\.openURL) var openURL
 

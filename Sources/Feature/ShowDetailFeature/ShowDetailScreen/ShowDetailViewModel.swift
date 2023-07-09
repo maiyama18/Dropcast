@@ -6,11 +6,13 @@ import Entity
 import Extension
 import Foundation
 import MessageClient
+import Observation
 import RSSClient
 import SoundFileClient
 
 @MainActor
-final class ShowDetailViewModel: ObservableObject {
+@Observable
+final class ShowDetailViewModel {
     enum Action {
         case appear
         case tapToggleFollowButton
@@ -26,14 +28,14 @@ final class ShowDetailViewModel: ObservableObject {
     /// 検索画面から遷移した場合は false になる。
     let showsEpisodeActionButtons: Bool
 
-    @Published private(set) var episodes: [Episode]
-    @Published private(set) var author: String?
-    @Published private(set) var description: String?
-    @Published private(set) var linkURL: URL?
-    @Published private(set) var followed: Bool?
-    @Published private(set) var isFetchingShow: Bool = false
+    private(set) var episodes: [Episode]
+    private(set) var author: String?
+    private(set) var description: String?
+    private(set) var linkURL: URL?
+    private(set) var followed: Bool?
+    private(set) var isFetchingShow: Bool = false
 
-    @Published private var downloadStates: [Episode.ID: EpisodeDownloadState]?
+    private var downloadStates: [Episode.ID: EpisodeDownloadState]?
 
     func downloadState(id: Episode.ID) -> EpisodeDownloadState {
         guard let downloadStates else { return .notDownloaded }
@@ -42,11 +44,11 @@ final class ShowDetailViewModel: ObservableObject {
 
     private var cancellables: Set<AnyCancellable> = .init()
 
-    @Dependency(\.clipboardClient) private var clipboardClient
-    @Dependency(\.databaseClient) private var databaseClient
-    @Dependency(\.messageClient) private var messageClient
-    @Dependency(\.rssClient) private var rssClient
-    @Dependency(\.soundFileClient) private var soundFileClient
+    @ObservationIgnored @Dependency(\.clipboardClient) private var clipboardClient
+    @ObservationIgnored @Dependency(\.databaseClient) private var databaseClient
+    @ObservationIgnored @Dependency(\.messageClient) private var messageClient
+    @ObservationIgnored @Dependency(\.rssClient) private var rssClient
+    @ObservationIgnored @Dependency(\.soundFileClient) private var soundFileClient
 
     init(
         feedURL: URL,
