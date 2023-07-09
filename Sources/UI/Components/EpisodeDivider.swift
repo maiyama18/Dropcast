@@ -11,8 +11,10 @@ public struct EpisodeDivider: View {
     }
 }
 
-struct EpisodeDivider_Previews: PreviewProvider {
-    static var previews: some View {
-        EpisodeDivider()
-    }
+#if DEBUG
+
+#Preview {
+    EpisodeDivider()
 }
+
+#endif

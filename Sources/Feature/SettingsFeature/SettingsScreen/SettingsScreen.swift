@@ -29,8 +29,10 @@ public struct SettingsScreen: View {
     }
 }
 
-struct SettingsScreen_Previews: PreviewProvider {
-    static var previews: some View {
-        SettingsScreen()
-    }
-}
+//#if DEBUG
+//
+//#Preview {
+//    SettingsScreen()
+//}
+//
+//#endif

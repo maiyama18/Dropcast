@@ -36,23 +36,25 @@ struct ShowRowView: View {
     }
 }
 
-struct ShowRowView_Previews: PreviewProvider {
-    static var previews: some View {
-        let shows: [SimpleShow] = [
-            ITunesShow.fixtureStackOverflow,
-            ITunesShow.fixtureRebuild,
-            ITunesShow.fixtureNature,
-            ITunesShow.fixtureBilingualNews,
-            ITunesShow.fixtureFukabori,
-            ITunesShow.fixtureStacktrace,
-            ITunesShow.fixtureSuperLongProperties,
-        ].map { .init(iTunesShow: $0) }
+#if DEBUG
 
-        List {
-            ForEach(shows) { show in
-                ShowRowView(show: show)
-            }
-        }
-        .listStyle(.plain)
-    }
-}
+//#Preview {
+//    List {
+//        ForEach(
+//            [
+//                ITunesShow.fixtureStackOverflow,
+//                ITunesShow.fixtureRebuild,
+//                ITunesShow.fixtureNature,
+//                ITunesShow.fixtureBilingualNews,
+//                ITunesShow.fixtureFukabori,
+//                ITunesShow.fixtureStacktrace,
+//                ITunesShow.fixtureSuperLongProperties,
+//            ].map { SimpleShow(iTunesShow: $0) }
+//        ) { show in
+//            ShowRowView(show: show)
+//        }
+//    }
+//    .listStyle(.plain)
+//}
+
+#endif

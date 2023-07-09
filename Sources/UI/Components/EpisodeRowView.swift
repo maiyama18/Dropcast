@@ -103,44 +103,46 @@ public struct EpisodeRowView: View {
     }
 }
 
-struct EpisodeRowView_Previews: PreviewProvider {
-    static var previews: some View {
-        ScrollView {
-            LazyVStack(spacing: 8) {
-                EpisodeRowView(
-                    episode: .fixtureRebuild352,
-                    downloadState: .notDownloaded,
-                    showsPlayButton: true,
-                    showsImage: true,
-                    onDownloadButtonTapped: {}
-                )
+#if DEBUG
 
-                EpisodeRowView(
-                    episode: .fixtureRebuild351,
-                    downloadState: .pushedToDownloadQueue,
-                    showsPlayButton: true,
-                    showsImage: true,
-                    onDownloadButtonTapped: {}
-                )
+#Preview {
+    ScrollView {
+        LazyVStack(spacing: 8) {
+            EpisodeRowView(
+                episode: .fixtureRebuild352,
+                downloadState: .notDownloaded,
+                showsPlayButton: true,
+                showsImage: true,
+                onDownloadButtonTapped: {}
+            )
 
-                EpisodeRowView(
-                    episode: .fixtureRebuild351,
-                    downloadState: .downloading(progress: 0.4),
-                    showsPlayButton: true,
-                    showsImage: true,
-                    onDownloadButtonTapped: {}
-                )
+            EpisodeRowView(
+                episode: .fixtureRebuild351,
+                downloadState: .pushedToDownloadQueue,
+                showsPlayButton: true,
+                showsImage: true,
+                onDownloadButtonTapped: {}
+            )
 
-                EpisodeRowView(
-                    episode: .fixtureRebuild350,
-                    downloadState: .downloaded,
-                    showsPlayButton: true,
-                    showsImage: true,
-                    onDownloadButtonTapped: {}
-                )
-            }
-            .padding(.horizontal)
-            .tint(.orange)
+            EpisodeRowView(
+                episode: .fixtureRebuild351,
+                downloadState: .downloading(progress: 0.4),
+                showsPlayButton: true,
+                showsImage: true,
+                onDownloadButtonTapped: {}
+            )
+
+            EpisodeRowView(
+                episode: .fixtureRebuild350,
+                downloadState: .downloaded,
+                showsPlayButton: true,
+                showsImage: true,
+                onDownloadButtonTapped: {}
+            )
         }
+        .padding(.horizontal)
+        .tint(.orange)
     }
 }
+
+#endif
