@@ -69,10 +69,6 @@ extension PackageDescription.Target.PluginUsage {
         name: "LintCheckBuildToolPlugin",
         package: "SwiftLintPlugins"
     )
-    static let swiftgen: Self = .plugin(
-        name: "SwiftGenPlugin",
-        package: "SwiftGenPlugin"
-    )
     static let licenses: Self = .plugin(
         name: "LicensesPlugin",
         package: "LicensesPlugin"
