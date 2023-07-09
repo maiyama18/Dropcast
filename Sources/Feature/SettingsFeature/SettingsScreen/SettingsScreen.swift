@@ -1,7 +1,8 @@
 import SwiftUI
 
+@MainActor
 public struct SettingsScreen: View {
-    @StateObject var viewModel: SettingsViewModel = .init()
+    @State var viewModel: SettingsViewModel = .init()
 
     public init() {}
 

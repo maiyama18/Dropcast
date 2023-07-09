@@ -1,10 +1,11 @@
-import Combine
+import Observation
 
 @MainActor
-final class SettingsViewModel: ObservableObject {
+@Observable
+final class SettingsViewModel {
     enum Action {}
 
-    @Published var path: [SettingsRoute] = []
+    var path: [SettingsRoute] = []
 
     func handle(action: Action) {}
 }
