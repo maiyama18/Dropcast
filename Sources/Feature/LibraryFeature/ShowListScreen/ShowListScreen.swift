@@ -3,8 +3,9 @@ import ScreenTransitionCoordinator
 import ShowDetailFeature
 import SwiftUI
 
+@MainActor
 public struct ShowListScreen: View {
-    @StateObject private var viewModel: ShowListViewModel = .init()
+    @State private var viewModel: ShowListViewModel = .init()
 
     @Dependency(\.screenTransitionCoordinator) private var coordinator
 

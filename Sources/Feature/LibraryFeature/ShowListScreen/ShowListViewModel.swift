@@ -1,4 +1,3 @@
-import Combine
 import DatabaseClient
 import Dependencies
 import Entity
@@ -6,21 +5,23 @@ import Extension
 import Foundation
 import IdentifiedCollections
 import MessageClient
+import Observation
 
 @MainActor
-public final class ShowListViewModel: ObservableObject {
+@Observable
+public final class ShowListViewModel {
     enum Action {
         case tapAddButton
         case tapShowRow(show: Show)
         case swipeToDeleteShow(feedURL: URL)
     }
 
-    @Published var path: [ShowListRoute] = []
-    @Published var showSearchPresented: Bool = false
-    @Published private(set) var shows: IdentifiedArrayOf<Show>?
+    var path: [ShowListRoute] = []
+    var showSearchPresented: Bool = false
+    private(set) var shows: IdentifiedArrayOf<Show>?
 
-    @Dependency(\.databaseClient) private var databaseClient
-    @Dependency(\.messageClient) private var messageClient
+    @ObservationIgnored @Dependency(\.databaseClient) private var databaseClient
+    @ObservationIgnored @Dependency(\.messageClient) private var messageClient
 
     public init() {
         subscribe()
