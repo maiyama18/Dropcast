@@ -1,14 +1,15 @@
-import Combine
 import Dependencies
 import Entity
 import Foundation
 import IdentifiedCollections
 import ITunesClient
 import MessageClient
+import Observation
 import RSSClient
 
 @MainActor
-final class ShowSearchViewModel: ObservableObject {
+@Observable
+final class ShowSearchViewModel {
     enum SearchState: Equatable {
         case prompt
         case empty(query: String)
@@ -29,14 +30,14 @@ final class ShowSearchViewModel: ObservableObject {
         case debounceQuery
     }
 
-    @Dependency(\.iTunesClient) private var iTunesClient
-    @Dependency(\.messageClient) private var messageClient
-    @Dependency(\.rssClient) private var rssClient
+    @ObservationIgnored @Dependency(\.iTunesClient) private var iTunesClient
+    @ObservationIgnored @Dependency(\.messageClient) private var messageClient
+    @ObservationIgnored @Dependency(\.rssClient) private var rssClient
 
-    @Published var path: [ShowSearchRoute] = []
-    @Published private(set) var searchState: SearchState = .prompt
-    @Published private var searchTask: Task<Void, Never>? = nil
-    @Published private(set) var query: String = ""
+    var path: [ShowSearchRoute] = []
+    private(set) var searchState: SearchState = .prompt
+    private var searchTask: Task<Void, Never>? = nil
+    private(set) var query: String = ""
 
     var isSearching: Bool { searchTask?.isCancelled == false }
 

@@ -1,6 +1,7 @@
 import Entity
 import Foundation
 
+// TODO: この ViewModel は存在が微妙かも...？
 public struct SimpleShow: Equatable, Identifiable, Hashable {
     public var feedURL: URL
     public var imageURL: URL

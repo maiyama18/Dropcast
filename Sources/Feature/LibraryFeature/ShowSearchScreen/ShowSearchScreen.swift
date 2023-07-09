@@ -2,8 +2,9 @@ import Dependencies
 import ShowDetailFeature
 import SwiftUI
 
+@MainActor
 struct ShowSearchScreen: View {
-    @StateObject var viewModel: ShowSearchViewModel = .init()
+    @State var viewModel: ShowSearchViewModel = .init()
 
     @Dependency(\.continuousClock) private var clock
 
