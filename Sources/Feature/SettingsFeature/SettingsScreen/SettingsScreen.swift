@@ -1,13 +1,15 @@
+import NavigationState
 import SwiftUI
 
 @MainActor
 public struct SettingsScreen: View {
     @State var viewModel: SettingsViewModel = .init()
+    @Environment(NavigationState.self) private var navigationState
 
     public init() {}
 
     public var body: some View {
-        NavigationStack(path: $viewModel.path) {
+        NavigationStack(path: .init(get: { navigationState.settingsPath }, set: { navigationState.settingsPath = $0 })) {
             List {
                 Section {
                     NavigationLink(value: SettingsRoute.licenses) {

@@ -90,7 +90,7 @@ let targets: [PackageDescription.Target] = [
             "LibraryFeature",
             "MessageClientLive",
             "Logger",
-            "ScreenTransitionCoordinator",
+            "NavigationState",
         ],
         path: "Sources/App/iOSApp"
     ),
@@ -103,6 +103,7 @@ let targets: [PackageDescription.Target] = [
             "FeedFeature",
             "LibraryFeature",
             "SettingsFeature",
+            "NavigationState",
         ],
         path: "Sources/Feature/MainTabFeature"
     ),
@@ -139,6 +140,7 @@ let targets: [PackageDescription.Target] = [
         dependencies: [
             "Build",
             "Extension",
+            "NavigationState",
         ],
         path: "Sources/Feature/SettingsFeature",
         plugins: [.licenses]
@@ -146,6 +148,7 @@ let targets: [PackageDescription.Target] = [
     .target(
         name: "LibraryFeature",
         dependencies: [
+            .asyncAlgorithms,
             .nukeUI,
             "ShowDetailFeature",
             "Entity",
@@ -154,7 +157,7 @@ let targets: [PackageDescription.Target] = [
             "ITunesClient",
             "MessageClient",
             "RSSClient",
-            "ScreenTransitionCoordinator",
+            "NavigationState",
         ],
         path: "Sources/Feature/LibraryFeature"
     ),
@@ -170,6 +173,7 @@ let targets: [PackageDescription.Target] = [
             "SoundFileClient",
             "Extension",
             "Entity",
+            "NavigationState",
         ],
         path: "Sources/Feature/ShowDetailFeature"
     ),
@@ -186,12 +190,11 @@ let targets: [PackageDescription.Target] = [
         path: "Sources/UI/Components"
     ),
     .target(
-        name: "ScreenTransitionCoordinator",
+        name: "NavigationState",
         dependencies: [
-            .asyncAlgorithms,
-            .dependencies,
+            "Entity",
         ],
-        path: "Sources/UI/ScreenTransitionCoordinator"
+        path: "Sources/UI/NavigationState"
     ),
 
     // Infra module

@@ -1,9 +1,11 @@
+import AsyncAlgorithms
 import Dependencies
 import Entity
 import Foundation
 import IdentifiedCollections
 import ITunesClient
 import MessageClient
+import NavigationState
 import Observation
 import RSSClient
 
@@ -28,20 +30,26 @@ final class ShowSearchViewModel {
     enum Action {
         case changeQuery(query: String)
         case debounceQuery
+        case tapShowRow(show: ITunesShow)
+    }
+    
+    enum Event {
+        case pushShowDetail(args: ShowDetailInitArguments)
     }
 
     @ObservationIgnored @Dependency(\.iTunesClient) private var iTunesClient
     @ObservationIgnored @Dependency(\.messageClient) private var messageClient
     @ObservationIgnored @Dependency(\.rssClient) private var rssClient
 
-    var path: [ShowSearchRoute] = []
     private(set) var searchState: SearchState = .prompt
     private var searchTask: Task<Void, Never>? = nil
     private(set) var query: String = ""
 
     var isSearching: Bool { searchTask?.isCancelled == false }
+    
+    let events: AsyncChannel<Event> = .init()
 
-    func handle(action: Action) {
+    func handle(action: Action) async {
         switch action {
         case .changeQuery(query: let query):
             self.query = query
@@ -84,6 +92,14 @@ final class ShowSearchViewModel {
                     }
                 }
             }
+        case .tapShowRow(let show):
+            let args = ShowDetailInitArguments(
+                showsEpisodeActionButtons: false,
+                feedURL: show.feedURL,
+                imageURL: show.artworkURL,
+                title: show.showName
+            )
+            await events.send(.pushShowDetail(args: args))
         }
     }
 }

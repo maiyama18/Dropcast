@@ -1,18 +1,17 @@
 import Dependencies
-import ScreenTransitionCoordinator
+import NavigationState
 import ShowDetailFeature
 import SwiftUI
 
 @MainActor
 public struct ShowListScreen: View {
     @State private var viewModel: ShowListViewModel = .init()
-
-    @Dependency(\.screenTransitionCoordinator) private var coordinator
+    @Environment(NavigationState.self) private var navigationState
 
     public init() {}
 
     public var body: some View {
-        NavigationStack(path: $viewModel.path) {
+        NavigationStack(path: .init(get: { navigationState.showListPath }, set: { navigationState.showListPath = $0 })) {
             Group {
                 if let shows = viewModel.shows {
                     if shows.isEmpty {
@@ -85,13 +84,18 @@ public struct ShowListScreen: View {
                     ShowDetailScreen(args: args)
                 }
             }
-            .sheet(isPresented: $viewModel.showSearchPresented) {
-                ShowSearchScreen()
-            }
             .task {
-                for await _ in coordinator.openShowSearch {
-                    await viewModel.handle(action: .tapAddButton)
+                for await event in viewModel.events {
+                    switch event {
+                    case .presentShowSearch:
+                        navigationState.showSearchPath = []
+                    case .pushShowDetail(let args):
+                        navigationState.showListPath.append(.showDetail(args: args))
+                    }
                 }
+            }
+            .sheet(isPresented: .init(get: { navigationState.showSearchPath != nil }, set: { _ in navigationState.showSearchPath = nil })) {
+                ShowSearchScreen()
             }
         }
     }

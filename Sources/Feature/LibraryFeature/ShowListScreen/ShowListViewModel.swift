@@ -1,3 +1,4 @@
+import AsyncAlgorithms
 import DatabaseClient
 import Dependencies
 import Entity
@@ -6,6 +7,7 @@ import Foundation
 import IdentifiedCollections
 import MessageClient
 import Observation
+import NavigationState
 
 @MainActor
 @Observable
@@ -15,10 +17,15 @@ public final class ShowListViewModel {
         case tapShowRow(show: Show)
         case swipeToDeleteShow(feedURL: URL)
     }
+    
+    enum Event {
+        case presentShowSearch
+        case pushShowDetail(args: ShowDetailInitArguments)
+    }
 
-    var path: [ShowListRoute] = []
-    var showSearchPresented: Bool = false
     private(set) var shows: IdentifiedArrayOf<Show>?
+    
+    let events: AsyncChannel<Event> = .init()
 
     @ObservationIgnored @Dependency(\.databaseClient) private var databaseClient
     @ObservationIgnored @Dependency(\.messageClient) private var messageClient
@@ -30,23 +37,20 @@ public final class ShowListViewModel {
     func handle(action: Action) async {
         switch action {
         case .tapAddButton:
-            showSearchPresented = true
+            await events.send(.presentShowSearch)
         case .tapShowRow(let show):
-            path.append(
-                .showDetail(
-                    args: .init(
-                        showsEpisodeActionButtons: true,
-                        feedURL: show.feedURL,
-                        imageURL: show.imageURL,
-                        title: show.title,
-                        episodes: show.episodes,
-                        author: show.author,
-                        description: show.description,
-                        linkURL: show.linkURL,
-                        followed: true
-                    )
-                )
+            let args = ShowDetailInitArguments(
+                showsEpisodeActionButtons: true,
+                feedURL: show.feedURL,
+                imageURL: show.imageURL,
+                title: show.title,
+                episodes: show.episodes,
+                author: show.author,
+                description: show.description,
+                linkURL: show.linkURL,
+                followed: true
             )
+            await events.send(.pushShowDetail(args: args))
         case .swipeToDeleteShow(let feedURL):
             do {
                 try databaseClient.unfollowShow(feedURL).get()

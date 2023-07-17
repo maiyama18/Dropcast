@@ -1,5 +1,6 @@
 import Components
 import Entity
+import NavigationState
 import SwiftUI
 
 @MainActor

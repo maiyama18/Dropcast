@@ -5,7 +5,5 @@ import Observation
 final class SettingsViewModel {
     enum Action {}
 
-    var path: [SettingsRoute] = []
-
     func handle(action: Action) {}
 }

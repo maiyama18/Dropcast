@@ -1,15 +1,19 @@
-import Dependencies
+import NavigationState
 import ShowDetailFeature
 import SwiftUI
 
 @MainActor
 struct ShowSearchScreen: View {
     @State var viewModel: ShowSearchViewModel = .init()
-
-    @Dependency(\.continuousClock) private var clock
+    @Environment(NavigationState.self) private var navigationState
 
     var body: some View {
-        NavigationStack(path: $viewModel.path) {
+        NavigationStack(
+            path: .init(
+                get: { navigationState.showSearchPath ?? [] },
+                set: { navigationState.showSearchPath = $0 }
+            )
+        ) {
             VStack {
                 HStack {
                     Image(systemName: "magnifyingglass")
@@ -17,7 +21,14 @@ struct ShowSearchScreen: View {
 
                     TextField(
                         "Search",
-                        text: .init(get: { viewModel.query }, set: { viewModel.handle(action: .changeQuery(query: $0)) }),
+                        text: .init(
+                            get: { viewModel.query },
+                            set: { query in
+                                Task {
+                                    await viewModel.handle(action: .changeQuery(query: query))
+                                }
+                            }
+                        ),
                         prompt: Text("Podcast Title, Feed URL, Author...", bundle: .module)
                     )
                     .autocorrectionDisabled(true)
@@ -46,19 +57,13 @@ struct ShowSearchScreen: View {
                     case .loaded(let shows):
                         List {
                             ForEach(shows) { show in
-                                NavigationLink(
-                                    value: ShowSearchRoute.showDetail(
-                                        args: .init(
-                                            showsEpisodeActionButtons: false,
-                                            feedURL: show.feedURL,
-                                            imageURL: show.artworkURL,
-                                            title: show.showName
-                                        )
-                                    )
-                                ) {
-                                    ShowRowView(show: SimpleShow(iTunesShow: show))
-                                        .tint(.primary)
-                                }
+                                ShowRowView(show: SimpleShow(iTunesShow: show))
+                                    .tint(.primary)
+                                    .onTapGesture {
+                                        Task {
+                                            await viewModel.handle(action: .tapShowRow(show: show))
+                                        }
+                                    }
                             }
                         }
                         .listStyle(.plain)
@@ -81,9 +86,17 @@ struct ShowSearchScreen: View {
         }
         .task(id: viewModel.query) {
             do {
-                try await clock.sleep(for: .milliseconds(300))
-                viewModel.handle(action: .debounceQuery)
+                try await Task.sleep(for: .milliseconds(300))
+                await viewModel.handle(action: .debounceQuery)
             } catch {}
+        }
+        .task {
+            for await event in viewModel.events {
+                switch event {
+                case .pushShowDetail(let args):
+                    navigationState.showSearchPath?.append(.showDetail(args: args))
+                }
+            }
         }
     }
 }

@@ -2,11 +2,11 @@ import DebugFeature
 import DeepLink
 import Dependencies
 import MainTabFeature
-import ScreenTransitionCoordinator
+import NavigationState
 import SwiftUI
 
 public struct IOSApp: App {
-    @Dependency(\.screenTransitionCoordinator) private var coordinator
+    private let navigationState: NavigationState = .shared
 
     public init() {}
 
@@ -18,12 +18,13 @@ public struct IOSApp: App {
                     installDebugMenu()
                     #endif
                 }
+                .environment(navigationState)
                 .onOpenURL { url in
                     Task {
                         switch url {
                         case DeepLink.showSearch:
-                            await coordinator.changeTabToLibrary.send(())
-                            await coordinator.openShowSearch.send(())
+                            navigationState.mainTab = .library
+                            navigationState.showSearchPath = []
                         default:
                             break
                         }

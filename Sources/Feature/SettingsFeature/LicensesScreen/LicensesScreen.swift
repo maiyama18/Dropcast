@@ -1,3 +1,4 @@
+import NavigationState
 import SwiftUI
 
 struct LicensesScreen: View {
