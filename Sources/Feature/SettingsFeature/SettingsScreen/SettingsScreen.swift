@@ -6,7 +6,7 @@ public struct SettingsScreen: View {
     @State var viewModel: SettingsViewModel = .init()
     @Environment(NavigationState.self) private var navigationState
 
-    public init() {}
+    nonisolated public init() {}
 
     public var body: some View {
         NavigationStack(path: .init(get: { navigationState.settingsPath }, set: { navigationState.settingsPath = $0 })) {
@@ -32,10 +32,11 @@ public struct SettingsScreen: View {
     }
 }
 
-//#if DEBUG
-//
-//#Preview {
-//    SettingsScreen()
-//}
-//
-//#endif
+#if DEBUG
+
+#Preview {
+    SettingsScreen()
+        .environment(NavigationState.shared)
+}
+
+#endif

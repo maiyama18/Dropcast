@@ -4,6 +4,8 @@ import SwiftUI
 
 struct ShowRowView: View {
     let show: SimpleShow
+    
+    nonisolated init(show: SimpleShow) { self.show = show }
 
     var body: some View {
         HStack(spacing: 12) {
@@ -38,23 +40,23 @@ struct ShowRowView: View {
 
 #if DEBUG
 
-//#Preview {
-//    List {
-//        ForEach(
-//            [
-//                ITunesShow.fixtureStackOverflow,
-//                ITunesShow.fixtureRebuild,
-//                ITunesShow.fixtureNature,
-//                ITunesShow.fixtureBilingualNews,
-//                ITunesShow.fixtureFukabori,
-//                ITunesShow.fixtureStacktrace,
-//                ITunesShow.fixtureSuperLongProperties,
-//            ].map { SimpleShow(iTunesShow: $0) }
-//        ) { show in
-//            ShowRowView(show: show)
-//        }
-//    }
-//    .listStyle(.plain)
-//}
+#Preview {
+    VStack {
+        ForEach(
+            [
+                ITunesShow.fixtureStackOverflow,
+                ITunesShow.fixtureRebuild,
+                ITunesShow.fixtureNature,
+                ITunesShow.fixtureBilingualNews,
+                ITunesShow.fixtureFukabori,
+                ITunesShow.fixtureStacktrace,
+                ITunesShow.fixtureSuperLongProperties,
+            ].map { SimpleShow(iTunesShow: $0) }
+        ) { show in
+            ShowRowView(show: show)
+        }
+    }
+    .listStyle(.plain)
+}
 
 #endif
