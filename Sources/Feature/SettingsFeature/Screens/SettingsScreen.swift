@@ -3,7 +3,6 @@ import SwiftUI
 
 @MainActor
 public struct SettingsScreen: View {
-    @State var viewModel: SettingsViewModel = .init()
     @Environment(NavigationState.self) private var navigationState
 
     nonisolated public init() {}
