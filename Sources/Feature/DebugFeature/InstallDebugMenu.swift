@@ -1,6 +1,6 @@
 #if DEBUG
 import DebugMenu
-import UIKit
+import SwiftUI
 
 @MainActor
 public func installDebugMenu() {
@@ -13,7 +13,7 @@ public func installDebugMenu() {
         items: [
             AppInfoDebugItem(),
             CopySoundFilesRootPathItem(),
-            ViewControllerDebugItem<DebugLogViewController>(title: "See Debug Log") { $0.init() },
+            ViewControllerDebugItem<UIHostingController<DebugLogScreen>>(title: "See Debug Log") { _ in .init(rootView: DebugLogScreen()) },
         ],
         options: [.launchIcon(.init(initialPosition: .trailing))]
     )
