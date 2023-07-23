@@ -1,19 +1,25 @@
 import Dependencies
+import Entity
+import IdentifiedCollections
 import NavigationState
 import ShowDetailFeature
 import SwiftUI
 
 @MainActor
 public struct ShowListScreen: View {
-    @State private var viewModel: ShowListViewModel = .init()
+    @State private(set) var shows: IdentifiedArrayOf<Show>? = nil
+    
     @Environment(NavigationState.self) private var navigationState
+    
+    @Dependency(\.databaseClient) private var databaseClient
+    @Dependency(\.messageClient) private var messageClient
 
     public init() {}
 
     public var body: some View {
         NavigationStack(path: .init(get: { navigationState.showListPath }, set: { navigationState.showListPath = $0 })) {
             Group {
-                if let shows = viewModel.shows {
+                if let shows {
                     if shows.isEmpty {
                         ContentUnavailableView(
                             label: {
@@ -23,7 +29,7 @@ public struct ShowListScreen: View {
                                 )
                             },
                             actions: {
-                                Button(action: { Task { await viewModel.handle(action: .tapAddButton) } }) {
+                                Button(action: { navigationState.showSearchPath = [] }) {
                                     Text("Follow your favorite shows!", bundle: .module)
                                 }
                             }
@@ -50,8 +56,10 @@ public struct ShowListScreen: View {
                                 }
                                 .swipeActions(allowsFullSwipe: false) {
                                     Button(role: .destructive) {
-                                        Task {
-                                            await viewModel.handle(action: .swipeToDeleteShow(feedURL: show.feedURL))
+                                        do {
+                                            try databaseClient.unfollowShow(show.feedURL).get()
+                                        } catch {
+                                            messageClient.presentError(String(localized: "Failed to unfollow the show", bundle: .module))
                                         }
                                     } label: {
                                         Image(systemName: "trash")
@@ -70,7 +78,7 @@ public struct ShowListScreen: View {
             .toolbar {
                 ToolbarItem(placement: .navigationBarTrailing) {
                     Button {
-                        Task { await viewModel.handle(action: .tapAddButton) }
+                        navigationState.showSearchPath = []
                     } label: {
                         Image(systemName: "plus")
                             .bold()
@@ -84,18 +92,16 @@ public struct ShowListScreen: View {
                     ShowDetailScreen(args: args)
                 }
             }
-            .task {
-                for await event in viewModel.events {
-                    switch event {
-                    case .presentShowSearch:
-                        navigationState.showSearchPath = []
-                    case .pushShowDetail(let args):
-                        navigationState.showListPath.append(.showDetail(args: args))
-                    }
-                }
-            }
-            .sheet(isPresented: .init(get: { navigationState.showSearchPath != nil }, set: { _ in navigationState.showSearchPath = nil })) {
+            .sheet(isPresented: .init(
+                get: { navigationState.showSearchPath != nil },
+                set: { _ in navigationState.showSearchPath = nil }
+            )) {
                 ShowSearchScreen()
+            }
+        }
+        .task {
+            for await shows in databaseClient.followedShowsStream() {
+                self.shows = shows
             }
         }
     }
