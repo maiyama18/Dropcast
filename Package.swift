@@ -115,7 +115,7 @@ let targets: [PackageDescription.Target] = [
             "Formatter",
             "Logger",
             "MessageClient",
-            "SoundFileClient",
+            "SoundFileState",
         ],
         path: "Sources/Feature/DebugFeature"
     ),
@@ -129,7 +129,7 @@ let targets: [PackageDescription.Target] = [
             "Entity",
             "MessageClient",
             "RSSClient",
-            "SoundFileClient",
+            "SoundFileState",
             "UserDefaultsClient",
             "Extension",
         ],
@@ -170,14 +170,14 @@ let targets: [PackageDescription.Target] = [
             "DatabaseClient",
             "MessageClient",
             "RSSClient",
-            "SoundFileClient",
+            "SoundFileState",
             "Extension",
             "Entity",
             "NavigationState",
         ],
         path: "Sources/Feature/ShowDetailFeature"
     ),
-
+    
     // UI module
 
     .target(
@@ -186,17 +186,32 @@ let targets: [PackageDescription.Target] = [
             .nukeUI,
             "Entity",
             "Formatter",
+            "MessageClient",
+            "SoundFileState",
         ],
         path: "Sources/UI/Components"
     ),
+
+    // Data module
+
     .target(
         name: "NavigationState",
         dependencies: [
             "Entity",
         ],
-        path: "Sources/UI/NavigationState"
+        path: "Sources/Data/NavigationState"
     ),
-
+    .target(
+        name: "SoundFileState",
+        dependencies: [
+            .dependencies,
+            "Error",
+            "Entity",
+            "Logger",
+        ],
+        path: "Sources/Data/SoundFileState"
+    ),
+    
     // Infra module
 
     .target(
@@ -279,24 +294,6 @@ let targets: [PackageDescription.Target] = [
             "MessageClient",
         ],
         path: "Sources/Infra/MessageClientLive"
-    ),
-    .target(
-        name: "SoundFileClient",
-        dependencies: [
-            .dependencies,
-            "Error",
-            "Entity",
-            "Logger",
-        ],
-        path: "Sources/Infra/SoundFileClient"
-    ),
-    .testTarget(
-        name: "SoundFileClientTests",
-        dependencies: [
-            "SoundFileClient",
-            "TestHelper",
-        ],
-        path: "Tests/Infra/SoundFileClientTests"
     ),
     .target(
         name: "UserDefaultsClient",
@@ -450,8 +447,8 @@ var package = Package(
             name: "RSSClient",
             targets: ["RSSClient"]),
         .library(
-            name: "SoundFileClient",
-            targets: ["SoundFileClient"]),
+            name: "SoundFileState",
+            targets: ["SoundFileState"]),
         .library(
             name: "Formatter",
             targets: ["Formatter"]),

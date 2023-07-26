@@ -46,13 +46,6 @@
         "identifier" : "RSSClientTests",
         "name" : "RSSClientTests"
       }
-    },
-    {
-      "target" : {
-        "containerPath" : "container:..\/..",
-        "identifier" : "SoundFileClientTests",
-        "name" : "SoundFileClientTests"
-      }
     }
   ],
   "version" : 1

@@ -1,12 +1,17 @@
 import Dependencies
 import FeedFeature
 import LibraryFeature
+import MessageClient
 import NavigationState
 import SettingsFeature
+import SoundFileState
 import SwiftUI
 
 public struct MainTabScreen: View {
     @Environment(NavigationState.self) private var navigationState
+    @Environment(SoundFileState.self) private var soundFileState
+    
+    @Dependency(\.messageClient) private var messageClient
 
     public init() {}
 
@@ -29,6 +34,9 @@ public struct MainTabScreen: View {
                     Label(title: { Text("Settings", bundle: .module) }, icon: { Image(systemName: "gearshape") })
                 }
                 .tag(MainTab.settings)
+        }
+        .onReceive(soundFileState.downloadErrorPublisher) { _ in
+            messageClient.presentError(String(localized: "Failed to download episode", bundle: .module))
         }
     }
 }

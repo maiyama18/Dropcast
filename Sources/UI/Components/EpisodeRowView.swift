@@ -1,27 +1,27 @@
+import Dependencies
 import Entity
 import Formatter
+import MessageClient
 import NukeUI
+import SoundFileState
 import SwiftUI
 
 public struct EpisodeRowView: View {
     var episode: Episode
-    var downloadState: EpisodeDownloadState
     var showsPlayButton: Bool
     var showsImage: Bool
-    var onDownloadButtonTapped: () -> Void
 
+    @Environment(SoundFileState.self) private var soundFileState
+    @Dependency(\.messageClient) private var messageClient
+        
     public init(
         episode: Episode,
-        downloadState: EpisodeDownloadState,
         showsPlayButton: Bool,
-        showsImage: Bool,
-        onDownloadButtonTapped: @escaping () -> Void
+        showsImage: Bool
     ) {
         self.episode = episode
-        self.downloadState = downloadState
         self.showsPlayButton = showsPlayButton
         self.showsImage = showsImage
-        self.onDownloadButtonTapped = onDownloadButtonTapped
     }
 
     public var body: some View {
@@ -60,7 +60,21 @@ public struct EpisodeRowView: View {
 
                 HStack(spacing: 12) {
                     Button {
-                        onDownloadButtonTapped()
+                        switch downloadState {
+                        case .notDownloaded:
+                            do {
+                                try soundFileState.startDownload(episode: episode)
+                            } catch {
+                                messageClient.presentError(String(localized: "Failed to download episode \(episode.title)", bundle: .module))
+                            }
+                        case .pushedToDownloadQueue:
+                            break
+                        case .downloading:
+                            soundFileState.cancelDownload(episode: episode)
+                        case .downloaded:
+                            // TODO: play sound
+                            break
+                        }
                     } label: {
                         switch downloadState {
                         case .notDownloaded:
@@ -101,6 +115,10 @@ public struct EpisodeRowView: View {
             }
         }
     }
+    
+    private var downloadState: EpisodeDownloadState {
+        soundFileState.downloadStates[episode.id] ?? .notDownloaded
+    }
 }
 
 #if DEBUG
@@ -110,34 +128,26 @@ public struct EpisodeRowView: View {
         LazyVStack(spacing: 8) {
             EpisodeRowView(
                 episode: .fixtureRebuild352,
-                downloadState: .notDownloaded,
                 showsPlayButton: true,
-                showsImage: true,
-                onDownloadButtonTapped: {}
+                showsImage: true
             )
 
             EpisodeRowView(
                 episode: .fixtureRebuild351,
-                downloadState: .pushedToDownloadQueue,
                 showsPlayButton: true,
-                showsImage: true,
-                onDownloadButtonTapped: {}
+                showsImage: true
             )
 
             EpisodeRowView(
                 episode: .fixtureRebuild351,
-                downloadState: .downloading(progress: 0.4),
                 showsPlayButton: true,
-                showsImage: true,
-                onDownloadButtonTapped: {}
+                showsImage: true
             )
 
             EpisodeRowView(
                 episode: .fixtureRebuild350,
-                downloadState: .downloaded,
                 showsPlayButton: true,
-                showsImage: true,
-                onDownloadButtonTapped: {}
+                showsImage: true
             )
         }
         .padding(.horizontal)

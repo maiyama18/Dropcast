@@ -7,21 +7,19 @@ import Extension
 import IdentifiedCollections
 import MessageClient
 import RSSClient
-import SoundFileClient
+import SoundFileState
 import SwiftUI
 import UserDefaultsClient
 
 @MainActor
 public struct FeedScreen: View {
     @State private var episodes: IdentifiedArrayOf<Episode>? = nil
-    @State private var downloadStates: [Episode.ID: EpisodeDownloadState] = [:]
     
     @Dependency(\.openURL) private var openURL
     
     @Dependency(\.databaseClient) private var databaseClient
     @Dependency(\.messageClient) private var messageClient
     @Dependency(\.rssClient) private var rssClient
-    @Dependency(\.soundFileClient) private var soundFileClient
     @Dependency(\.userDefaultsClient) private var userDefaultsClient
 
     public init() {}
@@ -49,24 +47,8 @@ public struct FeedScreen: View {
                             ForEach(episodes) { episode in
                                 EpisodeRowView(
                                     episode: episode,
-                                    downloadState: downloadState(id: episode.id),
                                     showsPlayButton: true,
-                                    showsImage: true,
-                                    onDownloadButtonTapped: {
-                                        Task {
-                                            switch downloadState(id: episode.id) {
-                                            case .notDownloaded:
-                                                try await soundFileClient.download(episode)
-                                            case .pushedToDownloadQueue:
-                                                break
-                                            case .downloading:
-                                                try await soundFileClient.cancelDownload(episode)
-                                            case .downloaded:
-                                                // TODO: play sound
-                                                break
-                                            }
-                                        }
-                                    }
+                                    showsImage: true
                                 )
 
                                 EpisodeDivider()
@@ -96,31 +78,10 @@ public struct FeedScreen: View {
                 self.episodes = episodes
             }
         }
-        .task {
-            for await downloadStates in soundFileClient.downloadStatesPublisher.eraseToStream() {
-                self.downloadStates = downloadStates
-            }
-        }
-        .task {
-            for await downloadError in soundFileClient.downloadErrorPublisher.eraseToStream() {
-                let message: String
-                switch downloadError {
-                case .unexpectedError:
-                    message = String(localized: "Something went wrong", bundle: .module)
-                case .downloadError:
-                    message = String(localized: "Failed to download the episode", bundle: .module)
-                }
-                messageClient.presentError(message)
-            }
-        }
     }
 }
 
 private extension FeedScreen {
-    func downloadState(id: Episode.ID) -> EpisodeDownloadState {
-        downloadStates[id] ?? .notDownloaded
-    }
-    
     func refreshFeed() async {
         let shows: [Show]
         switch databaseClient.fetchFollowedShows() {

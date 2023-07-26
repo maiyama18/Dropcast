@@ -31,16 +31,6 @@
         }
       }
     },
-    "Failed to download the episode" : {
-      "localizations" : {
-        "ja" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "エピソードをダウンロードできませんでした"
-          }
-        }
-      }
-    },
     "Failed to follow the show" : {
       "localizations" : {
         "ja" : {
@@ -127,16 +117,6 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "ブラウザで開く"
-          }
-        }
-      }
-    },
-    "Something went wrong" : {
-      "localizations" : {
-        "ja" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "予期しないエラーが発生しました"
           }
         }
       }

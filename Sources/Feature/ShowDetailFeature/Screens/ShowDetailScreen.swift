@@ -7,7 +7,6 @@ import Extension
 import MessageClient
 import NavigationState
 import RSSClient
-import SoundFileClient
 import SwiftUI
 
 @MainActor
@@ -33,7 +32,6 @@ public struct ShowDetailScreen: View {
     @Dependency(\.databaseClient) private var databaseClient
     @Dependency(\.messageClient) private var messageClient
     @Dependency(\.rssClient) private var rssClient
-    @Dependency(\.soundFileClient) private var soundFileClient
 
     public init(args: ShowDetailInitArguments) {
         self.feedURL = args.feedURL
@@ -67,10 +65,8 @@ public struct ShowDetailScreen: View {
                     ForEach(0..<10) { _ in
                         EpisodeRowView(
                             episode: .fixtureRebuild352,
-                            downloadState: .notDownloaded,
                             showsPlayButton: showsEpisodeActionButtons,
-                            showsImage: false,
-                            onDownloadButtonTapped: {}
+                            showsImage: false
                         )
                         .redacted(reason: .placeholder)
 
@@ -80,24 +76,8 @@ public struct ShowDetailScreen: View {
                     ForEach(episodes) { episode in
                         EpisodeRowView(
                             episode: episode,
-                            downloadState: downloadState(id: episode.id),
                             showsPlayButton: showsEpisodeActionButtons,
-                            showsImage: false,
-                            onDownloadButtonTapped: {
-                                Task {
-                                    switch downloadState(id: episode.id) {
-                                    case .notDownloaded:
-                                        try await soundFileClient.download(episode)
-                                    case .pushedToDownloadQueue:
-                                        break
-                                    case .downloading:
-                                        try await soundFileClient.cancelDownload(episode)
-                                    case .downloaded:
-                                        // TODO: play sound
-                                        break
-                                    }
-                                }
-                            }
+                            showsImage: false
                         )
 
                         EpisodeDivider()
@@ -167,19 +147,6 @@ public struct ShowDetailScreen: View {
                     message = String(localized: "Invalid RSS feed", bundle: .module)
                 case .networkError(reason: let error):
                     message = error.localizedDescription
-                }
-
-                messageClient.presentError(message)
-            }
-        }
-        .task {
-            for await downloadError in soundFileClient.downloadErrorPublisher.eraseToStream() {
-                let message: String
-                switch downloadError {
-                case .unexpectedError:
-                    message = String(localized: "Something went wrong", bundle: .module)
-                case .downloadError:
-                    message = String(localized: "Failed to download the episode", bundle: .module)
                 }
 
                 messageClient.presentError(message)

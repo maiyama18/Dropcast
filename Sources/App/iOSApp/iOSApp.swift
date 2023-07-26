@@ -3,10 +3,12 @@ import DeepLink
 import Dependencies
 import MainTabFeature
 import NavigationState
+import SoundFileState
 import SwiftUI
 
 public struct IOSApp: App {
     private let navigationState: NavigationState = .shared
+    private let soundFileState: SoundFileState = .shared
 
     public init() {}
 
@@ -19,6 +21,7 @@ public struct IOSApp: App {
                     #endif
                 }
                 .environment(navigationState)
+                .environment(soundFileState)
                 .onOpenURL { url in
                     Task {
                         switch url {

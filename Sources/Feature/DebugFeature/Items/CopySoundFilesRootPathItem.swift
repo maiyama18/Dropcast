@@ -3,7 +3,7 @@ import ClipboardClient
 import DebugMenu
 import Dependencies
 import MessageClient
-import SoundFileClient
+import SoundFileState
 
 struct CopySoundFilesRootPathItem: DebugItem {
     @Dependency(\.clipboardClient) private var clipboardClient
@@ -13,7 +13,7 @@ struct CopySoundFilesRootPathItem: DebugItem {
 
     var action: DebugItemAction {
         .execute {
-            clipboardClient.copy(SoundFileClientLive().soundFilesRootDirectoryURL.absoluteString)
+            clipboardClient.copy(SoundFileState.shared.soundFilesRootDirectoryURL.absoluteString)
             messageClient.presentSuccess("Copied!")
             return .success()
         }
