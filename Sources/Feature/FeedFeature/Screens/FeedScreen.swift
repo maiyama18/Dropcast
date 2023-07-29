@@ -31,42 +31,46 @@ public struct FeedScreen: View {
     public init() {}
     
     public var body: some View {
-        Group {
-            if episodes.isEmpty {
-                ContentUnavailableView(
-                    label: {
-                        Label(
-                            title: { Text("No episodes in feed", bundle: .module) },
-                            icon: { Image(systemName: "list.dash") }
-                        )
-                    },
-                    actions: {
-                        Button(action: { openURL(DeepLink.showSearch) }) {
-                            Text("Follow your favorite shows!", bundle: .module)
-                        }
-                    }
-                )
-            } else {
-                ScrollView {
-                    LazyVStack(spacing: 0) {
-                        ForEach(episodes) { episode in
-                            EpisodeRowView(
-                                episode: episode,
-                                showsPlayButton: true,
-                                showsImage: true
+        NavigationStack {
+            Group {
+                if episodes.isEmpty {
+                    ContentUnavailableView(
+                        label: {
+                            Label(
+                                title: { Text("No episodes in feed", bundle: .module) },
+                                icon: { Image(systemName: "list.dash") }
                             )
-                            
-                            EpisodeDivider()
+                        },
+                        actions: {
+                            Button(action: { openURL(DeepLink.showSearch) }) {
+                                Text("Follow your favorite shows!", bundle: .module)
+                            }
                         }
+                    )
+                } else {
+                    ScrollView {
+                        LazyVStack(spacing: 0) {
+                            ForEach(episodes) { episode in
+                                EpisodeRowView(
+                                    episode: episode,
+                                    showsPlayButton: true,
+                                    showsImage: true
+                                )
+                                
+                                EpisodeDivider()
+                            }
+                        }
+                        .padding(.horizontal)
                     }
-                    .padding(.horizontal)
-                }
-                .refreshable {
-                    await refreshFeed()
+                    .refreshable {
+                        await refreshFeed()
+                    }
                 }
             }
+            .navigationTitle(Text("Feed", bundle: .module))
+            .navigationBarTitleDisplayMode(.inline)
+            .toolbarBackground(.ultraThinMaterial, for: .navigationBar)
         }
-        .navigationTitle(Text("Feed", bundle: .module))
         .task {
             if let feedRefreshedAt = userDefaultsClient.getFeedRefreshedAt(),
                Date.now.timeIntervalSince(feedRefreshedAt) <= 600 {
