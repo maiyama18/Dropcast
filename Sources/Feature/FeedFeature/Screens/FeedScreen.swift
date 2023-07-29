@@ -1,4 +1,5 @@
 import Components
+import CoreData
 import DatabaseClient
 import DeepLink
 import Dependencies
@@ -13,56 +14,56 @@ import UserDefaultsClient
 
 @MainActor
 public struct FeedScreen: View {
-    @State private var episodes: IdentifiedArrayOf<Episode>? = nil
+    @FetchRequest<EpisodeRecord>(sortDescriptors: []) private var episodeRecords: FetchedResults<EpisodeRecord>
+    @FetchRequest<ShowRecord>(sortDescriptors: []) private var showRecords: FetchedResults<ShowRecord>
     
-    @Dependency(\.openURL) private var openURL
+    private var episodes: [Episode] {
+        episodeRecords.compactMap { $0.toEntity() }.sorted(by: { $0.publishedAt > $1.publishedAt })
+    }
     
-    @Dependency(\.databaseClient) private var databaseClient
+    @Environment(\.openURL) private var openURL
+    @Environment(\.managedObjectContext) private var context
+    
     @Dependency(\.messageClient) private var messageClient
     @Dependency(\.rssClient) private var rssClient
     @Dependency(\.userDefaultsClient) private var userDefaultsClient
-
+    
     public init() {}
-
+    
     public var body: some View {
         Group {
-            if let episodes {
-                if episodes.isEmpty {
-                    ContentUnavailableView(
-                        label: {
-                            Label(
-                                title: { Text("No episodes in feed", bundle: .module) },
-                                icon: { Image(systemName: "list.dash") }
-                            )
-                        },
-                        actions: {
-                            Button(action: { Task { await openURL(DeepLink.showSearch) } }) {
-                                Text("Follow your favorite shows!", bundle: .module)
-                            }
+            if episodes.isEmpty {
+                ContentUnavailableView(
+                    label: {
+                        Label(
+                            title: { Text("No episodes in feed", bundle: .module) },
+                            icon: { Image(systemName: "list.dash") }
+                        )
+                    },
+                    actions: {
+                        Button(action: { openURL(DeepLink.showSearch) }) {
+                            Text("Follow your favorite shows!", bundle: .module)
                         }
-                    )
-                } else {
-                    ScrollView {
-                        LazyVStack(spacing: 0) {
-                            ForEach(episodes) { episode in
-                                EpisodeRowView(
-                                    episode: episode,
-                                    showsPlayButton: true,
-                                    showsImage: true
-                                )
-
-                                EpisodeDivider()
-                            }
-                        }
-                        .padding(.horizontal)
                     }
-                    .refreshable {
-                        await refreshFeed()
-                    }
-                }
+                )
             } else {
-                ProgressView()
-                    .scaleEffect(2)
+                ScrollView {
+                    LazyVStack(spacing: 0) {
+                        ForEach(episodes) { episode in
+                            EpisodeRowView(
+                                episode: episode,
+                                showsPlayButton: true,
+                                showsImage: true
+                            )
+                            
+                            EpisodeDivider()
+                        }
+                    }
+                    .padding(.horizontal)
+                }
+                .refreshable {
+                    await refreshFeed()
+                }
             }
         }
         .navigationTitle(Text("Feed", bundle: .module))
@@ -73,31 +74,23 @@ public struct FeedScreen: View {
             }
             await refreshFeed()
         }
-        .task {
-            for await episodes in databaseClient.followedEpisodesStream() {
-                self.episodes = episodes
-            }
-        }
     }
 }
 
 private extension FeedScreen {
     func refreshFeed() async {
-        let shows: [Show]
-        switch databaseClient.fetchFollowedShows() {
-        case .success(let followedShows):
-            shows = followedShows.elements
-        case .failure:
-            messageClient.presentError(String(localized: "Failed to communicate with database", bundle: .module))
-            return
-        }
-
-        await withTaskGroup(of: Void.self) { [rssClient, databaseClient] group in
-            for show in shows {
-                group.addTask {
-                    switch await rssClient.fetch(show.feedURL) {
+        await withTaskGroup(of: Void.self) { [rssClient] group in
+            for showRecord in showRecords {
+                group.addTask { @MainActor in
+                    guard let feedURL = showRecord.feedURL else { return }
+                    switch await rssClient.fetch(feedURL) {
                     case .success(let show):
-                        _ = databaseClient.addNewEpisodes(show)
+                        let existingEpisodeIDs = Set((showRecord.episodes?.allObjects as? [EpisodeRecord])?.compactMap { $0.id } ?? [])
+                        for episode in show.episodes where !existingEpisodeIDs.contains(episode.id) {
+                            let episodeRecord = EpisodeRecord(context: context, episode: episode)
+                            showRecord.addToEpisodes(episodeRecord)
+                        }
+                        context.saveWithErrorHandling { _ in }
                     case .failure:
                         // do not show error when update of one of shows failed
                         break
@@ -105,7 +98,7 @@ private extension FeedScreen {
                 }
             }
         }
-
+        
         userDefaultsClient.setFeedRefreshedAt(.now)
     }
 }

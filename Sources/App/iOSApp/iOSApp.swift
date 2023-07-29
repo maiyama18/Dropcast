@@ -1,3 +1,4 @@
+import DatabaseClient
 import DebugFeature
 import DeepLink
 import Dependencies
@@ -9,6 +10,7 @@ import SwiftUI
 public struct IOSApp: App {
     private let navigationState: NavigationState = .shared
     private let soundFileState: SoundFileState = .shared
+    private let persistentContainer: CloudKitPersistentProvider = .shared
 
     public init() {}
 
@@ -22,6 +24,7 @@ public struct IOSApp: App {
                 }
                 .environment(navigationState)
                 .environment(soundFileState)
+                .environment(\.managedObjectContext, persistentContainer.viewContext)
                 .onOpenURL { url in
                     Task {
                         switch url {

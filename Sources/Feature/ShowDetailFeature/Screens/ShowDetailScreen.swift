@@ -7,6 +7,7 @@ import Extension
 import MessageClient
 import NavigationState
 import RSSClient
+import SwiftData
 import SwiftUI
 
 @MainActor
@@ -22,14 +23,18 @@ public struct ShowDetailScreen: View {
     @State private var author: String?
     @State private var description: String?
     @State private var linkURL: URL?
-    @State private var followed: Bool?
     @State private var isFetchingShow: Bool = false
     @State private var downloadStates: [Episode.ID: EpisodeDownloadState]? = nil
-
-    @Environment(\.openURL) var openURL
+    
+    @FetchRequest var showRecords: FetchedResults<ShowRecord>
+    private var show: Show? {
+        showRecords.first(where: { $0.feedURL == feedURL })?.toEntity()
+    }
+    
+    @Environment(\.openURL) private var openURL
+    @Environment(\.managedObjectContext) private var context
     
     @Dependency(\.clipboardClient) private var clipboardClient
-    @Dependency(\.databaseClient) private var databaseClient
     @Dependency(\.messageClient) private var messageClient
     @Dependency(\.rssClient) private var rssClient
 
@@ -43,7 +48,8 @@ public struct ShowDetailScreen: View {
         self._author = .init(initialValue: args.author)
         self._description = .init(initialValue: args.description)
         self._linkURL = .init(initialValue: args.linkURL)
-        self._followed = .init(initialValue: args.followed)
+        
+        self._showRecords = ShowRecord.withFeedURL(feedURL)
     }
 
     public var body: some View {
@@ -54,7 +60,7 @@ public struct ShowDetailScreen: View {
                     title: title,
                     author: author,
                     description: description,
-                    followed: followed,
+                    followed: show != nil,
                     isFetchingShow: isFetchingShow,
                     toggleFollowButtonTapped: { Task { await toggleFollow() } }
                 )
@@ -123,16 +129,8 @@ public struct ShowDetailScreen: View {
                 episodes = show.episodes
             }
             
-            switch databaseClient.fetchShow(feedURL) {
-            case .success(let show):
-                if let show {
-                    followed = true
-                    reflectShow(show)
-                } else {
-                    followed = false
-                }
-            case .failure:
-                messageClient.presentError(String(localized: "Failed to connect to database", bundle: .module))
+            if let show = show {
+                reflectShow(show)
             }
             
             isFetchingShow = true
@@ -162,30 +160,32 @@ private extension ShowDetailScreen {
     }
     
     func toggleFollow() async {
-        guard let followed else { return }
-        if followed {
-            do {
-                try databaseClient.unfollowShow(feedURL).get()
-                self.followed = false
-            } catch {
-                messageClient.presentError(String(localized: "Failed to unfollow the show", bundle: .module))
+        if showRecords.isEmpty {
+            let showRecord = ShowRecord(
+                context: context,
+                show: Show(
+                    title: title,
+                    description: description,
+                    author: author,
+                    feedURL: feedURL,
+                    imageURL: imageURL,
+                    linkURL: linkURL,
+                    episodes: []
+                )
+            )
+            for episode in episodes {
+                let episodeRecord = EpisodeRecord(context: context, episode: episode)
+                showRecord.addToEpisodes(episodeRecord)
+            }
+            context.saveWithErrorHandling { _ in
+                messageClient.presentError(String(localized: "Failed to follow the show", bundle: .module))
             }
         } else {
-            do {
-                try databaseClient.followShow(
-                    Show(
-                        title: title,
-                        description: description,
-                        author: author,
-                        feedURL: feedURL,
-                        imageURL: imageURL,
-                        linkURL: linkURL,
-                        episodes: episodes
-                    )
-                ).get()
-                self.followed = true
-            } catch {
-                messageClient.presentError(String(localized: "Failed to follow the show", bundle: .module))
+            for showRecord in showRecords {
+                context.delete(showRecord)
+            }
+            context.saveWithErrorHandling { _ in
+                messageClient.presentError(String(localized: "Failed to unfollow the show", bundle: .module))
             }
         }
     }

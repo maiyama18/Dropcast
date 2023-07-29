@@ -1,16 +1,6 @@
 {
   "sourceLanguage" : "en",
   "strings" : {
-    "Failed to communicate with database" : {
-      "localizations" : {
-        "ja" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "データベースとの通信に失敗しました"
-          }
-        }
-      }
-    },
     "Feed" : {
       "localizations" : {
         "ja" : {

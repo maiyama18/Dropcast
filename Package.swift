@@ -232,14 +232,6 @@ let targets: [PackageDescription.Target] = [
         ],
         path: "Sources/Infra/DatabaseClient"
     ),
-    .testTarget(
-        name: "DatabaseClientTests",
-        dependencies: [
-            "DatabaseClient",
-            "TestHelper",
-        ],
-        path: "Tests/Infra/DatabaseClientTests"
-    ),
     .target(
         name: "RSSClient",
         dependencies: [

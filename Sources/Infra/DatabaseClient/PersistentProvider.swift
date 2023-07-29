@@ -1,16 +1,21 @@
-import CoreData
+@preconcurrency import CoreData
 import Dependencies
+import Logger
+import Observation
 
-public protocol PersistentProvider: Sendable {
-    func executeInBackground<T: Sendable>(operation: (NSManagedObjectContext) throws -> T) rethrows -> T
-}
-
-final class CloudKitPersistentProvider: PersistentProvider {
+public final class CloudKitPersistentProvider {
     // TODO: switch container identifier based on build
-    static let shared: CloudKitPersistentProvider = .init(
+    public static let shared: CloudKitPersistentProvider = .init(
         containerIdentifier: "iCloud.com.muijp.DropcastDev"
     )
 
+    private static func storeURL() -> URL {
+        let storeDirectory = NSPersistentCloudKitContainer.defaultDirectoryURL()
+        return storeDirectory.appendingPathComponent("Synced.sqlite")
+    }
+
+    public var viewContext: NSManagedObjectContext { persistentContainer.viewContext }
+    
     private let persistentContainer: LockIsolated<NSPersistentCloudKitContainer>
 
     private init(containerIdentifier: String) {
@@ -39,55 +44,6 @@ final class CloudKitPersistentProvider: PersistentProvider {
                 if let error = error {
                     fatalError("failed to load CoreData store: \(error)")
                 }
-            }
-        }
-    }
-
-    private static func storeURL() -> URL {
-        let storeDirectory = NSPersistentCloudKitContainer.defaultDirectoryURL()
-        return storeDirectory.appendingPathComponent("Synced.sqlite")
-    }
-
-    func executeInBackground<T: Sendable>(operation: (NSManagedObjectContext) throws -> T) rethrows -> T {
-        try persistentContainer.withValue { container in
-            let context = container.newBackgroundContext()
-            return try context.performAndWait {
-                try operation(context)
-            }
-        }
-    }
-}
-
-public final class InMemoryPersistentProvider: PersistentProvider {
-    private let persistentContainer: LockIsolated<NSPersistentContainer>
-
-    public init() {
-        persistentContainer = LockIsolated({
-            let model = NSManagedObjectModel(contentsOf: Bundle.module.url(forResource: "Model", withExtension: "momd")!)!
-            let container = NSPersistentCloudKitContainer(name: "Model", managedObjectModel: model)
-
-            let description = NSPersistentStoreDescription()
-            description.type = NSInMemoryStoreType
-
-            container.persistentStoreDescriptions = [description]
-
-            return container
-        }())
-
-        persistentContainer.withValue { container in
-            container.loadPersistentStores { _, error in
-                if let error = error {
-                    fatalError("failed to load CoreData store: \(error)")
-                }
-            }
-        }
-    }
-
-    public func executeInBackground<T: Sendable>(operation: (NSManagedObjectContext) throws -> T) rethrows -> T {
-        try persistentContainer.withValue { container in
-            let context = container.newBackgroundContext()
-            return try context.performAndWait {
-                try operation(context)
             }
         }
     }

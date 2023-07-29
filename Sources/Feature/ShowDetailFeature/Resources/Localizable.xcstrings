@@ -21,16 +21,6 @@
         }
       }
     },
-    "Failed to connect to database" : {
-      "localizations" : {
-        "ja" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "データベースとの通信に失敗しました"
-          }
-        }
-      }
-    },
     "Failed to follow the show" : {
       "localizations" : {
         "ja" : {

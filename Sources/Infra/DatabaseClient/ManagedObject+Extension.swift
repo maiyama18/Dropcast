@@ -1,8 +1,18 @@
 import CoreData
 import Entity
+import SwiftUI
 
 extension ShowRecord {
-    convenience init(context: NSManagedObjectContext, show: Show) {
+    @MainActor
+    public static func withFeedURL(_ feedURL: URL) -> FetchRequest<ShowRecord> {
+        FetchRequest<ShowRecord>(
+            entity: ShowRecord.entity(),
+            sortDescriptors: [],
+            predicate: NSPredicate(format: "%K == %@", #keyPath(ShowRecord.feedURL), feedURL as CVarArg)
+        )
+    }
+    
+    public convenience init(context: NSManagedObjectContext, show: Show) {
         self.init(context: context)
 
         title = show.title
@@ -18,7 +28,7 @@ extension ShowRecord {
         )
     }
 
-    func toShow() -> Show? {
+    public func toEntity() -> Show? {
         guard let title,
               let feedURL,
               let imageURL else { return nil }
@@ -30,13 +40,13 @@ extension ShowRecord {
             feedURL: feedURL,
             imageURL: imageURL,
             linkURL: linkURL,
-            episodes: episodes?.compactMap { ($0 as? EpisodeRecord)?.toEpisode() }.sorted(by: { $0.publishedAt > $1.publishedAt }) ?? []
+            episodes: episodes?.compactMap { ($0 as? EpisodeRecord)?.toEntity() }.sorted(by: { $0.publishedAt > $1.publishedAt }) ?? []
         )
     }
 }
 
 extension EpisodeRecord {
-    convenience init(context: NSManagedObjectContext, episode: Episode) {
+    public convenience init(context: NSManagedObjectContext, episode: Episode) {
         self.init(context: context)
 
         id = episode.id
@@ -48,12 +58,12 @@ extension EpisodeRecord {
         publishedAt = episode.publishedAt
     }
 
-    convenience init(context: NSManagedObjectContext, episode: Episode, show: Show) {
+    public convenience init(context: NSManagedObjectContext, episode: Episode, show: Show) {
         self.init(context: context, episode: episode)
         self.show = ShowRecord(context: context, show: show)
     }
 
-    func toEpisode() -> Episode? {
+    public func toEntity() -> Episode? {
         guard let id,
               let title,
               let soundURL,
