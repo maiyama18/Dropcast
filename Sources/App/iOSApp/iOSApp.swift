@@ -17,11 +17,7 @@ public struct IOSApp: App {
     public var body: some Scene {
         WindowGroup {
             MainTabScreen()
-                .onAppear {
-                    #if DEBUG
-                    installDebugMenu()
-                    #endif
-                }
+                .installDebugMenu()
                 .environment(navigationState)
                 .environment(soundFileState)
                 .environment(\.managedObjectContext, persistentContainer.viewContext)
