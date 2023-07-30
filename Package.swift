@@ -208,6 +208,7 @@ let targets: [PackageDescription.Target] = [
         name: "SoundFileState",
         dependencies: [
             .dependencies,
+            "DatabaseClient",
             "Error",
             "Entity",
             "Logger",

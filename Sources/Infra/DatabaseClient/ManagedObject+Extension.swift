@@ -1,4 +1,5 @@
 import CoreData
+import Dependencies
 import Entity
 import SwiftUI
 
@@ -46,6 +47,12 @@ extension ShowRecord {
 }
 
 extension EpisodeRecord {
+    public static func withID(_ id: String) -> NSFetchRequest<EpisodeRecord> {
+        let request = EpisodeRecord.fetchRequest()
+        request.predicate = NSPredicate(format: "id == %@", id)
+        return request
+    }
+    
     public convenience init(context: NSManagedObjectContext, episode: Episode) {
         self.init(context: context)
 
@@ -84,5 +91,30 @@ extension EpisodeRecord {
             showTitle: showTitle,
             showImageURL: showImageURL
         )
+    }
+}
+
+extension EpisodePlayingStateRecord {
+    public static func withEpisodeID(_ episodeID: String) -> NSFetchRequest<EpisodePlayingStateRecord> {
+        let request = EpisodePlayingStateRecord.fetchRequest()
+        request.predicate = NSPredicate(format: "episode.id == %@", episodeID)
+        return request
+    }
+    
+    public func startPlaying(atTime: TimeInterval) throws {
+        struct RecordNotFound: Error {}
+        
+        @Dependency(\.date.now) var now
+        
+        guard let episode else { throw RecordNotFound() }
+        isPlaying = true
+        willFinishedAt = now.addingTimeInterval(episode.duration - atTime)
+        lastPausedTime = 0
+    }
+    
+    public func pause(atTime: TimeInterval) {
+        isPlaying = false
+        willFinishedAt = nil
+        lastPausedTime = atTime
     }
 }

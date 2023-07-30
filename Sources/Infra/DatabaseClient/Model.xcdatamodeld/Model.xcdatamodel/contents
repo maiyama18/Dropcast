@@ -1,5 +1,11 @@
 <?xml version="1.0" encoding="UTF-8" standalone="yes"?>
-<model type="com.apple.IDECoreDataModeler.DataModel" documentVersion="1.0" lastSavedToolsVersion="21513" systemVersion="22A400" minimumToolsVersion="Automatic" sourceLanguage="Swift" userDefinedModelVersionIdentifier="">
+<model type="com.apple.IDECoreDataModeler.DataModel" documentVersion="1.0" lastSavedToolsVersion="22203.2" systemVersion="22F66" minimumToolsVersion="Automatic" sourceLanguage="Swift" userDefinedModelVersionIdentifier="">
+    <entity name="EpisodePlayingStateRecord" representedClassName="EpisodePlayingStateRecord" syncable="YES" codeGenerationType="class">
+        <attribute name="isPlaying" optional="YES" attributeType="Boolean" usesScalarValueType="YES"/>
+        <attribute name="lastPausedTime" optional="YES" attributeType="Double" defaultValueString="0.0" usesScalarValueType="YES"/>
+        <attribute name="willFinishedAt" optional="YES" attributeType="Date" usesScalarValueType="NO"/>
+        <relationship name="episode" optional="YES" maxCount="1" deletionRule="Nullify" destinationEntity="EpisodeRecord" inverseName="playingState" inverseEntity="EpisodeRecord"/>
+    </entity>
     <entity name="EpisodeRecord" representedClassName="EpisodeRecord" syncable="YES" codeGenerationType="class">
         <attribute name="duration" optional="YES" attributeType="Double" defaultValueString="0.0" usesScalarValueType="YES"/>
         <attribute name="episodeDescription" optional="YES" attributeType="String"/>
@@ -8,6 +14,7 @@
         <attribute name="soundURL" optional="YES" attributeType="URI"/>
         <attribute name="subtitle" optional="YES" attributeType="String"/>
         <attribute name="title" optional="YES" attributeType="String"/>
+        <relationship name="playingState" optional="YES" maxCount="1" deletionRule="Nullify" destinationEntity="EpisodePlayingStateRecord" inverseName="episode" inverseEntity="EpisodePlayingStateRecord"/>
         <relationship name="show" optional="YES" maxCount="1" deletionRule="Nullify" destinationEntity="ShowRecord" inverseName="episodes" inverseEntity="ShowRecord"/>
     </entity>
     <entity name="ShowRecord" representedClassName="ShowRecord" syncable="YES" codeGenerationType="class">
