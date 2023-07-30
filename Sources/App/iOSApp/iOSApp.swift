@@ -9,6 +9,8 @@ import SoundPlayerState
 import SwiftUI
 
 public struct IOSApp: App {
+    @UIApplicationDelegateAdaptor(AppDelegate.self) private var appDelegate
+    
     private let navigationState: NavigationState = .shared
     private let soundFileState: SoundFileState = .shared
     private let soundPlayerState: SoundPlayerState = .shared
