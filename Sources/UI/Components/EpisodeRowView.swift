@@ -7,6 +7,7 @@ import SoundFileState
 import SoundPlayerState
 import SwiftUI
 
+@MainActor
 public struct EpisodeRowView: View {
     enum SoundState {
         case notPlaying

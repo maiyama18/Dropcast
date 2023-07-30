@@ -10,6 +10,7 @@ import Observation
 /// 音声ファイルは <DocumentDirectory>/SoundFiles/<FeedURL の Base64>/<EpisodeID の Base64>/<音声ファイル名> という階層で保存されている。
 /// この階層で保存するため、ダウンロードの進捗時や完了時に Delegate で受け取る Identifier に FeedURL の Base64 / EpisodeID の Base64 / 音声ファイル名 が埋め込まれている TaskIdentifier を利用している。
 @Observable
+@MainActor
 public final class SoundFileState: NSObject {
     struct TaskIdentifier: Codable, Hashable {
         var feedURLBase64: String
@@ -48,7 +49,7 @@ public final class SoundFileState: NSObject {
     public var downloadStates: [Episode.ID: EpisodeDownloadState] = [:]
     public let downloadErrorPublisher: PassthroughSubject<Void, Never> = .init()
     
-    public var soundFilesRootDirectoryURL: URL { URL.documentsDirectory.appendingPathComponent("SoundFiles") }
+    nonisolated public var soundFilesRootDirectoryURL: URL { URL.documentsDirectory.appendingPathComponent("SoundFiles") }
     private var tasks: [TaskIdentifier: URLSessionDownloadTask] = [:]
     
     @ObservationIgnored @Dependency(\.logger[.soundFile]) var logger
@@ -116,24 +117,30 @@ public final class SoundFileState: NSObject {
 }
 
 extension SoundFileState: URLSessionDownloadDelegate {
-    public func urlSession(_ session: URLSession, task: URLSessionTask, didCompleteWithError error: Error?) {
+    nonisolated public func urlSession(_ session: URLSession, task: URLSessionTask, didCompleteWithError error: Error?) {
         if let error {
-            handleDelegateError(session: session, error: error)
+            Task { @MainActor in
+                handleDelegateError(session: session, error: error)
+            }
         }
     }
 
-    public func urlSession(_ session: URLSession, didBecomeInvalidWithError error: Error?) {
+    nonisolated public func urlSession(_ session: URLSession, didBecomeInvalidWithError error: Error?) {
         if let error {
-            handleDelegateError(session: session, error: error)
+            Task { @MainActor in
+                handleDelegateError(session: session, error: error)
+            }
         }
     }
 
-    public func urlSession(_ session: URLSession, downloadTask: URLSessionDownloadTask, didFinishDownloadingTo location: URL) {
+    nonisolated public func urlSession(_ session: URLSession, downloadTask: URLSessionDownloadTask, didFinishDownloadingTo location: URL) {
         guard let identifierString = session.configuration.identifier,
               let identifier = TaskIdentifier(string: identifierString),
               let episodeID = identifier.episodeID(),
               let data = try? Data(contentsOf: location) else {
-            handleDelegateError(session: session, error: UnexpectedError())
+            Task { @MainActor in
+                handleDelegateError(session: session, error: UnexpectedError())
+            }
             return
         }
         
@@ -144,8 +151,10 @@ extension SoundFileState: URLSessionDownloadDelegate {
             try FileManager.default.createDirectory(at: directoryURL, withIntermediateDirectories: true)
         } catch {
             guard (error as? CocoaError)?.code == CocoaError.fileWriteFileExists else {
-                logger.fault("failed to make directory: \(error, privacy: .public)")
-                handleDelegateError(session: session, error: UnexpectedError())
+                Task { @MainActor in
+                    logger.fault("failed to make directory: \(error, privacy: .public)")
+                    handleDelegateError(session: session, error: UnexpectedError())
+                }
                 return
             }
         }
@@ -153,15 +162,19 @@ extension SoundFileState: URLSessionDownloadDelegate {
         let fileURL = directoryURL.appendingPathComponent(identifier.soundFileName)
         do {
             try data.write(to: fileURL)
-            logger.notice("download file saved \(identifier.idBase64, privacy: .public): \(fileURL)")
-            downloadStates[episodeID] = .downloaded(url: fileURL)
+            Task { @MainActor in
+                logger.notice("download file saved \(identifier.idBase64, privacy: .public): \(fileURL)")
+                downloadStates[episodeID] = .downloaded(url: fileURL)
+            }
         } catch {
-            logger.fault("failed to save downloaded file \(identifier.idBase64, privacy: .public): \(error, privacy: .public)")
-            handleDelegateError(session: session, error: UnexpectedError())
+            Task { @MainActor in
+                logger.fault("failed to save downloaded file \(identifier.idBase64, privacy: .public): \(error, privacy: .public)")
+                handleDelegateError(session: session, error: UnexpectedError())
+            }
         }
     }
 
-    public func urlSession(
+    nonisolated public func urlSession(
         _ session: URLSession,
         downloadTask: URLSessionDownloadTask,
         didWriteData bytesWritten: Int64,
@@ -174,7 +187,9 @@ extension SoundFileState: URLSessionDownloadDelegate {
             return
         }
         let progress = Double(totalBytesWritten) / Double(totalBytesExpectedToWrite)
-        downloadStates[episodeID] = .downloading(progress: progress)
+        Task { @MainActor in
+            downloadStates[episodeID] = .downloading(progress: progress)
+        }
     }
 
     private func handleDelegateError(session: URLSession, error: Error) {

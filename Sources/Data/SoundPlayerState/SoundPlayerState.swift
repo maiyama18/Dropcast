@@ -7,6 +7,7 @@ import Foundation
 import Observation
 
 @Observable
+@MainActor
 public final class SoundPlayerState: NSObject {
     public enum State {
         case notPlaying
@@ -22,6 +23,11 @@ public final class SoundPlayerState: NSObject {
     private let context: NSManagedObjectContext = CloudKitPersistentProvider.shared.viewContext
     
     public func startPlaying(url: URL, episode: Episode) throws {
+        // 別のファイルが再生中であれば pause する
+        if case .playing(_, let episode) = state {
+            pause(episode: episode)
+        }
+            
         let playingState = try? context.fetch(EpisodePlayingStateRecord.withEpisodeID(episode.id)).first
         
         let audioPlayer = try AVAudioPlayer(contentsOf: url)
@@ -73,11 +79,11 @@ public final class SoundPlayerState: NSObject {
 }
 
 extension SoundPlayerState: AVAudioPlayerDelegate {
-    public func audioPlayerDidFinishPlaying(_ player: AVAudioPlayer, successfully flag: Bool) {
+    nonisolated public func audioPlayerDidFinishPlaying(_ player: AVAudioPlayer, successfully flag: Bool) {
         
     }
     
-    public func audioPlayerDecodeErrorDidOccur(_ player: AVAudioPlayer, error: Error?) {
+    nonisolated public func audioPlayerDecodeErrorDidOccur(_ player: AVAudioPlayer, error: Error?) {
         
     }
 }
