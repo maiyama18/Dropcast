@@ -110,7 +110,7 @@ public final class SoundFileState: NSObject {
             guard episodeIDIndex >= 0,
                   let episodeID = String(base64Encoded: fileURL.pathComponents[episodeIDIndex]) else { continue }
 
-            downloadStates[episodeID] = .downloaded
+            downloadStates[episodeID] = .downloaded(url: fileURL)
         }
     }
 }
@@ -154,7 +154,7 @@ extension SoundFileState: URLSessionDownloadDelegate {
         do {
             try data.write(to: fileURL)
             logger.notice("download file saved \(identifier.idBase64, privacy: .public): \(fileURL)")
-            downloadStates[episodeID] = .downloaded
+            downloadStates[episodeID] = .downloaded(url: fileURL)
         } catch {
             logger.fault("failed to save downloaded file \(identifier.idBase64, privacy: .public): \(error, privacy: .public)")
             handleDelegateError(session: session, error: UnexpectedError())

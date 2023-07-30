@@ -91,6 +91,7 @@ let targets: [PackageDescription.Target] = [
             "MessageClientLive",
             "Logger",
             "NavigationState",
+            "SoundPlayerState",
         ],
         path: "Sources/App/iOSApp"
     ),
@@ -183,11 +184,13 @@ let targets: [PackageDescription.Target] = [
     .target(
         name: "Components",
         dependencies: [
+            .dependencies,
             .nukeUI,
             "Entity",
             "Formatter",
             "MessageClient",
             "SoundFileState",
+            "SoundPlayerState",
         ],
         path: "Sources/UI/Components"
     ),
@@ -210,6 +213,14 @@ let targets: [PackageDescription.Target] = [
             "Logger",
         ],
         path: "Sources/Data/SoundFileState"
+    ),
+    .target(
+        name: "SoundPlayerState",
+        dependencies: [
+            .dependencies,
+            "Logger",
+        ],
+        path: "Sources/Data/SoundPlayerState"
     ),
     
     // Infra module
@@ -307,6 +318,7 @@ let targets: [PackageDescription.Target] = [
     .target(
         name: "DeepLink",
         dependencies: [
+            .dependencies,
             "Environment"
         ],
         path: "Sources/Core/DeepLink"
