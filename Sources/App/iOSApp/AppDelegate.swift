@@ -8,11 +8,11 @@ final class AppDelegate: NSObject, UIApplicationDelegate {
     
     func application(_ application: UIApplication, didFinishLaunchingWithOptions launchOptions: [UIApplication.LaunchOptionsKey: Any]? = nil) -> Bool {
         do {
-            try AVAudioSession.sharedInstance().setCategory(.playback, mode: .default, options: [.defaultToSpeaker, .allowAirPlay])
+            try AVAudioSession.sharedInstance().setCategory(.playback, mode: .default)
             try AVAudioSession.sharedInstance().setActive(true)
             logger.notice("complete setup of background audio")
         } catch {
-            logger.error("Failed to setup background audio")
+            logger.error("Failed to setup background audio: \(error, privacy: .public)")
         }
         return true
     }
