@@ -22,20 +22,6 @@ public final class SoundPlayerState: NSObject {
     private var audioPlayer: AVAudioPlayer? = nil
     private let context: NSManagedObjectContext = CloudKitPersistentProvider.shared.viewContext
     
-    public func startPlayingCurrent() throws {
-        guard case .pausing(let url, let episode) = state else {
-            return
-        }
-        try startPlaying(url: url, episode: episode)
-    }
-    
-    public func pauseCurrent() {
-        guard case .playing(let url, let episode) = state else {
-            return
-        }
-        pause(url: url, episode: episode)
-    }
-    
     public func startPlaying(url: URL, episode: Episode) throws {
         // 別のファイルが再生中であれば pause する
         if case .playing(let url, let episode) = state {
@@ -79,6 +65,16 @@ public final class SoundPlayerState: NSObject {
         context.saveWithErrorHandling { _ in assertionFailure() }
         
         self.audioPlayer = nil
+    }
+    
+    public func goForward(seconds: TimeInterval) {
+        guard let audioPlayer else { return }
+        audioPlayer.currentTime = min(audioPlayer.currentTime + seconds, audioPlayer.duration - 1)
+    }
+    
+    public func goBackward(seconds: TimeInterval) {
+        guard let audioPlayer else { return }
+        audioPlayer.currentTime = max(audioPlayer.currentTime - seconds, 0)
     }
     
     private func findOrCreatePlayingState(episodeID: Episode.ID) -> EpisodePlayingStateRecord? {

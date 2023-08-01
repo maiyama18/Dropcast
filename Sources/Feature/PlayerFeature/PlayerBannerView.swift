@@ -54,7 +54,7 @@ public struct PlayerBannerView: View {
             Spacer(minLength: 0)
             
             HStack {
-                Button(action: {}) {
+                Button(action: { soundPlayerState.goBackward(seconds: 5) }) {
                     Image(systemName: "gobackward.5")
                         .padding(.horizontal, 4)
                         .padding(.vertical, 8)
@@ -84,7 +84,7 @@ public struct PlayerBannerView: View {
                     }
                 }
                 
-                Button(action: {}) {
+                Button(action: { soundPlayerState.goForward(seconds: 5) }) {
                     Image(systemName: "goforward.5")
                         .padding(.horizontal, 4)
                         .padding(.vertical, 8)
