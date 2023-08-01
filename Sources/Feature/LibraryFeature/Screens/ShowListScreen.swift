@@ -88,6 +88,7 @@ public struct ShowListScreen: View {
                     }
                 }
             }
+            .toolbarBackground(.ultraThinMaterial, for: .navigationBar)
             .navigationTitle(Text("Shows", bundle: .module))
             .navigationDestination(for: ShowListRoute.self) { route in
                 switch route {

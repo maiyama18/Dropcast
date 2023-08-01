@@ -104,6 +104,7 @@ let targets: [PackageDescription.Target] = [
             "FeedFeature",
             "LibraryFeature",
             "SettingsFeature",
+            "PlayerFeature",
             "NavigationState",
         ],
         path: "Sources/Feature/MainTabFeature"
@@ -178,6 +179,15 @@ let targets: [PackageDescription.Target] = [
         ],
         path: "Sources/Feature/ShowDetailFeature"
     ),
+    .target(
+        name: "PlayerFeature",
+        dependencies: [
+            .nukeUI,
+            "Entity",
+            "SoundPlayerState",
+        ],
+        path: "Sources/Feature/PlayerFeature"
+    ),
     
     // UI module
 
@@ -219,6 +229,7 @@ let targets: [PackageDescription.Target] = [
         name: "SoundPlayerState",
         dependencies: [
             .dependencies,
+            "DatabaseClient",
             "Logger",
         ],
         path: "Sources/Data/SoundPlayerState"
@@ -439,6 +450,9 @@ var package = Package(
         .library(
             name: "ShowDetailFeature",
             targets: ["ShowDetailFeature"]),
+        .library(
+            name: "PlayerFeature",
+            targets: ["PlayerFeature"]),
         .library(
             name: "Components",
             targets: ["Components"]),

@@ -12,7 +12,7 @@ public final class SoundPlayerState: NSObject {
     public enum State {
         case notPlaying
         case playing(url: URL, episode: Episode)
-        case pausing(episode: Episode)
+        case pausing(url: URL, episode: Episode)
     }
     
     public static let shared = SoundPlayerState()
@@ -22,10 +22,24 @@ public final class SoundPlayerState: NSObject {
     private var audioPlayer: AVAudioPlayer? = nil
     private let context: NSManagedObjectContext = CloudKitPersistentProvider.shared.viewContext
     
+    public func startPlayingCurrent() throws {
+        guard case .pausing(let url, let episode) = state else {
+            return
+        }
+        try startPlaying(url: url, episode: episode)
+    }
+    
+    public func pauseCurrent() {
+        guard case .playing(let url, let episode) = state else {
+            return
+        }
+        pause(url: url, episode: episode)
+    }
+    
     public func startPlaying(url: URL, episode: Episode) throws {
         // 別のファイルが再生中であれば pause する
-        if case .playing(_, let episode) = state {
-            pause(episode: episode)
+        if case .playing(let url, let episode) = state {
+            pause(url: url, episode: episode)
         }
             
         let playingState = try? context.fetch(EpisodePlayingStateRecord.withEpisodeID(episode.id)).first
@@ -43,6 +57,7 @@ public final class SoundPlayerState: NSObject {
         } else {
             guard let playingState = findOrCreatePlayingState(episodeID: episode.id) else {
                 assertionFailure()
+                state = .notPlaying
                 return
             }
             try playingState.startPlaying(atTime: audioPlayer.currentTime)
@@ -50,13 +65,14 @@ public final class SoundPlayerState: NSObject {
         context.saveWithErrorHandling { _ in assertionFailure() }
     }
     
-    public func pause(episode: Episode) {
+    public func pause(url: URL, episode: Episode) {
         audioPlayer?.stop()
         
-        self.state = .pausing(episode: episode)
+        self.state = .pausing(url: url, episode: episode)
         
         guard let playingState = findOrCreatePlayingState(episodeID: episode.id) else {
             assertionFailure()
+            state = .notPlaying
             return
         }
         playingState.pause(atTime: audioPlayer?.currentTime ?? 0)

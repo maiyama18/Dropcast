@@ -18,6 +18,7 @@ public struct SettingsScreen: View {
                     Text("About App", bundle: .module)
                 }
             }
+            .toolbarBackground(.ultraThinMaterial, for: .navigationBar)
             .navigationTitle(Text("Settings", bundle: .module))
             .navigationDestination(for: SettingsRoute.self) { route in
                 switch route {

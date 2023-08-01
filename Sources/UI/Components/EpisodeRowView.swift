@@ -111,7 +111,7 @@ public struct EpisodeRowView: View {
                         messageClient.presentError(String(localized: "Failed to play episode \(episode.title)", bundle: .module))
                     }
                 case .playing:
-                    soundPlayerState.pause(episode: episode)
+                    soundPlayerState.pause(url: url, episode: episode)
                 }
             }
         } label: {
@@ -150,7 +150,7 @@ public struct EpisodeRowView: View {
             return .notPlaying
         case .playing(_, let playingEpisode):
             return episode.id == playingEpisode.id ? .playing : .notPlaying
-        case .pausing(let playingEpisode):
+        case .pausing(_, let playingEpisode):
             return episode.id == playingEpisode.id ? .pausing : .notPlaying
         }
     }
