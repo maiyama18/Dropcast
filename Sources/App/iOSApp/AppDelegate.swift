@@ -16,4 +16,8 @@ final class AppDelegate: NSObject, UIApplicationDelegate {
         }
         return true
     }
+    
+    func application(_ application: UIApplication, handleEventsForBackgroundURLSession identifier: String) async {
+        logger.notice("handleEventsForBackgroundURLSession")
+    }
 }
