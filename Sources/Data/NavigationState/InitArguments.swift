@@ -1,12 +1,13 @@
-import Entity
+@preconcurrency import Database
 import Foundation
 
+// TODO: objectID のみを渡して ShowDetail で Show を取得してもらった方が良い？
 public struct ShowDetailInitArguments: Hashable, Sendable {
     public let showsEpisodeActionButtons: Bool
     public let feedURL: URL
     public let imageURL: URL
     public let title: String
-    public let episodes: [Episode]
+    public let episodes: [EpisodeRecord]
     public let author: String?
     public let description: String?
     public let linkURL: URL?
@@ -17,7 +18,7 @@ public struct ShowDetailInitArguments: Hashable, Sendable {
         feedURL: URL,
         imageURL: URL,
         title: String,
-        episodes: [Episode] = [],
+        episodes: [EpisodeRecord] = [],
         author: String? = nil,
         description: String? = nil,
         linkURL: URL? = nil,

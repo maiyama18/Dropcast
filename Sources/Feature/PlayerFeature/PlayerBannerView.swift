@@ -6,7 +6,7 @@
 //
 //
 
-import Entity
+import Database
 import NukeUI
 import SoundPlayerState
 import SwiftUI
@@ -28,9 +28,9 @@ public struct PlayerBannerView: View {
         }
     }
     
-    private func bannerView(playing: Bool, url: URL, episode: Episode) -> some View {
+    private func bannerView(playing: Bool, url: URL, episode: EpisodeRecord) -> some View {
         HStack {
-            LazyImage(url: episode.showImageURL) { state in
+            LazyImage(url: episode.show?.imageURL) { state in
                 if let image = state.image {
                     image
                 } else {
@@ -42,7 +42,7 @@ public struct PlayerBannerView: View {
             .cornerRadius(8)
             
             VStack(alignment: .leading) {
-                Text(episode.showTitle)
+                Text(episode.show?.title ?? "")
                     .font(.subheadline)
                     .foregroundStyle(.secondary)
                 

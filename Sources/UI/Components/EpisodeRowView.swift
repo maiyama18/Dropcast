@@ -1,3 +1,4 @@
+import Database
 import Dependencies
 import Entity
 import Formatter
@@ -15,7 +16,7 @@ public struct EpisodeRowView: View {
         case pausing
     }
     
-    var episode: Episode
+    var episode: EpisodeRecord
     var showsPlayButton: Bool
     var showsImage: Bool
     
@@ -24,7 +25,7 @@ public struct EpisodeRowView: View {
     @Dependency(\.messageClient) private var messageClient
     
     public init(
-        episode: Episode,
+        episode: EpisodeRecord,
         showsPlayButton: Bool,
         showsImage: Bool
     ) {
@@ -35,8 +36,8 @@ public struct EpisodeRowView: View {
     
     public var body: some View {
         HStack(alignment: .top, spacing: 8) {
-            if showsImage {
-                LazyImage(url: episode.showImageURL) { state in
+            if let showImageURL = episode.show?.imageURL {
+                LazyImage(url: showImageURL) { state in
                     if let image = state.image {
                         image
                     } else {
@@ -155,39 +156,3 @@ public struct EpisodeRowView: View {
         }
     }
 }
-
-#if DEBUG
-
-#Preview {
-    ScrollView {
-        LazyVStack(spacing: 8) {
-            EpisodeRowView(
-                episode: .fixtureRebuild352,
-                showsPlayButton: true,
-                showsImage: true
-            )
-            
-            EpisodeRowView(
-                episode: .fixtureRebuild351,
-                showsPlayButton: true,
-                showsImage: true
-            )
-            
-            EpisodeRowView(
-                episode: .fixtureRebuild351,
-                showsPlayButton: true,
-                showsImage: true
-            )
-            
-            EpisodeRowView(
-                episode: .fixtureRebuild350,
-                showsPlayButton: true,
-                showsImage: true
-            )
-        }
-        .padding(.horizontal)
-        .tint(.orange)
-    }
-}
-
-#endif

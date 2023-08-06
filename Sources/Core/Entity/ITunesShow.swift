@@ -23,17 +23,6 @@ public struct ITunesShow: Sendable, Equatable, Identifiable {
         self.artworkURL = artworkURL
         self.artworkLowQualityURL = artworkLowQualityURL
     }
-
-    public init(show: Show) {
-        self.init(
-            id: 0,
-            artistName: show.author ?? "",
-            showName: show.title,
-            feedURL: show.feedURL,
-            artworkURL: show.imageURL,
-            artworkLowQualityURL: show.imageURL
-        )
-    }
 }
 
 #if DEBUG

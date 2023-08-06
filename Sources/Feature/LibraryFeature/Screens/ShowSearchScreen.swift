@@ -1,4 +1,5 @@
 import Algorithms
+import Database
 import Dependencies
 import Entity
 import IdentifiedCollections
@@ -9,13 +10,36 @@ import SwiftUI
 
 @MainActor
 struct ShowSearchScreen: View {
+    struct SearchedShow: Identifiable, Equatable {
+        let feedURL: URL
+        let imageURL: URL
+        let title: String
+        let author: String?
+        
+        var id: URL { feedURL }
+        
+        init(show: ShowRecord) {
+            feedURL = show.feedURL
+            imageURL = show.imageURL
+            title = show.title
+            author = show.author
+        }
+        
+        init(iTunesShow: ITunesShow) {
+            feedURL = iTunesShow.feedURL
+            imageURL = iTunesShow.artworkURL
+            title = iTunesShow.showName
+            author = iTunesShow.artistName
+        }
+    }
+    
     enum SearchState: Equatable {
         case prompt
         case empty(query: String)
-        case loading(shows: IdentifiedArrayOf<ITunesShow>)
-        case loaded(shows: IdentifiedArrayOf<ITunesShow>)
+        case loading(shows: IdentifiedArrayOf<SearchedShow>)
+        case loaded(shows: IdentifiedArrayOf<SearchedShow>)
 
-        var currentShows: IdentifiedArrayOf<ITunesShow> {
+        var currentShows: IdentifiedArrayOf<SearchedShow> {
             switch self {
             case .prompt, .empty:
                 return []
@@ -92,12 +116,12 @@ struct ShowSearchScreen: View {
                                         args: .init(
                                             showsEpisodeActionButtons: false,
                                             feedURL: show.feedURL,
-                                            imageURL: show.artworkURL,
-                                            title: show.showName
+                                            imageURL: show.imageURL,
+                                            title: show.title
                                         )
                                     )
                                 ) {
-                                    ShowRowView(show: SimpleShow(iTunesShow: show))
+                                    ShowRowView(feedURL: show.feedURL, imageURL: show.imageURL, title: show.title, author: show.author)
                                 }
                             }
                         }
@@ -141,7 +165,7 @@ private extension ShowSearchScreen {
         if let url = URL(string: query), (url.scheme == "https" || url.scheme == "http") {
             switch await rssClient.fetch(url) {
             case .success(let show):
-                searchState = .loaded(shows: [ITunesShow(show: show)])
+                searchState = .loaded(shows: [SearchedShow(show: show)])
             case .failure:
                 searchState = .empty(query: query)
             }
@@ -150,7 +174,7 @@ private extension ShowSearchScreen {
             case .success(let shows):
                 searchState = shows.isEmpty
                 ? .empty(query: query)
-                : .loaded(shows: .init(uniqueElements: shows.uniqued(on: \.feedURL)))
+                : .loaded(shows: .init(uniqueElements: shows.uniqued(on: \.feedURL).map(SearchedShow.init(iTunesShow:))))
             case .failure(let error):
                 let message: String
                 switch error {

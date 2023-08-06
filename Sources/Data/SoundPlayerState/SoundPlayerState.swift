@@ -1,6 +1,6 @@
 import AVFoundation
 import CoreData
-import DatabaseClient
+import Database
 import Dependencies
 import Entity
 import Foundation
@@ -11,8 +11,8 @@ import Observation
 public final class SoundPlayerState: NSObject {
     public enum State {
         case notPlaying
-        case playing(url: URL, episode: Episode)
-        case pausing(url: URL, episode: Episode)
+        case playing(url: URL, episode: EpisodeRecord)
+        case pausing(url: URL, episode: EpisodeRecord)
     }
     
     public static let shared = SoundPlayerState()
@@ -22,7 +22,7 @@ public final class SoundPlayerState: NSObject {
     private var audioPlayer: AVAudioPlayer? = nil
     private let context: NSManagedObjectContext = CloudKitPersistentProvider.shared.viewContext
     
-    public func startPlaying(url: URL, episode: Episode) throws {
+    public func startPlaying(url: URL, episode: EpisodeRecord) throws {
         // 別のファイルが再生中であれば pause する
         if case .playing(let url, let episode) = state {
             pause(url: url, episode: episode)
@@ -51,7 +51,7 @@ public final class SoundPlayerState: NSObject {
         context.saveWithErrorHandling { _ in assertionFailure() }
     }
     
-    public func pause(url: URL, episode: Episode) {
+    public func pause(url: URL, episode: EpisodeRecord) {
         audioPlayer?.stop()
         
         self.state = .pausing(url: url, episode: episode)
@@ -77,7 +77,7 @@ public final class SoundPlayerState: NSObject {
         audioPlayer.currentTime = max(audioPlayer.currentTime - seconds, 0)
     }
     
-    private func findOrCreatePlayingState(episodeID: Episode.ID) -> EpisodePlayingStateRecord? {
+    private func findOrCreatePlayingState(episodeID: EpisodeRecord.ID) -> EpisodePlayingStateRecord? {
         if let playingState = try? context.fetch(EpisodePlayingStateRecord.withEpisodeID(episodeID)).first {
             return playingState
         }

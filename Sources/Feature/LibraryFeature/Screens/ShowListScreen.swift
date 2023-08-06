@@ -1,7 +1,6 @@
 import CoreData
-import DatabaseClient
+import Database
 import Dependencies
-import Entity
 import IdentifiedCollections
 import NavigationState
 import ShowDetailFeature
@@ -9,10 +8,11 @@ import SwiftUI
 
 @MainActor
 public struct ShowListScreen: View {
+    // TODO: ソートする
     @FetchRequest<ShowRecord>(sortDescriptors: []) private var showRecords: FetchedResults<ShowRecord>
     
-    private var shows: [Show] {
-        showRecords.compactMap { $0.toEntity() }.sorted(by: { $0.title > $1.title })
+    private var shows: [ShowRecord] {
+        showRecords.sorted(by: { $0.title > $1.title })
     }
     
     @Environment(NavigationState.self) private var navigationState
@@ -57,7 +57,7 @@ public struct ShowListScreen: View {
                                     )
                                 )
                             ) {
-                                ShowRowView(show: SimpleShow(show: show))
+                                ShowRowView(feedURL: show.feedURL, imageURL: show.imageURL, title: show.title, author: show.author)
                             }
                             .swipeActions(allowsFullSwipe: false) {
                                 Button(role: .destructive) {

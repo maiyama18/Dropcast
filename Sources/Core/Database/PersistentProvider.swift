@@ -15,6 +15,7 @@ public final class CloudKitPersistentProvider {
     }
 
     public var viewContext: NSManagedObjectContext { persistentContainer.viewContext }
+    public var managedObjectModel: NSManagedObjectModel { persistentContainer.managedObjectModel }
     
     private let persistentContainer: LockIsolated<NSPersistentCloudKitContainer>
 

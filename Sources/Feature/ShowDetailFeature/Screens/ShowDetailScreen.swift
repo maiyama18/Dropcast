@@ -1,6 +1,6 @@
 import ClipboardClient
 import Components
-import DatabaseClient
+import Database
 import Dependencies
 import Entity
 import Extension
@@ -19,17 +19,15 @@ public struct ShowDetailScreen: View {
     /// 検索画面から遷移した場合は false になる。
     private let showsEpisodeActionButtons: Bool
     
-    @State private var episodes: [Episode]
+    @State private var episodes: [EpisodeRecord]
     @State private var author: String?
     @State private var description: String?
     @State private var linkURL: URL?
     @State private var isFetchingShow: Bool = false
-    @State private var downloadStates: [Episode.ID: EpisodeDownloadState]? = nil
+    @State private var downloadStates: [EpisodeRecord.ID: EpisodeDownloadState]? = nil
     
     @FetchRequest var showRecords: FetchedResults<ShowRecord>
-    private var show: Show? {
-        showRecords.first(where: { $0.feedURL == feedURL })?.toEntity()
-    }
+    private var show: ShowRecord? { showRecords.first }
     
     @Environment(\.openURL) private var openURL
     @Environment(\.managedObjectContext) private var context
@@ -70,7 +68,7 @@ public struct ShowDetailScreen: View {
                 if episodes.isEmpty {
                     ForEach(0..<10) { _ in
                         EpisodeRowView(
-                            episode: .fixtureRebuild352,
+                            episode: .fixture,
                             showsPlayButton: showsEpisodeActionButtons,
                             showsImage: false
                         )
@@ -122,10 +120,10 @@ public struct ShowDetailScreen: View {
         .navigationBarTitleDisplayMode(.inline)
         .navigationTitle(title)
         .task {
-            let reflectShow = { (show: Show) in
+            let reflectShow = { (show: ShowRecord) in
                 author = show.author
                 linkURL = show.linkURL
-                description = show.description
+                description = show.showDescription
                 episodes = show.episodes
             }
             
@@ -154,7 +152,7 @@ public struct ShowDetailScreen: View {
 }
 
 private extension ShowDetailScreen {
-    func downloadState(id: Episode.ID) -> EpisodeDownloadState {
+    func downloadState(id: EpisodeRecord.ID) -> EpisodeDownloadState {
         guard let downloadStates else { return .notDownloaded }
         return downloadStates[id] ?? .notDownloaded
     }
@@ -163,19 +161,25 @@ private extension ShowDetailScreen {
         if showRecords.isEmpty {
             let showRecord = ShowRecord(
                 context: context,
-                show: Show(
-                    title: title,
-                    description: description,
-                    author: author,
-                    feedURL: feedURL,
-                    imageURL: imageURL,
-                    linkURL: linkURL,
-                    episodes: []
-                )
+                title: title,
+                description: description,
+                author: author,
+                feedURL: feedURL,
+                imageURL: imageURL,
+                linkURL: linkURL
             )
-            for episode in episodes {
-                let episodeRecord = EpisodeRecord(context: context, episode: episode)
-                showRecord.addToEpisodes(episodeRecord)
+            for episode in self.episodes {
+                let episode = EpisodeRecord(
+                    context: context,
+                    id: episode.id,
+                    title: episode.title,
+                    subtitle: episode.subtitle,
+                    description: episode.episodeDescription,
+                    duration: episode.duration,
+                    soundURL: episode.soundURL,
+                    publishedAt: episode.publishedAt
+                )
+                showRecord.addToEpisodes_(episode)
             }
             context.saveWithErrorHandling { _ in
                 messageClient.presentError(String(localized: "Failed to follow the show", bundle: .module))

@@ -1,6 +1,6 @@
 import Components
 import CoreData
-import DatabaseClient
+import Database
 import DeepLink
 import Dependencies
 import Entity
@@ -14,12 +14,9 @@ import UserDefaultsClient
 
 @MainActor
 public struct FeedScreen: View {
-    @FetchRequest<EpisodeRecord>(sortDescriptors: []) private var episodeRecords: FetchedResults<EpisodeRecord>
-    @FetchRequest<ShowRecord>(sortDescriptors: []) private var showRecords: FetchedResults<ShowRecord>
-    
-    private var episodes: [Episode] {
-        episodeRecords.compactMap { $0.toEntity() }.sorted(by: { $0.publishedAt > $1.publishedAt })
-    }
+    // TODO: ソート && 重複をなくす && valid な record にフィルタする
+    @FetchRequest<EpisodeRecord>(sortDescriptors: []) private var episodes: FetchedResults<EpisodeRecord>
+    @FetchRequest<ShowRecord>(sortDescriptors: []) private var shows: FetchedResults<ShowRecord>
     
     @Environment(\.openURL) private var openURL
     @Environment(\.managedObjectContext) private var context
@@ -84,15 +81,13 @@ public struct FeedScreen: View {
 private extension FeedScreen {
     func refreshFeed() async {
         await withTaskGroup(of: Void.self) { [rssClient] group in
-            for showRecord in showRecords {
+            for show in shows {
                 group.addTask { @MainActor in
-                    guard let feedURL = showRecord.feedURL else { return }
-                    switch await rssClient.fetch(feedURL) {
+                    switch await rssClient.fetch(show.feedURL) {
                     case .success(let show):
-                        let existingEpisodeIDs = Set((showRecord.episodes?.allObjects as? [EpisodeRecord])?.compactMap { $0.id } ?? [])
+                        let existingEpisodeIDs = Set(show.episodes.map { $0.id } ?? [])
                         for episode in show.episodes where !existingEpisodeIDs.contains(episode.id) {
-                            let episodeRecord = EpisodeRecord(context: context, episode: episode)
-                            showRecord.addToEpisodes(episodeRecord)
+                            show.addToEpisodes_(episode)
                         }
                         context.saveWithErrorHandling { _ in }
                     case .failure:

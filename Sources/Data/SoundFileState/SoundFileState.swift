@@ -1,4 +1,5 @@
 import Combine
+import Database
 import Dependencies
 import Entity
 import Error
@@ -17,8 +18,9 @@ public final class SoundFileState: NSObject {
         var idBase64: String
         var soundFileName: String
 
-        init?(episode: Episode) {
-            guard let feedURLBase64 = episode.showFeedURL.absoluteString.base64Encoded(),
+        init?(episode: EpisodeRecord) {
+            guard let show = episode.show,
+                  let feedURLBase64 = show.feedURL.absoluteString.base64Encoded(),
                   let idBase64 = episode.id.base64Encoded() else { return nil }
 
             self.feedURLBase64 = feedURLBase64
@@ -37,7 +39,7 @@ public final class SoundFileState: NSObject {
             return String(data: data, encoding: .utf8)
         }
         
-        func episodeID() -> Episode.ID? {
+        func episodeID() -> EpisodeRecord.ID? {
             String(base64Encoded: idBase64)
         }
     }
@@ -46,7 +48,7 @@ public final class SoundFileState: NSObject {
     
     public static let shared: SoundFileState = .init()
     
-    public var downloadStates: [Episode.ID: EpisodeDownloadState] = [:]
+    public var downloadStates: [EpisodeRecord.ID: EpisodeDownloadState] = [:]
     public let downloadErrorPublisher: PassthroughSubject<Void, Never> = .init()
     
     nonisolated public var soundFilesRootDirectoryURL: URL { URL.documentsDirectory.appendingPathComponent("SoundFiles") }
@@ -59,14 +61,14 @@ public final class SoundFileState: NSObject {
         self.initializeDownloadStates()
     }
 
-    public func startDownload(episode: Episode) throws {
+    public func startDownload(episode: EpisodeRecord) throws {
         guard let identifier = TaskIdentifier(episode: episode),
               let identifierString = identifier.string() else {
             logger.notice("failed to make identifierString")
             throw UnexpectedError()
         }
 
-        logger.notice("downloading episode: \(identifier.idBase64) \(episode.showTitle) \(episode.title)")
+        logger.notice("downloading episode: \(identifier.idBase64) \(episode.title)")
 
         downloadStates[episode.id] = .pushedToDownloadQueue
 
@@ -77,14 +79,14 @@ public final class SoundFileState: NSObject {
         task.resume()
     }
     
-    public func cancelDownload(episode: Episode) {
+    public func cancelDownload(episode: EpisodeRecord) {
         downloadStates[episode.id] = .notDownloaded
         
         guard let identifier = TaskIdentifier(episode: episode) else {
             return
         }
         
-        logger.notice("canceling download episode: \(identifier.idBase64) \(episode.showTitle) \(episode.title)")
+        logger.notice("canceling download episode: \(identifier.idBase64) \(episode.title)")
         
         tasks[identifier]?.cancel()
         tasks.removeValue(forKey: identifier)

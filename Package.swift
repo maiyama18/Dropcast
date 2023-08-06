@@ -126,7 +126,7 @@ let targets: [PackageDescription.Target] = [
         dependencies: [
             "ShowDetailFeature",
             "Components",
-            "DatabaseClient",
+            "Database",
             "DeepLink",
             "Entity",
             "MessageClient",
@@ -155,7 +155,7 @@ let targets: [PackageDescription.Target] = [
             "ShowDetailFeature",
             "Entity",
             "Error",
-            "DatabaseClient",
+            "Database",
             "ITunesClient",
             "MessageClient",
             "RSSClient",
@@ -169,7 +169,7 @@ let targets: [PackageDescription.Target] = [
             .nukeUI,
             "Components",
             "ClipboardClient",
-            "DatabaseClient",
+            "Database",
             "MessageClient",
             "RSSClient",
             "SoundFileState",
@@ -210,7 +210,7 @@ let targets: [PackageDescription.Target] = [
     .target(
         name: "NavigationState",
         dependencies: [
-            "Entity",
+            "Database",
         ],
         path: "Sources/Data/NavigationState"
     ),
@@ -218,7 +218,7 @@ let targets: [PackageDescription.Target] = [
         name: "SoundFileState",
         dependencies: [
             .dependencies,
-            "DatabaseClient",
+            "Database",
             "Error",
             "Entity",
             "Logger",
@@ -229,7 +229,7 @@ let targets: [PackageDescription.Target] = [
         name: "SoundPlayerState",
         dependencies: [
             .dependencies,
-            "DatabaseClient",
+            "Database",
             "Logger",
         ],
         path: "Sources/Data/SoundPlayerState"
@@ -243,23 +243,11 @@ let targets: [PackageDescription.Target] = [
         path: "Sources/Infra/ClipboardClient"
     ),
     .target(
-        name: "DatabaseClient",
-        dependencies: [
-            .algorithms,
-            .asyncAlgorithms,
-            .dependencies,
-            .identifiedCollections,
-            "Entity",
-            "Error",
-            "Logger",
-        ],
-        path: "Sources/Infra/DatabaseClient"
-    ),
-    .target(
         name: "RSSClient",
         dependencies: [
             .dependencies,
             .feedKit,
+            "Database",
             "Entity",
             "Error",
             "Logger",
@@ -326,6 +314,19 @@ let targets: [PackageDescription.Target] = [
         name: "Build",
         dependencies: [],
         path: "Sources/Core/Build"
+    ),
+    .target(
+        name: "Database",
+        dependencies: [
+            .algorithms,
+            .asyncAlgorithms,
+            .dependencies,
+            .identifiedCollections,
+            "Entity",
+            "Error",
+            "Logger",
+        ],
+        path: "Sources/Core/Database"
     ),
     .target(
         name: "DeepLink",
@@ -457,8 +458,8 @@ var package = Package(
             name: "Components",
             targets: ["Components"]),
         .library(
-            name: "DatabaseClient",
-            targets: ["DatabaseClient"]),
+            name: "Database",
+            targets: ["Database"]),
         .library(
             name: "ITunesClient",
             targets: ["ITunesClient"]),

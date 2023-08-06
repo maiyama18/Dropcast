@@ -3,13 +3,14 @@ import NukeUI
 import SwiftUI
 
 struct ShowRowView: View {
-    let show: SimpleShow
+    let feedURL: URL
+    let imageURL: URL
+    let title: String
+    let author: String?
     
-    nonisolated init(show: SimpleShow) { self.show = show }
-
     var body: some View {
         HStack(spacing: 12) {
-            LazyImage(url: show.imageURL) { state in
+            LazyImage(url: imageURL) { state in
                 if let image = state.image {
                     image
                 } else {
@@ -21,11 +22,11 @@ struct ShowRowView: View {
             .cornerRadius(12)
 
             VStack(alignment: .leading, spacing: 4) {
-                Text(show.title)
+                Text(title)
                     .lineLimit(2)
                     .multilineTextAlignment(.leading)
 
-                if let author = show.author {
+                if let author {
                     Text(author)
                         .lineLimit(2)
                         .multilineTextAlignment(.leading)
@@ -37,26 +38,3 @@ struct ShowRowView: View {
         .frame(maxWidth: .infinity, alignment: .leading)
     }
 }
-
-#if DEBUG
-
-#Preview {
-    VStack {
-        ForEach(
-            [
-                ITunesShow.fixtureStackOverflow,
-                ITunesShow.fixtureRebuild,
-                ITunesShow.fixtureNature,
-                ITunesShow.fixtureBilingualNews,
-                ITunesShow.fixtureFukabori,
-                ITunesShow.fixtureStacktrace,
-                ITunesShow.fixtureSuperLongProperties,
-            ].map { SimpleShow(iTunesShow: $0) }
-        ) { show in
-            ShowRowView(show: show)
-        }
-    }
-    .listStyle(.plain)
-}
-
-#endif
