@@ -160,6 +160,7 @@ let targets: [PackageDescription.Target] = [
             "MessageClient",
             "RSSClient",
             "NavigationState",
+            "ShowSearchUseCase",
         ],
         path: "Sources/Feature/LibraryFeature"
     ),
@@ -233,6 +234,16 @@ let targets: [PackageDescription.Target] = [
             "Logger",
         ],
         path: "Sources/Data/SoundPlayerState"
+    ),
+    .target(
+        name: "ShowSearchUseCase",
+        dependencies: [
+            .algorithms,
+            "Entity",
+            "RSSClient",
+            "ITunesClient"
+        ],
+        path: "Sources/Data/ShowSearchUseCase"
     ),
     
     // Infra module

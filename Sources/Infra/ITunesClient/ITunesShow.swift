@@ -7,22 +7,6 @@ public struct ITunesShow: Sendable, Equatable, Identifiable {
     public var feedURL: URL
     public var artworkURL: URL
     public var artworkLowQualityURL: URL
-
-    public init(
-        id: Int,
-        artistName: String,
-        showName: String,
-        feedURL: URL,
-        artworkURL: URL,
-        artworkLowQualityURL: URL
-    ) {
-        self.id = id
-        self.artistName = artistName
-        self.showName = showName
-        self.feedURL = feedURL
-        self.artworkURL = artworkURL
-        self.artworkLowQualityURL = artworkLowQualityURL
-    }
 }
 
 #if DEBUG

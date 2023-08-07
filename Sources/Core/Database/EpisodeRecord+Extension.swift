@@ -1,6 +1,8 @@
 import CoreData
 import Formatter
 
+extension EpisodeRecord: Model {}
+
 extension EpisodeRecord {
     public static func withID(_ id: String) -> NSFetchRequest<EpisodeRecord> {
         let request = EpisodeRecord.fetchRequest()

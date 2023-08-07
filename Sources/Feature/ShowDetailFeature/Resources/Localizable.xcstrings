@@ -61,16 +61,6 @@
         }
       }
     },
-    "Invalid RSS feed" : {
-      "localizations" : {
-        "ja" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "不正な RSS Feed です"
-          }
-        }
-      }
-    },
     "Loading" : {
       "localizations" : {
         "ja" : {

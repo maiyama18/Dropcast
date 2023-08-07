@@ -80,23 +80,23 @@ public struct FeedScreen: View {
 
 private extension FeedScreen {
     func refreshFeed() async {
-        await withTaskGroup(of: Void.self) { [rssClient] group in
-            for show in shows {
-                group.addTask { @MainActor in
-                    switch await rssClient.fetch(show.feedURL) {
-                    case .success(let show):
-                        let existingEpisodeIDs = Set(show.episodes.map { $0.id } ?? [])
-                        for episode in show.episodes where !existingEpisodeIDs.contains(episode.id) {
-                            show.addToEpisodes_(episode)
-                        }
-                        context.saveWithErrorHandling { _ in }
-                    case .failure:
-                        // do not show error when update of one of shows failed
-                        break
-                    }
-                }
-            }
-        }
+//        await withTaskGroup(of: Void.self) { [rssClient] group in
+//            for show in shows {
+//                group.addTask { @MainActor in
+//                    switch await rssClient.fetch(show.feedURL) {
+//                    case .success(let show):
+//                        let existingEpisodeIDs = Set(show.episodes.map { $0.id } ?? [])
+//                        for episode in show.episodes where !existingEpisodeIDs.contains(episode.id) {
+//                            show.addToEpisodes_(episode)
+//                        }
+//                        context.saveWithErrorHandling { _ in }
+//                    case .failure:
+//                        // do not show error when update of one of shows failed
+//                        break
+//                    }
+//                }
+//            }
+//        }
         
         userDefaultsClient.setFeedRefreshedAt(.now)
     }

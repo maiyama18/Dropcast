@@ -21,26 +21,6 @@
         }
       }
     },
-    "Invalid query" : {
-      "localizations" : {
-        "ja" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "検索ワードが不正です"
-          }
-        }
-      }
-    },
-    "Invalid server response" : {
-      "localizations" : {
-        "ja" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "サーバーからのレスポンスが不正です"
-          }
-        }
-      }
-    },
     "No shows" : {
       "localizations" : {
         "ja" : {
@@ -87,6 +67,16 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "番組一覧"
+          }
+        }
+      }
+    },
+    "Unexpected error occurred" : {
+      "localizations" : {
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "予期しないエラーが発生しました"
           }
         }
       }

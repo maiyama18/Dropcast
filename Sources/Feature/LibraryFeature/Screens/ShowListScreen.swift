@@ -64,8 +64,9 @@ public struct ShowListScreen: View {
                                     guard let showRecord = showRecords.first(where: { $0.feedURL == show.feedURL }) else {
                                         return
                                     }
-                                    context.delete(showRecord)
-                                    context.saveWithErrorHandling { _ in
+                                    do {
+                                        try showRecord.delete()
+                                    } catch {
                                         messageClient.presentError(String(localized: "Failed to unfollow the show", bundle: .module))
                                     }
                                 } label: {

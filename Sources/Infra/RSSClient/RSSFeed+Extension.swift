@@ -1,16 +1,15 @@
-import Database
 import FeedKit
 import Foundation
 
 extension RSSFeed {
-    func toShow(feedURL: URL) -> ShowRecord? {
+    func toShow(feedURL: URL) -> RSSShow? {
         guard let title = title?.trimmingCharacters(in: .whitespacesAndNewlines),
               let imageURL = URL(string: image?.url ?? "") ?? URL(string: iTunes?.iTunesImage?.attributes?.href ?? ""),
               let items else {
             return nil
         }
 
-        let episodes: [EpisodeRecord] = items.compactMap { item -> EpisodeRecord? in
+        let episodes: [RSSEpisode] = items.compactMap { item -> RSSEpisode? in
             guard let guid = item.guid?.value,
                   let title = item.title?.trimmingCharacters(in: .whitespacesAndNewlines),
                   let duration = item.iTunes?.iTunesDuration,
@@ -19,26 +18,25 @@ extension RSSFeed {
                 return nil
             }
 
-            return EpisodeRecord(
+            return RSSEpisode(
                 id: guid,
                 title: title,
-                subtitle: (item.iTunes?.iTunesSubtitle ?? item.iTunes?.iTunesSummary)?.trimmingCharacters(in: .newlines).trimmingCharacters(in: .whitespacesAndNewlines),
-                description: (item.content?.contentEncoded ?? item.description)?.trimmingCharacters(in: .newlines).trimmingCharacters(in: .whitespacesAndNewlines),
-                duration: duration,
                 soundURL: soundURL,
-                publishedAt: publishedAt
+                duration: duration,
+                publishedAt: publishedAt,
+                subtitle: (item.iTunes?.iTunesSubtitle ?? item.iTunes?.iTunesSummary)?.trimmingCharacters(in: .newlines).trimmingCharacters(in: .whitespacesAndNewlines),
+                description: (item.content?.contentEncoded ?? item.description)?.trimmingCharacters(in: .newlines).trimmingCharacters(in: .whitespacesAndNewlines)
             )
         }
 
-        let showRecord = ShowRecord(
+        return RSSShow(
+            feedURL: feedURL,
             title: title,
+            imageURL: imageURL,
             description: (description ?? iTunes?.iTunesSummary)?.trimmingCharacters(in: .newlines).trimmingCharacters(in: .whitespaces),
             author: iTunes?.iTunesAuthor ?? iTunes?.iTunesOwner?.name,
-            feedURL: feedURL,
-            imageURL: imageURL,
-            linkURL: URL(string: link ?? "")
+            linkURL: URL(string: link ?? ""),
+            episodes: episodes
         )
-        showRecord.episodes_ = NSSet(array: episodes)
-        return showRecord
     }
 }

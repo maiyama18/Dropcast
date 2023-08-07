@@ -7,7 +7,7 @@ import Logger
 import Network
 
 public struct RSSClient: Sendable {
-    public var fetch: @Sendable (_ url: URL) async -> Result<ShowRecord, RSSError>
+    public var fetch: @Sendable (_ url: URL) async -> Result<RSSShow, RSSError>
 }
 
 extension RSSClient {
@@ -15,7 +15,7 @@ extension RSSClient {
         @Dependency(\.logger[.rss]) var logger
 
         return RSSClient(
-            fetch: { @MainActor url in
+            fetch: { url in
                 logger.notice("fetching rss: \(url, privacy: .public)")
 
                 let result = await request(session: urlSession, url: url)

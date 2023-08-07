@@ -133,20 +133,20 @@ public struct ShowDetailScreen: View {
             
             isFetchingShow = true
             defer { isFetchingShow = false }
-            switch await rssClient.fetch(feedURL) {
-            case .success(let show):
-                reflectShow(show)
-            case .failure(let error):
-                let message: String
-                switch error {
-                case .invalidFeed:
-                    message = String(localized: "Invalid RSS feed", bundle: .module)
-                case .networkError(reason: let error):
-                    message = error.localizedDescription
-                }
-
-                messageClient.presentError(message)
-            }
+//            switch await rssClient.fetch(feedURL) {
+//            case .success(let show):
+//                reflectShow(show)
+//            case .failure(let error):
+//                let message: String
+//                switch error {
+//                case .invalidFeed:
+//                    message = String(localized: "Invalid RSS feed", bundle: .module)
+//                case .networkError(reason: let error):
+//                    message = error.localizedDescription
+//                }
+//
+//                messageClient.presentError(message)
+//            }
         }
     }
 }
@@ -181,14 +181,18 @@ private extension ShowDetailScreen {
                 )
                 showRecord.addToEpisodes_(episode)
             }
-            context.saveWithErrorHandling { _ in
+            
+            do {
+                try showRecord.save()
+            } catch {
                 messageClient.presentError(String(localized: "Failed to follow the show", bundle: .module))
             }
         } else {
-            for showRecord in showRecords {
-                context.delete(showRecord)
-            }
-            context.saveWithErrorHandling { _ in
+            do {
+                for showRecord in showRecords {
+                    try showRecord.delete()
+                }
+            } catch {
                 messageClient.presentError(String(localized: "Failed to unfollow the show", bundle: .module))
             }
         }

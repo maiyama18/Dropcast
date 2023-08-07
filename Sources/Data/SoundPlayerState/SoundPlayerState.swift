@@ -48,7 +48,6 @@ public final class SoundPlayerState: NSObject {
             }
             try playingState.startPlaying(atTime: audioPlayer.currentTime)
         }
-        context.saveWithErrorHandling { _ in assertionFailure() }
     }
     
     public func pause(url: URL, episode: EpisodeRecord) {
@@ -61,8 +60,7 @@ public final class SoundPlayerState: NSObject {
             state = .notPlaying
             return
         }
-        playingState.pause(atTime: audioPlayer?.currentTime ?? 0)
-        context.saveWithErrorHandling { _ in assertionFailure() }
+        try? playingState.pause(atTime: audioPlayer?.currentTime ?? 0)
         
         self.audioPlayer = nil
     }

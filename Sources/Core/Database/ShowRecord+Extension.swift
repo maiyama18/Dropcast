@@ -4,6 +4,8 @@ import Entity
 import Foundation
 import SwiftUI
 
+extension ShowRecord: Model {}
+
 extension ShowRecord {
     @MainActor
     public static func withFeedURL(_ feedURL: URL) -> FetchRequest<ShowRecord> {
