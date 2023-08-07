@@ -68,11 +68,13 @@ public final class SoundPlayerState: NSObject {
     public func goForward(seconds: TimeInterval) {
         guard let audioPlayer else { return }
         audioPlayer.currentTime = min(audioPlayer.currentTime + seconds, audioPlayer.duration - 1)
+        // TODO: playingState を操作する
     }
     
     public func goBackward(seconds: TimeInterval) {
         guard let audioPlayer else { return }
         audioPlayer.currentTime = max(audioPlayer.currentTime - seconds, 0)
+        // TODO: playingState を操作する
     }
     
     private func findOrCreatePlayingState(episodeID: EpisodeRecord.ID) -> EpisodePlayingStateRecord? {
