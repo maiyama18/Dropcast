@@ -7,6 +7,7 @@
 //
 
 import Database
+import Formatter
 import NukeUI
 import SoundPlayerState
 import SwiftUI
@@ -42,13 +43,17 @@ public struct PlayerBannerView: View {
             .cornerRadius(8)
             
             VStack(alignment: .leading) {
-                Text(episode.show?.title ?? "")
-                    .font(.subheadline)
-                    .foregroundStyle(.secondary)
-                
                 Text(episode.title)
                     .font(.subheadline.bold())
                     .lineLimit(1)
+                
+                HStack(spacing: 2) {
+                    Text(formatEpisodeDuration(duration: TimeInterval(soundPlayerState.currentTimeInt ?? 0)))
+                    Text("/")
+                    Text(formatEpisodeDuration(duration: episode.duration))
+                }
+                .font(.footnote.monospacedDigit())
+                .foregroundStyle(.secondary)
             }
             
             Spacer(minLength: 0)
@@ -95,5 +100,11 @@ public struct PlayerBannerView: View {
         .padding(8)
         .frame(maxWidth: .infinity)
         .background(.ultraThinMaterial)
+        .overlay(alignment: .bottom) {
+            ProgressView(
+                value: Double(soundPlayerState.currentTimeInt ?? 0),
+                total: episode.duration
+            )
+        }
     }
 }
