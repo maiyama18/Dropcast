@@ -5,15 +5,15 @@ import Dependencies
 import Entity
 import Foundation
 import Observation
+import SoundFileState
 
 @Observable
 @MainActor
 public final class SoundPlayerState: NSObject {
-    // TODO: playing / pausing などは State に持たせるのではなく audioPlayer の状態から見た方が良さそう
     public enum State: Equatable {
         case notPlaying
-        case playing(url: URL, episode: EpisodeRecord)
-        case pausing(url: URL, episode: EpisodeRecord)
+        case playing(episode: EpisodeRecord)
+        case pausing(episode: EpisodeRecord)
     }
     
     public static let shared = SoundPlayerState()
@@ -25,11 +25,13 @@ public final class SoundPlayerState: NSObject {
     private var audioPlayer: AVAudioPlayer? = nil
     private let context: NSManagedObjectContext = CloudKitPersistentProvider.shared.viewContext
     
-    public func startPlaying(url: URL, episode: EpisodeRecord) throws {
+    public func startPlaying(episode: EpisodeRecord) throws {
         // 別のファイルが再生中であれば pause する
-        if case .playing(let url, let episode) = state {
-            pause(url: url, episode: episode)
+        if case .playing(let episode) = state {
+            pause(episode: episode)
         }
+        
+        let url = try SoundFileState.soundFileURL(episode: episode)
             
         let playingState = try? context.fetch(EpisodePlayingStateRecord.withEpisodeID(episode.id)).first
         
@@ -41,7 +43,7 @@ public final class SoundPlayerState: NSObject {
         
         validateDisplayLink()
         
-        self.state = .playing(url: url, episode: episode)
+        self.state = .playing(episode: episode)
         
         if let playingState {
             try playingState.startPlaying(atTime: audioPlayer.currentTime)
@@ -55,12 +57,12 @@ public final class SoundPlayerState: NSObject {
         }
     }
     
-    public func pause(url: URL, episode: EpisodeRecord) {
+    public func pause(episode: EpisodeRecord) {
         audioPlayer?.stop()
         
         invalidateDisplayLink()
         
-        self.state = .pausing(url: url, episode: episode)
+        self.state = .pausing(episode: episode)
         
         guard let playingState = findOrCreatePlayingState(episodeID: episode.id) else {
             assertionFailure()
@@ -82,7 +84,7 @@ public final class SoundPlayerState: NSObject {
     
     private func move(to time: TimeInterval, audioPlayer: AVAudioPlayer) {
         switch state {
-        case .pausing(_, let episode), .playing(_, let episode):
+        case .pausing(let episode), .playing(let episode):
             audioPlayer.currentTime = min(time, audioPlayer.duration - 1)
             guard let playingState = findOrCreatePlayingState(episodeID: episode.id) else {
                 assertionFailure()

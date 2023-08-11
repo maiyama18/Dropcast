@@ -232,6 +232,7 @@ let targets: [PackageDescription.Target] = [
             .dependencies,
             "Database",
             "Logger",
+            "SoundFileState",
         ],
         path: "Sources/Data/SoundPlayerState"
     ),

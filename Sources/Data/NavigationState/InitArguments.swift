@@ -1,4 +1,4 @@
-@preconcurrency import Database
+import Database
 import Foundation
 
 public struct ShowDetailInitArguments: Hashable, Sendable {

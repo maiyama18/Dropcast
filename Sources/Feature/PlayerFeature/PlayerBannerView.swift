@@ -22,14 +22,14 @@ public struct PlayerBannerView: View {
         switch soundPlayerState.state {
         case .notPlaying:
             EmptyView()
-        case .pausing(let url, let episode):
-            bannerView(playing: false, url: url, episode: episode)
-        case .playing(let url, let episode):
-            bannerView(playing: true, url: url, episode: episode)
+        case .pausing(let episode):
+            bannerView(playing: false, episode: episode)
+        case .playing(let episode):
+            bannerView(playing: true, episode: episode)
         }
     }
     
-    private func bannerView(playing: Bool, url: URL, episode: EpisodeRecord) -> some View {
+    private func bannerView(playing: Bool, episode: EpisodeRecord) -> some View {
         HStack {
             LazyImage(url: episode.show?.imageURL) { state in
                 if let image = state.image {
@@ -67,7 +67,7 @@ public struct PlayerBannerView: View {
                 
                 if playing {
                     Button(action: {
-                        soundPlayerState.pause(url: url, episode: episode)
+                        soundPlayerState.pause(episode: episode)
                     }) {
                         Image(systemName: "play.fill")
                             .hidden()
@@ -80,7 +80,7 @@ public struct PlayerBannerView: View {
                 } else {
                     Button(action: {
                         do {
-                            try soundPlayerState.startPlaying(url: url, episode: episode)
+                            try soundPlayerState.startPlaying(episode: episode)
                         } catch {}
                     }) {
                         Image(systemName: "play.fill")

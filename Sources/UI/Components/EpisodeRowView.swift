@@ -103,16 +103,16 @@ public struct EpisodeRowView: View {
                 break
             case .downloading:
                 soundFileState.cancelDownload(episode: episode)
-            case .downloaded(let url):
+            case .downloaded:
                 switch soundState {
                 case .notPlaying, .pausing:
                     do {
-                        try soundPlayerState.startPlaying(url: url, episode: episode)
+                        try soundPlayerState.startPlaying(episode: episode)
                     } catch {
                         messageClient.presentError(String(localized: "Failed to play episode \(episode.title)", bundle: .module))
                     }
                 case .playing:
-                    soundPlayerState.pause(url: url, episode: episode)
+                    soundPlayerState.pause(episode: episode)
                 }
             }
         } label: {
@@ -149,9 +149,9 @@ public struct EpisodeRowView: View {
         switch soundPlayerState.state {
         case .notPlaying:
             return .notPlaying
-        case .playing(_, let playingEpisode):
+        case .playing(let playingEpisode):
             return episode.id == playingEpisode.id ? .playing : .notPlaying
-        case .pausing(_, let playingEpisode):
+        case .pausing(let playingEpisode):
             return episode.id == playingEpisode.id ? .pausing : .notPlaying
         }
     }

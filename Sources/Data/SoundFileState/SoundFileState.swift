@@ -49,8 +49,8 @@ public final class SoundFileState: NSObject {
     public static let shared: SoundFileState = .init()
     public static let soundFilesRootDirectoryURL: URL = URL.documentsDirectory.appendingPathComponent("SoundFiles")
     
-    public static func soundFileURL(episode: EpisodeRecord) -> URL? {
-        guard let identifier = TaskIdentifier(episode: episode) else { return nil }
+    public static func soundFileURL(episode: EpisodeRecord) throws -> URL {
+        guard let identifier = TaskIdentifier(episode: episode) else { throw NSError(domain: "TaskIdentifierCreationFailed", code: 0) }
         return soundFileURL(identifier: identifier)
     }
     
@@ -129,7 +129,7 @@ public final class SoundFileState: NSObject {
             guard episodeIDIndex >= 0,
                   let episodeID = String(base64Encoded: fileURL.pathComponents[episodeIDIndex]) else { continue }
 
-            downloadStates[episodeID] = .downloaded(url: fileURL)
+            downloadStates[episodeID] = .downloaded
         }
     }
 }
@@ -180,7 +180,7 @@ extension SoundFileState: URLSessionDownloadDelegate {
             try data.write(to: fileURL)
             Task { @MainActor in
                 logger.notice("download file saved \(identifier.idBase64, privacy: .public): \(fileURL)")
-                downloadStates[episodeID] = .downloaded(url: fileURL)
+                downloadStates[episodeID] = .downloaded
             }
         } catch {
             Task { @MainActor in
