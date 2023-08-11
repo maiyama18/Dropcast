@@ -49,6 +49,22 @@ public final class SoundFileState: NSObject {
     public static let shared: SoundFileState = .init()
     public static let soundFilesRootDirectoryURL: URL = URL.documentsDirectory.appendingPathComponent("SoundFiles")
     
+    public static func soundFileURL(episode: EpisodeRecord) -> URL? {
+        guard let identifier = TaskIdentifier(episode: episode) else { return nil }
+        return soundFileURL(identifier: identifier)
+    }
+    
+    private static func soundFileURL(identifier: TaskIdentifier) -> URL {
+        soundFileDirectoryURL(identifier: identifier)
+            .appendingPathComponent(identifier.soundFileName)
+    }
+    
+    private nonisolated static func soundFileDirectoryURL(identifier: TaskIdentifier) -> URL {
+        soundFilesRootDirectoryURL
+            .appendingPathComponent(identifier.feedURLBase64)
+            .appendingPathComponent(identifier.idBase64)
+    }
+    
     public var downloadStates: [EpisodeRecord.ID: EpisodeDownloadState] = [:]
     public let downloadErrorPublisher: PassthroughSubject<Void, Never> = .init()
     
@@ -146,9 +162,7 @@ extension SoundFileState: URLSessionDownloadDelegate {
             return
         }
         
-        let directoryURL = Self.soundFilesRootDirectoryURL
-            .appendingPathComponent(identifier.feedURLBase64)
-            .appendingPathComponent(identifier.idBase64)
+        let directoryURL = Self.soundFileDirectoryURL(identifier: identifier)
         do {
             try FileManager.default.createDirectory(at: directoryURL, withIntermediateDirectories: true)
         } catch {
