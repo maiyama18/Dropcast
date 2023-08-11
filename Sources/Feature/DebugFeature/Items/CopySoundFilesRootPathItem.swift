@@ -13,7 +13,7 @@ struct CopySoundFilesRootPathItem: DebugItem {
 
     var action: DebugItemAction {
         .execute {
-            await clipboardClient.copy(SoundFileState.shared.soundFilesRootDirectoryURL.absoluteString)
+            await clipboardClient.copy(SoundFileState.soundFilesRootDirectoryURL.absoluteString)
             messageClient.presentSuccess("Copied!")
             return .success()
         }

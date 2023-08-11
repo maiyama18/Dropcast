@@ -47,11 +47,11 @@ public final class SoundFileState: NSObject {
     struct UnexpectedError: Error {}
     
     public static let shared: SoundFileState = .init()
+    public static let soundFilesRootDirectoryURL: URL = URL.documentsDirectory.appendingPathComponent("SoundFiles")
     
     public var downloadStates: [EpisodeRecord.ID: EpisodeDownloadState] = [:]
     public let downloadErrorPublisher: PassthroughSubject<Void, Never> = .init()
     
-    nonisolated public var soundFilesRootDirectoryURL: URL { URL.documentsDirectory.appendingPathComponent("SoundFiles") }
     private var tasks: [TaskIdentifier: URLSessionDownloadTask] = [:]
     
     @ObservationIgnored @Dependency(\.logger[.soundFile]) var logger
@@ -93,12 +93,12 @@ public final class SoundFileState: NSObject {
     }
     
     private func initializeDownloadStates() {
-        if !FileManager.default.fileExists(atPath: soundFilesRootDirectoryURL.path()) {
-            try? FileManager.default.createDirectory(at: soundFilesRootDirectoryURL, withIntermediateDirectories: true)
+        if !FileManager.default.fileExists(atPath: Self.soundFilesRootDirectoryURL.path()) {
+            try? FileManager.default.createDirectory(at: Self.soundFilesRootDirectoryURL, withIntermediateDirectories: true)
         }
 
         guard let enumerator = FileManager.default.enumerator(
-            at: self.soundFilesRootDirectoryURL,
+            at: Self.soundFilesRootDirectoryURL,
             includingPropertiesForKeys: [.isRegularFileKey],
             options: [.skipsHiddenFiles, .skipsPackageDescendants]
         ) else {
@@ -146,7 +146,7 @@ extension SoundFileState: URLSessionDownloadDelegate {
             return
         }
         
-        let directoryURL = self.soundFilesRootDirectoryURL
+        let directoryURL = Self.soundFilesRootDirectoryURL
             .appendingPathComponent(identifier.feedURLBase64)
             .appendingPathComponent(identifier.idBase64)
         do {
