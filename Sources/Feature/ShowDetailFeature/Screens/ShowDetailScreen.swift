@@ -13,21 +13,16 @@ import SwiftUI
 @MainActor
 public struct ShowDetailScreen: View {
     private let feedURL: URL
-    private let imageURL: URL
-    private let title: String
-    /// この画面においてエピソードのダウンロードや再生が可能かどうかを表す。
-    /// 検索画面から遷移した場合は false になる。
-    private let showsEpisodeActionButtons: Bool
+    private let initialImageURL: URL
+    private let initialTitle: String
     
-    @State private var episodes: [EpisodeRecord]
-    @State private var author: String?
-    @State private var description: String?
-    @State private var linkURL: URL?
     @State private var isFetchingShow: Bool = false
     @State private var downloadStates: [EpisodeRecord.ID: EpisodeDownloadState]? = nil
     
     @FetchRequest var showRecords: FetchedResults<ShowRecord>
     private var show: ShowRecord? { showRecords.first }
+    
+    @FetchRequest var episodeRecords: FetchedResults<EpisodeRecord>
     
     @Environment(\.openURL) private var openURL
     @Environment(\.managedObjectContext) private var context
@@ -38,38 +33,40 @@ public struct ShowDetailScreen: View {
 
     public init(args: ShowDetailInitArguments) {
         self.feedURL = args.feedURL
-        self.imageURL = args.imageURL
-        self.title = args.title
-        self.showsEpisodeActionButtons = args.showsEpisodeActionButtons
-        
-        self._episodes = .init(initialValue: args.episodes)
-        self._author = .init(initialValue: args.author)
-        self._description = .init(initialValue: args.description)
-        self._linkURL = .init(initialValue: args.linkURL)
+        self.initialImageURL = args.imageURL
+        self.initialTitle = args.title
         
         self._showRecords = ShowRecord.withFeedURL(feedURL)
+        self._episodeRecords = FetchRequest(fetchRequest: EpisodeRecord.withShowFeedURL(feedURL))
     }
 
     public var body: some View {
         ScrollView(showsIndicators: false) {
             LazyVStack(spacing: 0) {
                 ShowHeaderView(
-                    imageURL: imageURL,
-                    title: title,
-                    author: author,
-                    description: description,
-                    followed: show != nil,
+                    imageURL: show?.imageURL ?? initialImageURL,
+                    title: show?.title ?? initialTitle,
+                    author: show?.author,
+                    description: show?.showDescription,
+                    followed: show?.followed ?? false,
                     isFetchingShow: isFetchingShow,
-                    toggleFollowButtonTapped: { Task { await toggleFollow() } }
+                    toggleFollowButtonTapped: {
+                        guard let show else { return }
+                        do {
+                            try show.toggleFollow()
+                        } catch {
+                            messageClient.presentError(String(localized: "Unexpected error occurred", bundle: .module))
+                        }
+                    }
                 )
 
                 EpisodeDivider()
 
-                if episodes.isEmpty {
+                if episodeRecords.isEmpty {
                     ForEach(0..<10) { _ in
                         EpisodeRowView(
                             episode: .fixture,
-                            showsPlayButton: showsEpisodeActionButtons,
+                            showsPlayButton: true,
                             showsImage: false
                         )
                         .redacted(reason: .placeholder)
@@ -77,10 +74,10 @@ public struct ShowDetailScreen: View {
                         EpisodeDivider()
                     }
                 } else {
-                    ForEach(episodes) { episode in
+                    ForEach(episodeRecords) { episode in
                         EpisodeRowView(
                             episode: episode,
-                            showsPlayButton: showsEpisodeActionButtons,
+                            showsPlayButton: true,
                             showsImage: false
                         )
 
@@ -102,7 +99,7 @@ public struct ShowDetailScreen: View {
                             icon: { Image(systemName: "doc") }
                         )
                     }
-                    if let linkURL = linkURL {
+                    if let linkURL = show?.linkURL {
                         Button {
                             openURL(linkURL)
                         } label: {
@@ -118,35 +115,25 @@ public struct ShowDetailScreen: View {
             }
         }
         .navigationBarTitleDisplayMode(.inline)
-        .navigationTitle(title)
+        .navigationTitle(show?.title ?? "")
         .task {
-            let reflectShow = { (show: ShowRecord) in
-                author = show.author
-                linkURL = show.linkURL
-                description = show.showDescription
-                episodes = show.episodes
-            }
-            
-            if let show = show {
-                reflectShow(show)
-            }
-            
             isFetchingShow = true
             defer { isFetchingShow = false }
-//            switch await rssClient.fetch(feedURL) {
-//            case .success(let show):
-//                reflectShow(show)
-//            case .failure(let error):
-//                let message: String
-//                switch error {
-//                case .invalidFeed:
-//                    message = String(localized: "Invalid RSS feed", bundle: .module)
-//                case .networkError(reason: let error):
-//                    message = error.localizedDescription
-//                }
-//
-//                messageClient.presentError(message)
-//            }
+            
+            do {
+                let rssShow = try await rssClient.fetch(feedURL).get()
+                if let show {
+                    let existingEpisodeIDs = Set(show.episodes.map(\.id))
+                    for rssEpisode in rssShow.episodes where !existingEpisodeIDs.contains(rssEpisode.id) {
+                        show.addToEpisodes_(rssEpisode.toModel(context: context))
+                    }
+                    try show.save()
+                } else {
+                    try rssShow.toModel(context: context).save()
+                }
+            } catch {
+                messageClient.presentError(String(localized: "Failed to fetch show information", bundle: .module))
+            }
         }
     }
 }
@@ -155,46 +142,5 @@ private extension ShowDetailScreen {
     func downloadState(id: EpisodeRecord.ID) -> EpisodeDownloadState {
         guard let downloadStates else { return .notDownloaded }
         return downloadStates[id] ?? .notDownloaded
-    }
-    
-    func toggleFollow() async {
-        if showRecords.isEmpty {
-            let showRecord = ShowRecord(
-                context: context,
-                title: title,
-                description: description,
-                author: author,
-                feedURL: feedURL,
-                imageURL: imageURL,
-                linkURL: linkURL
-            )
-            for episode in self.episodes {
-                let episode = EpisodeRecord(
-                    context: context,
-                    id: episode.id,
-                    title: episode.title,
-                    subtitle: episode.subtitle,
-                    description: episode.episodeDescription,
-                    duration: episode.duration,
-                    soundURL: episode.soundURL,
-                    publishedAt: episode.publishedAt
-                )
-                showRecord.addToEpisodes_(episode)
-            }
-            
-            do {
-                try showRecord.save()
-            } catch {
-                messageClient.presentError(String(localized: "Failed to follow the show", bundle: .module))
-            }
-        } else {
-            do {
-                for showRecord in showRecords {
-                    try showRecord.delete()
-                }
-            } catch {
-                messageClient.presentError(String(localized: "Failed to unfollow the show", bundle: .module))
-            }
-        }
     }
 }

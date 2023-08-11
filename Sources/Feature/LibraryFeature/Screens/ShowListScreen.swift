@@ -8,12 +8,7 @@ import SwiftUI
 
 @MainActor
 public struct ShowListScreen: View {
-    // TODO: ソートする
-    @FetchRequest<ShowRecord>(sortDescriptors: []) private var showRecords: FetchedResults<ShowRecord>
-    
-    private var shows: [ShowRecord] {
-        showRecords.sorted(by: { $0.title > $1.title })
-    }
+    @FetchRequest<ShowRecord>(fetchRequest: ShowRecord.followed()) private var shows: FetchedResults<ShowRecord>
     
     @Environment(NavigationState.self) private var navigationState
     @Environment(\.managedObjectContext) private var context
@@ -45,15 +40,9 @@ public struct ShowListScreen: View {
                             NavigationLink(
                                 value: ShowListRoute.showDetail(
                                     args: .init(
-                                        showsEpisodeActionButtons: true,
                                         feedURL: show.feedURL,
                                         imageURL: show.imageURL,
-                                        title: show.title,
-                                        episodes: show.episodes,
-                                        author: show.author,
-                                        description: show.description,
-                                        linkURL: show.linkURL,
-                                        followed: true
+                                        title: show.title
                                     )
                                 )
                             ) {
@@ -61,7 +50,7 @@ public struct ShowListScreen: View {
                             }
                             .swipeActions(allowsFullSwipe: false) {
                                 Button(role: .destructive) {
-                                    guard let showRecord = showRecords.first(where: { $0.feedURL == show.feedURL }) else {
+                                    guard let showRecord = shows.first(where: { $0.feedURL == show.feedURL }) else {
                                         return
                                     }
                                     do {

@@ -16,6 +16,14 @@ extension ShowRecord {
         )
     }
     
+    @MainActor
+    public static func followed() -> NSFetchRequest<ShowRecord> {
+        let request = ShowRecord.fetchRequest()
+        request.predicate = NSPredicate(format: "followed = %@", NSNumber(value: true))
+        request.sortDescriptors = [.init(keyPath: \ShowRecord.title_, ascending: true)]
+        return request
+    }
+    
     public var title: String { title_! }
     public var feedURL: URL { feedURL_! }
     public var imageURL: URL { imageURL_! }
@@ -45,5 +53,11 @@ extension ShowRecord {
         self.feedURL_ = feedURL
         self.imageURL_ = imageURL
         self.linkURL = linkURL
+    }
+    
+    @MainActor
+    public func toggleFollow() throws {
+        followed = !followed
+        try save()
     }
 }

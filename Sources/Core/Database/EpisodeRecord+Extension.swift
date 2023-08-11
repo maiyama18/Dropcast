@@ -1,19 +1,36 @@
 import CoreData
 import Formatter
+import SwiftUI
 
 extension EpisodeRecord: Model {}
 
 extension EpisodeRecord {
+    @MainActor
     public static func withID(_ id: String) -> NSFetchRequest<EpisodeRecord> {
         let request = EpisodeRecord.fetchRequest()
-        request.predicate = NSPredicate(format: "id == %@", id)
+        request.predicate = NSPredicate(format: "id_ == %@", id)
         return request
     }
     
-    public var id: String { id_! }
-    public var title: String { title_! }
+    @MainActor
+    public static func followed() -> NSFetchRequest<EpisodeRecord> {
+        let request = EpisodeRecord.fetchRequest()
+        request.predicate = NSPredicate(format: "followed = %@", NSNumber(value: true))
+        request.sortDescriptors = [.init(keyPath: \EpisodeRecord.publishedAt_, ascending: false)]
+        return request
+    }
+    
+    public static func withShowFeedURL(_ url: URL) -> NSFetchRequest<EpisodeRecord> {
+        let request = EpisodeRecord.fetchRequest()
+        request.predicate = NSPredicate(format: "show.feedURL_ == %@", url as CVarArg)
+        request.sortDescriptors = [.init(keyPath: \EpisodeRecord.publishedAt_, ascending: false)]
+        return request
+    }
+    
+    public var id: String { id_ ?? "" }
+    public var title: String { title_ ?? "" }
     public var soundURL: URL { soundURL_! }
-    public var publishedAt: Date { publishedAt_! }
+    public var publishedAt: Date { publishedAt_ ?? .now }
     
     public convenience init(
         context: NSManagedObjectContext? = nil,

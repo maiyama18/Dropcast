@@ -9,6 +9,7 @@
     <entity name="EpisodeRecord" representedClassName="EpisodeRecord" syncable="YES" codeGenerationType="class">
         <attribute name="duration" optional="YES" attributeType="Double" defaultValueString="0.0" usesScalarValueType="YES"/>
         <attribute name="episodeDescription" optional="YES" attributeType="String"/>
+        <attribute name="followed" optional="YES" attributeType="Boolean" derived="YES" derivationExpression="show.followed" usesScalarValueType="YES"/>
         <attribute name="id_" optional="YES" attributeType="String"/>
         <attribute name="publishedAt_" optional="YES" attributeType="Date" usesScalarValueType="NO"/>
         <attribute name="soundURL_" optional="YES" attributeType="URI"/>
@@ -20,6 +21,7 @@
     <entity name="ShowRecord" representedClassName="ShowRecord" syncable="YES" codeGenerationType="class">
         <attribute name="author" optional="YES" attributeType="String"/>
         <attribute name="feedURL_" optional="YES" attributeType="URI"/>
+        <attribute name="followed" optional="YES" attributeType="Boolean" usesScalarValueType="YES"/>
         <attribute name="imageURL_" optional="YES" attributeType="URI"/>
         <attribute name="linkURL" optional="YES" attributeType="URI"/>
         <attribute name="showDescription" optional="YES" attributeType="String"/>

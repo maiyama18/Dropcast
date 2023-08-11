@@ -14,10 +14,9 @@ import UserDefaultsClient
 
 @MainActor
 public struct FeedScreen: View {
-    // TODO: ソート && 重複をなくす && valid な record にフィルタする
-    @FetchRequest<EpisodeRecord>(sortDescriptors: []) private var episodes: FetchedResults<EpisodeRecord>
-    @FetchRequest<ShowRecord>(sortDescriptors: []) private var shows: FetchedResults<ShowRecord>
-    
+    @FetchRequest<EpisodeRecord>(fetchRequest: EpisodeRecord.followed()) private var episodes: FetchedResults<EpisodeRecord>
+    @FetchRequest<ShowRecord>(fetchRequest: ShowRecord.followed()) private var shows: FetchedResults<ShowRecord>
+ 
     @Environment(\.openURL) private var openURL
     @Environment(\.managedObjectContext) private var context
     
@@ -80,23 +79,22 @@ public struct FeedScreen: View {
 
 private extension FeedScreen {
     func refreshFeed() async {
-//        await withTaskGroup(of: Void.self) { [rssClient] group in
-//            for show in shows {
-//                group.addTask { @MainActor in
-//                    switch await rssClient.fetch(show.feedURL) {
-//                    case .success(let show):
-//                        let existingEpisodeIDs = Set(show.episodes.map { $0.id } ?? [])
-//                        for episode in show.episodes where !existingEpisodeIDs.contains(episode.id) {
-//                            show.addToEpisodes_(episode)
-//                        }
-//                        context.saveWithErrorHandling { _ in }
-//                    case .failure:
-//                        // do not show error when update of one of shows failed
-//                        break
-//                    }
-//                }
-//            }
-//        }
+        await withTaskGroup(of: Void.self) { [rssClient] group in
+            for show in shows {
+                group.addTask { @MainActor in
+                    do {
+                        let rssShow = try await rssClient.fetch(show.feedURL).get()
+                        let existingEpisodeIDs = Set(show.episodes.map(\.id))
+                        for rssEpisode in rssShow.episodes where !existingEpisodeIDs.contains(rssEpisode.id) {
+                            show.addToEpisodes_(rssEpisode.toModel(context: context))
+                        }
+                        try show.save()
+                    } catch {
+                        // do nothing
+                    }
+                }
+            }
+        }
         
         userDefaultsClient.setFeedRefreshedAt(.now)
     }

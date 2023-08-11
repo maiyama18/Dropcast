@@ -65,16 +65,27 @@ public final class SoundPlayerState: NSObject {
         self.audioPlayer = nil
     }
     
+    private func move(to time: TimeInterval, audioPlayer: AVAudioPlayer) {
+        switch state {
+        case .pausing(_, let episode), .playing(_, let episode):
+            audioPlayer.currentTime = min(time, audioPlayer.duration - 1)
+            guard let playingState = findOrCreatePlayingState(episodeID: episode.id) else {
+                assertionFailure()
+                return
+            }
+            try? playingState.move(to: time)
+        case .notPlaying:
+            assertionFailure()
+        }
+    }
     public func goForward(seconds: TimeInterval) {
         guard let audioPlayer else { return }
-        audioPlayer.currentTime = min(audioPlayer.currentTime + seconds, audioPlayer.duration - 1)
-        // TODO: playingState を操作する
+        move(to: audioPlayer.currentTime + seconds, audioPlayer: audioPlayer)
     }
     
     public func goBackward(seconds: TimeInterval) {
         guard let audioPlayer else { return }
-        audioPlayer.currentTime = max(audioPlayer.currentTime - seconds, 0)
-        // TODO: playingState を操作する
+        move(to: audioPlayer.currentTime - seconds, audioPlayer: audioPlayer)
     }
     
     private func findOrCreatePlayingState(episodeID: EpisodeRecord.ID) -> EpisodePlayingStateRecord? {

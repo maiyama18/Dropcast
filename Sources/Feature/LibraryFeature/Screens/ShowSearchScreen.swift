@@ -91,7 +91,6 @@ struct ShowSearchScreen: View {
                                 NavigationLink(
                                     value: ShowSearchRoute.showDetail(
                                         args: .init(
-                                            showsEpisodeActionButtons: false,
                                             feedURL: show.feedURL,
                                             imageURL: show.imageURL,
                                             title: show.title
