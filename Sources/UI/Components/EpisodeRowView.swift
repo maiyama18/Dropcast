@@ -57,9 +57,17 @@ public struct EpisodeRowView: View {
                 }
                 .font(.footnote.monospacedDigit())
                 
-                Text(episode.title)
-                    .font(.body.bold())
-                    .lineLimit(2)
+                Group {
+                    if episode.playingState?.isCompleted == true {
+                        Text(Image(systemName: "checkmark.circle.fill"))
+                            + Text(" ")
+                            + Text(episode.title)
+                    } else {
+                        Text(episode.title)
+                    }
+                }
+                .font(.body.bold())
+                .lineLimit(2)
                 
                 if let subtitle = episode.subtitle {
                     Text(subtitle)

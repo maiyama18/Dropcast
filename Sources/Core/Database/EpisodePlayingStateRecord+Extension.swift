@@ -17,6 +17,7 @@ extension EpisodePlayingStateRecord {
         @Dependency(\.date.now) var now
         
         guard let episode else { throw RecordNotFound() }
+        isCompleted = false
         isPlaying = true
         willFinishedAt = now.addingTimeInterval(episode.duration - atTime)
         lastPausedTime = 0
@@ -43,6 +44,16 @@ extension EpisodePlayingStateRecord {
         } else {
             lastPausedTime = time
         }
+        
+        try save()
+    }
+    
+    @MainActor
+    public func complete() throws {
+        isPlaying = false
+        isCompleted = true
+        willFinishedAt = nil
+        lastPausedTime = 0
         
         try save()
     }

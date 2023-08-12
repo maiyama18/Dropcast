@@ -126,10 +126,34 @@ public final class SoundPlayerState: NSObject {
 
 extension SoundPlayerState: AVAudioPlayerDelegate {
     nonisolated public func audioPlayerDidFinishPlaying(_ player: AVAudioPlayer, successfully flag: Bool) {
-        
+        player.stop()
+        Task { @MainActor in
+            self.audioPlayer = nil
+            invalidateDisplayLink()
+            
+            defer { state = .notPlaying }
+            guard case .playing(let episode) = state,
+                  let playingState = episode.playingState else {
+                return
+            }
+            
+            try? playingState.complete()
+        }
     }
     
     nonisolated public func audioPlayerDecodeErrorDidOccur(_ player: AVAudioPlayer, error: Error?) {
-        
+        player.stop()
+        Task { @MainActor in
+            self.audioPlayer = nil
+            invalidateDisplayLink()
+            
+            defer { state = .notPlaying }
+            guard case .playing(let episode) = state,
+                  let playingState = episode.playingState else {
+                return
+            }
+            
+            try? playingState.delete()
+        }
     }
 }
