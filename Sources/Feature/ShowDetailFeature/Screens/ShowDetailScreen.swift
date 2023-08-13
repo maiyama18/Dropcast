@@ -74,7 +74,7 @@ public struct ShowDetailScreen: View {
                         EpisodeDivider()
                     }
                 } else {
-                    ForEach(episodeRecords) { episode in
+                    ForEach(episodeRecords, id: \.objectID) { episode in
                         EpisodeRowView(
                             episode: episode,
                             showsPlayButton: true,

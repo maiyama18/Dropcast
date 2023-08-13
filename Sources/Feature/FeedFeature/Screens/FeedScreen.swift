@@ -46,7 +46,7 @@ public struct FeedScreen: View {
                 } else {
                     ScrollView {
                         LazyVStack(spacing: 0) {
-                            ForEach(episodes) { episode in
+                            ForEach(episodes, id: \.objectID) { episode in
                                 EpisodeRowView(
                                     episode: episode,
                                     showsPlayButton: true,

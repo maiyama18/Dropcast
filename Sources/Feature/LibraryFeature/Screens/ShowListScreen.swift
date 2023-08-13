@@ -36,7 +36,7 @@ public struct ShowListScreen: View {
                     )
                 } else {
                     List {
-                        ForEach(shows) { show in
+                        ForEach(shows, id: \.objectID) { show in
                             NavigationLink(
                                 value: ShowListRoute.showDetail(
                                     args: .init(
