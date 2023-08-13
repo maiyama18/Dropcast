@@ -6,6 +6,7 @@ import NavigationState
 import PlayerFeature
 import SettingsFeature
 import SoundFileState
+import SoundPlayerState
 import SwiftUI
 
 import NukeUI
@@ -40,9 +41,7 @@ public struct MainTabScreen: View {
                     .tag(MainTab.settings)
             }
             .toolbarBackground(.ultraThinMaterial, for: .tabBar)
-            .overlay(alignment: .bottom) {
-                PlayerBannerView()
-            }
+            .player()
         }
         .onReceive(soundFileState.downloadErrorPublisher) { _ in
             messageClient.presentError(String(localized: "Failed to download episode", bundle: .module))

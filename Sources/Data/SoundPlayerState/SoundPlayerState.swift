@@ -15,6 +15,15 @@ public final class SoundPlayerState: NSObject {
         case notPlaying
         case playing(episode: EpisodeRecord)
         case pausing(episode: EpisodeRecord)
+        
+        public var isPlayingOrPausing: Bool {
+            switch self {
+            case .notPlaying:
+                return false
+            case .playing, .pausing:
+                return true
+            }
+        }
     }
     
     public static let shared = SoundPlayerState()
