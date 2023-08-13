@@ -20,6 +20,7 @@ public final class SoundPlayerState: NSObject {
     
     public var state: State = .notPlaying 
     public var currentTimeInt: Int?
+    public var duration: Double?
     
     private var displayLink: CADisplayLink?
     private var audioPlayer: AVAudioPlayer? = nil
@@ -40,6 +41,7 @@ public final class SoundPlayerState: NSObject {
         audioPlayer.currentTime = playingState?.lastPausedTime ?? 0
         audioPlayer.play()
         self.audioPlayer = audioPlayer
+        self.duration = audioPlayer.duration
         
         validateDisplayLink()
         
@@ -130,6 +132,7 @@ extension SoundPlayerState: AVAudioPlayerDelegate {
         player.stop()
         Task { @MainActor in
             self.audioPlayer = nil
+            self.duration = nil
             invalidateDisplayLink()
             
             defer { state = .notPlaying }

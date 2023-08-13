@@ -50,7 +50,7 @@ public struct PlayerBannerView: View {
                 HStack(spacing: 2) {
                     Text(formatEpisodeDuration(duration: TimeInterval(soundPlayerState.currentTimeInt ?? 0)))
                     Text("/")
-                    Text(formatEpisodeDuration(duration: episode.duration))
+                    Text(formatEpisodeDuration(duration: soundPlayerState.duration ?? 0))
                 }
                 .font(.footnote.monospacedDigit())
                 .foregroundStyle(.secondary)
@@ -59,8 +59,8 @@ public struct PlayerBannerView: View {
             Spacer(minLength: 0)
             
             HStack {
-                Button(action: { soundPlayerState.goBackward(seconds: 5) }) {
-                    Image(systemName: "gobackward.5")
+                Button(action: { soundPlayerState.goBackward(seconds: 10) }) {
+                    Image(systemName: "gobackward.10")
                         .padding(.horizontal, 4)
                         .padding(.vertical, 8)
                 }
@@ -89,8 +89,8 @@ public struct PlayerBannerView: View {
                     }
                 }
                 
-                Button(action: { soundPlayerState.goForward(seconds: 5) }) {
-                    Image(systemName: "goforward.5")
+                Button(action: { soundPlayerState.goForward(seconds: 10) }) {
+                    Image(systemName: "goforward.10")
                         .padding(.horizontal, 4)
                         .padding(.vertical, 8)
                 }
@@ -103,7 +103,7 @@ public struct PlayerBannerView: View {
         .overlay(alignment: .bottom) {
             ProgressView(
                 value: Double(soundPlayerState.currentTimeInt ?? 0),
-                total: episode.duration
+                total: soundPlayerState.duration ?? 0
             )
         }
     }
