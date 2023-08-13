@@ -85,12 +85,13 @@ public final class SoundPlayerState: NSObject {
     private func move(to time: TimeInterval, audioPlayer: AVAudioPlayer) {
         switch state {
         case .pausing(let episode), .playing(let episode):
-            audioPlayer.currentTime = min(time, audioPlayer.duration - 1)
+            let clampedTime = max(min(time, audioPlayer.duration - 1), 0)
+            audioPlayer.currentTime = clampedTime
             guard let playingState = findOrCreatePlayingState(episodeID: episode.id) else {
                 assertionFailure()
                 return
             }
-            try? playingState.move(to: time)
+            try? playingState.move(to: clampedTime)
         case .notPlaying:
             assertionFailure()
         }
