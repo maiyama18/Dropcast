@@ -4,6 +4,7 @@ import Database
 import Dependencies
 import Entity
 import Foundation
+import MediaPlayer
 import Observation
 import SoundFileState
 
@@ -26,6 +27,96 @@ public final class SoundPlayerState: NSObject {
     private var audioPlayer: AVAudioPlayer? = nil
     private let context: NSManagedObjectContext = CloudKitPersistentProvider.shared.viewContext
     
+    override init() {
+        super.init()
+        configureRemoteCommands()
+    }
+    
+    private func configureRemoteCommands() {
+        let center = MPRemoteCommandCenter.shared()
+        
+        center.playCommand.isEnabled = true
+        center.playCommand.removeTarget(self)
+        center.playCommand.addTarget { [weak self] _ in
+            guard let self else { return .noActionableNowPlayingItem }
+            switch state {
+            case .notPlaying:
+                return .noActionableNowPlayingItem
+            case .playing(let episode), .pausing(let episode):
+                do {
+                    try startPlaying(episode: episode)
+                    return .success
+                } catch {
+                    return .commandFailed
+                }
+            }
+        }
+        
+        center.pauseCommand.isEnabled = true
+        center.pauseCommand.removeTarget(self)
+        center.pauseCommand.addTarget { [weak self] _ in
+            guard let self else { return .noActionableNowPlayingItem }
+            switch state {
+            case .notPlaying:
+                return .noActionableNowPlayingItem
+            case .playing(let episode), .pausing(let episode):
+                pause(episode: episode)
+                return .success
+            }
+        }
+        
+        center.skipForwardCommand.isEnabled = true
+        center.skipForwardCommand.preferredIntervals = [10.0]
+        center.skipForwardCommand.removeTarget(self)
+        center.skipForwardCommand.addTarget { [weak self] _ in
+            guard let self else { return .noActionableNowPlayingItem }
+            goForward(seconds: 10)
+            return .success
+        }
+        
+        center.skipBackwardCommand.isEnabled = true
+        center.skipBackwardCommand.preferredIntervals = [10.0]
+        center.skipBackwardCommand.removeTarget(self)
+        center.skipBackwardCommand.addTarget { [weak self] _ in
+            guard let self else { return .noActionableNowPlayingItem }
+            goBackward(seconds: 10)
+            return .success
+        }
+    }
+    
+    private func updateNowPlayingInfo() {
+        let episode: EpisodeRecord
+        switch state {
+        case .notPlaying:
+            return
+        case .playing(let epi), .pausing(let epi):
+            episode = epi
+        }
+        
+        var nowPlayingInfo: [String: Any] = [
+            MPMediaItemPropertyTitle: episode.title,
+            MPMediaItemPropertyMediaType: MPMediaType.anyAudio.rawValue,
+        ]
+        if let audioPlayer {
+            nowPlayingInfo[MPMediaItemPropertyPlaybackDuration] = audioPlayer.duration
+            nowPlayingInfo[MPNowPlayingInfoPropertyElapsedPlaybackTime] = audioPlayer.currentTime
+        }
+        if let show = episode.show {
+            nowPlayingInfo[MPMediaItemPropertyArtist] = show.title
+            nowPlayingInfo[MPMediaItemPropertyPodcastTitle] = show.title
+            
+            let imageURL = show.imageURL
+            nowPlayingInfo[MPMediaItemPropertyArtwork] = MPMediaItemArtwork(boundsSize: .init(width: 600, height: 600)) { _ in
+                guard let data = try? Data(contentsOf: imageURL) else {
+                    return UIImage()
+                }
+                return UIImage(data: data) ?? UIImage()
+            }
+        }
+        
+        MPNowPlayingInfoCenter.default().nowPlayingInfo = nowPlayingInfo
+    }
+    
     public func startPlaying(episode: EpisodeRecord) throws {
         // 別のファイルが再生中であれば pause する
         if case .playing(let episode) = state {
@@ -35,6 +126,10 @@ public final class SoundPlayerState: NSObject {
         let url = try SoundFileState.soundFileURL(episode: episode)
             
         let playingState = try? context.fetch(EpisodePlayingStateRecord.withEpisodeID(episode.id)).first
+        
+        let audioSession = AVAudioSession.sharedInstance()
+        try audioSession.setCategory(.playback)
+        try audioSession.setActive(true)
         
         let audioPlayer = try AVAudioPlayer(contentsOf: url)
         audioPlayer.delegate = self
@@ -46,6 +141,8 @@ public final class SoundPlayerState: NSObject {
         validateDisplayLink()
         
         self.state = .playing(episode: episode)
+        
+        updateNowPlayingInfo()
         
         if let playingState {
             try playingState.startPlaying(atTime: audioPlayer.currentTime)
@@ -94,6 +191,9 @@ public final class SoundPlayerState: NSObject {
                 return
             }
             try? playingState.move(to: clampedTime)
+            var nowPlayingInfo = MPNowPlayingInfoCenter.default().nowPlayingInfo ?? [:]
+            nowPlayingInfo[MPNowPlayingInfoPropertyElapsedPlaybackTime] = clampedTime
+            MPNowPlayingInfoCenter.default().nowPlayingInfo = nowPlayingInfo
         case .notPlaying:
             assertionFailure()
         }
