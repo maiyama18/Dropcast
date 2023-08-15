@@ -34,9 +34,10 @@ public final class SoundPlayerState: NSObject {
     
     private var displayLink: CADisplayLink?
     private var audioPlayer: AVAudioPlayer? = nil
-    private let context: NSManagedObjectContext = CloudKitPersistentProvider.shared.viewContext
+    private let context: NSManagedObjectContext
     
-    override init() {
+    public init(context: NSManagedObjectContext = CloudKitPersistentProvider.shared.viewContext) {
+        self.context = context
         super.init()
         configureRemoteCommands()
     }
@@ -181,16 +182,17 @@ public final class SoundPlayerState: NSObject {
     }
     
     public func goForward(seconds: TimeInterval) {
-        guard let audioPlayer else { return }
-        move(to: audioPlayer.currentTime + seconds, audioPlayer: audioPlayer)
+        guard let currentTime = audioPlayer?.currentTime else { return }
+        move(to: currentTime + seconds)
     }
     
     public func goBackward(seconds: TimeInterval) {
-        guard let audioPlayer else { return }
-        move(to: audioPlayer.currentTime - seconds, audioPlayer: audioPlayer)
+        guard let currentTime = audioPlayer?.currentTime else { return }
+        move(to: currentTime - seconds)
     }
     
-    private func move(to time: TimeInterval, audioPlayer: AVAudioPlayer) {
+    public func move(to time: TimeInterval) {
+        guard let audioPlayer else { return }
         switch state {
         case .pausing(let episode), .playing(let episode):
             let clampedTime = max(min(time, audioPlayer.duration - 1), 0)

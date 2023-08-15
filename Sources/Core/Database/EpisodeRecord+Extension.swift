@@ -59,8 +59,9 @@ extension EpisodeRecord {
 }
 
 extension EpisodeRecord {
-    public static var fixture: EpisodeRecord {
-        EpisodeRecord(
+    public static func fixture(context: NSManagedObjectContext) -> EpisodeRecord {
+        let episode = EpisodeRecord(
+            context: context,
             id: "https://rebuild.fm/352/",
             title: "352: There's a Fifth Way (naoya)",
             subtitle: "Naoya Ito さんをゲストに迎えて、MacBook Pro, キーボード、競技プログラミング、レイオフ、ゲームなどについて話しました。",
@@ -75,5 +76,17 @@ extension EpisodeRecord {
             soundURL: URL(string: "https://example.com")!,
             publishedAt: rssDateFormatter.date(from: "Tue, 03 Jan 2023 20:00:00 -0800")!
         )
+        
+        episode.show = ShowRecord(
+            context: context,
+            title: "Rebuild",
+            description: "ウェブ開発、プログラミング、モバイル、ガジェットなどにフォーカスしたテクノロジー系ポッドキャストです。 #rebuildfm",
+            author: "Tatsuhiko Miyagawa",
+            feedURL: URL(string: "https://feeds.rebuild.fm/rebuildfm")!,
+            imageURL: URL(string: "https://cdn.rebuild.fm/images/icon1400.jpg")!,
+            linkURL: URL(string: "https://rebuild.fm")
+        )
+        
+        return episode
     }
 }

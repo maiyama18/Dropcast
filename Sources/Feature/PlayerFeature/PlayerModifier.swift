@@ -1,5 +1,5 @@
-import SwiftUI
 import SoundPlayerState
+import SwiftUI
 
 public extension View {
     func player() -> some View {

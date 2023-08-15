@@ -65,7 +65,7 @@ public struct ShowDetailScreen: View {
                 if episodeRecords.isEmpty {
                     ForEach(0..<10) { _ in
                         EpisodeRowView(
-                            episode: .fixture,
+                            episode: .fixture(context: context),
                             showsPlayButton: true,
                             showsImage: false
                         )
