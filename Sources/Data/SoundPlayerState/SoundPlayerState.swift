@@ -7,6 +7,7 @@ import Foundation
 import MediaPlayer
 import Observation
 import SoundFileState
+import UserDefaultsClient
 
 @Observable
 @MainActor
@@ -28,6 +29,8 @@ public final class SoundPlayerState: NSObject {
     
     public static let shared = SoundPlayerState()
     
+    @ObservationIgnored @Dependency(\.userDefaultsClient) private var userDefaultsClient
+    
     public var state: State = .notPlaying 
     public var currentTimeInt: Int?
     public var duration: Double?
@@ -39,6 +42,7 @@ public final class SoundPlayerState: NSObject {
     public init(context: NSManagedObjectContext = CloudKitPersistentProvider.shared.viewContext) {
         self.context = context
         super.init()
+        restoreCurrentState()
         configureRemoteCommands()
     }
     
@@ -127,6 +131,30 @@ public final class SoundPlayerState: NSObject {
         MPNowPlayingInfoCenter.default().nowPlayingInfo = nowPlayingInfo
     }
     
+    private func storeCurrentState() {
+        let episodeID: EpisodeRecord.ID
+        switch state {
+        case .notPlaying:
+            return
+        case .playing(let episode), .pausing(let episode):
+            episodeID = episode.id
+        }
+        
+        userDefaultsClient.setStoredSoundPlayerState(episodeID, audioPlayer?.currentTime ?? 0)
+    }
+    
+    private func restoreCurrentState() {
+        guard let storedSoundPlayerState = userDefaultsClient.getStoredSoundPlayerState(),
+              let episode = try? context.fetch(EpisodeRecord.withID(storedSoundPlayerState.episodeID)).first else {
+            return
+        }
+        episode.playingState?.lastPausedTime = storedSoundPlayerState.currentTime
+        currentTimeInt = Int(storedSoundPlayerState.currentTime)
+        
+        try? startPlaying(episode: episode)
+        pause(episode: episode)
+    }
+    
     public func startPlaying(episode: EpisodeRecord) throws {
         // 別のファイルが再生中であれば pause する
         if case .playing(let episode) = state {
@@ -179,6 +207,7 @@ public final class SoundPlayerState: NSObject {
             return
         }
         try? playingState.pause(atTime: audioPlayer?.currentTime ?? 0)
+        storeCurrentState()
     }
     
     public func goForward(seconds: TimeInterval) {
@@ -223,7 +252,7 @@ public final class SoundPlayerState: NSObject {
     }
     
     private func validateDisplayLink() {
-        displayLink = CADisplayLink(target: self, selector: #selector(updateCurrentTimeInt))
+        displayLink = CADisplayLink(target: self, selector: #selector(didDisplayLinkTick))
         displayLink?.add(to: .main, forMode: .common)
     }
     
@@ -232,10 +261,10 @@ public final class SoundPlayerState: NSObject {
         displayLink = nil
     }
     
-    @objc private func updateCurrentTimeInt() {
+    @objc private func didDisplayLinkTick() {
         currentTimeInt = Int(audioPlayer?.currentTime ?? 0)
+        storeCurrentState()
     }
-    
 }
 
 extension SoundPlayerState: AVAudioPlayerDelegate {
