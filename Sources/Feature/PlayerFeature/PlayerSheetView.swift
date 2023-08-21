@@ -9,6 +9,7 @@ import SwiftUI
 struct PlayerSheetView: View {
     @Environment(SoundPlayerState.self) private var soundPlayerState
     @State private var backgroundRotationAngle: Angle = .degrees(Double.random(in: 0...360))
+    @State private var imageScale: Double = 0.2
     
     var body: some View {
         switch soundPlayerState.state {
@@ -24,13 +25,18 @@ struct PlayerSheetView: View {
     
     private func sheetView(playing: Bool, episode: EpisodeRecord) -> some View {
         VStack {
-            Spacer(minLength: 0)
+            Spacer(minLength: 8)
             
             lazyImage(show: episode.show)
                 .cornerRadius(8)
                 .aspectRatio(contentMode: .fit)
+                .scaleEffect(imageScale, anchor: .bottomLeading)
+                .animation(.default, value: imageScale)
+                .onAppear {
+                    imageScale = 1
+                }
             
-            Spacer(minLength: 0)
+            Spacer(minLength: 8)
             
             VStack(alignment: .leading) {
                 Text(episode.title)
