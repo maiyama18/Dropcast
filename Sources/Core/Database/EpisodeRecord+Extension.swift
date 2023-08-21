@@ -45,7 +45,7 @@ extension EpisodeRecord {
         if let context {
             self.init(context: context)
         } else {
-            self.init(entity: CloudKitPersistentProvider.shared.managedObjectModel.entitiesByName["EpisodeRecord"]!, insertInto: nil)
+            self.init(entity: PersistentProvider.cloud.managedObjectModel.entitiesByName["EpisodeRecord"]!, insertInto: nil)
         }
         
         self.id_ = id

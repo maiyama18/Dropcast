@@ -39,7 +39,7 @@ public final class SoundPlayerState: NSObject {
     private var audioPlayer: AVAudioPlayer? = nil
     private let context: NSManagedObjectContext
     
-    public init(context: NSManagedObjectContext = CloudKitPersistentProvider.shared.viewContext) {
+    public init(context: NSManagedObjectContext = PersistentProvider.cloud.viewContext) {
         self.context = context
         super.init()
         restoreCurrentState()

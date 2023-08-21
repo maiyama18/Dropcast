@@ -14,7 +14,7 @@ public struct IOSApp: App {
     private let navigationState: NavigationState = .shared
     private let soundFileState: SoundFileState = .shared
     private let soundPlayerState: SoundPlayerState = .shared
-    private let persistentContainer: CloudKitPersistentProvider = .shared
+    private let persistentContainer: PersistentProvider = .cloud
 
     public init() {}
 

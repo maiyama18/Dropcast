@@ -8,7 +8,7 @@ public protocol Model {
 public extension Model where Self: NSManagedObject {
     @MainActor
     func save() throws {
-        let context = CloudKitPersistentProvider.shared.viewContext
+        let context = PersistentProvider.cloud.viewContext
         do {
             try context.save()
         } catch {
@@ -19,7 +19,7 @@ public extension Model where Self: NSManagedObject {
     
     @MainActor
     func delete() throws {
-        let context = CloudKitPersistentProvider.shared.viewContext
+        let context = PersistentProvider.cloud.viewContext
         do {
             context.delete(self)
             try save()

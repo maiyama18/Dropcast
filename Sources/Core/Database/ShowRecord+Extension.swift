@@ -44,7 +44,7 @@ extension ShowRecord {
         if let context {
             self.init(context: context)
         } else {
-            self.init(entity: CloudKitPersistentProvider.shared.managedObjectModel.entitiesByName["ShowRecord"]!, insertInto: nil)
+            self.init(entity: PersistentProvider.cloud.managedObjectModel.entitiesByName["ShowRecord"]!, insertInto: nil)
         }
         
         self.title_ = title
