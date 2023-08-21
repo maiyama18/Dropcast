@@ -38,6 +38,7 @@ extension UserDefaultsClient: DependencyKey {
         getStoredSoundPlayerState: unimplemented(),
         setStoredSoundPlayerState: { _, _ in unimplemented() }
     )
+    public static let previewValue: UserDefaultsClient = .instance(userDefaults: .standard)
 }
 
 extension DependencyValues {
