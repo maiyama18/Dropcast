@@ -132,7 +132,9 @@ public struct ShowDetailScreen: View {
                     try rssShow.toModel(context: context).save()
                 }
             } catch {
-                messageClient.presentError(String(localized: "Failed to fetch show information", bundle: .module))
+                if !Task.isCancelled {
+                    messageClient.presentError(String(localized: "Failed to fetch show information", bundle: .module))
+                }
             }
         }
     }
