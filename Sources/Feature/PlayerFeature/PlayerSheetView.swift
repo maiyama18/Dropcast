@@ -106,37 +106,62 @@ struct PlayerSheetView: View {
     
     private func actionButtonsView(playing: Bool, episode: EpisodeRecord) -> some View {
         HStack {
-            Button(action: { soundPlayerState.goBackward(seconds: 10) }) {
-                Image(systemName: "gobackward.10")
-                    .padding()
-            }
-            
-            if playing {
-                Button(action: {
-                    soundPlayerState.pause(episode: episode)
-                }) {
-                    Image(systemName: "play.fill")
-                        .hidden()
-                        .overlay {
-                            Image(systemName: "pause.fill")
+            Group {
+                Text(SoundPlayerState.SpeedRate._1_75.formatted)
+                    .hidden()
+                    .overlay {
+                        Menu(soundPlayerState.speedRate.formatted) {
+                            ForEach(SoundPlayerState.SpeedRate.allCases, id: \.rawValue) { rate in
+                                Button {
+                                    soundPlayerState.speedRate = rate
+                                } label: {
+                                    Text(rate.formatted)
+                                        .padding(.vertical)
+                                }
+                            }
                         }
-                        .padding()
+                    }
+                    .font(.body.monospacedDigit())
+                    .padding(.vertical)
+                
+                Button(action: { soundPlayerState.goBackward(seconds: 10) }) {
+                    Image(systemName: "gobackward.10")
+                        .padding(.vertical)
                 }
-            } else {
-                Button(action: {
-                    do {
-                        try soundPlayerState.startPlaying(episode: episode)
-                    } catch {}
-                }) {
-                    Image(systemName: "play.fill")
-                        .padding()
+                
+                if playing {
+                    Button(action: {
+                        soundPlayerState.pause(episode: episode)
+                    }) {
+                        Image(systemName: "play.fill")
+                            .hidden()
+                            .overlay {
+                                Image(systemName: "pause.fill")
+                                    .padding(.vertical)
+                            }
+                            .padding(.vertical)
+                    }
+                } else {
+                    Button(action: {
+                        do {
+                            try soundPlayerState.startPlaying(episode: episode)
+                        } catch {}
+                    }) {
+                        Image(systemName: "play.fill")
+                            .padding(.vertical)
+                    }
                 }
+                
+                Button(action: { soundPlayerState.goForward(seconds: 10) }) {
+                    Image(systemName: "goforward.10")
+                        .padding(.vertical)
+                }
+                
+                Text(SoundPlayerState.SpeedRate._1_75.formatted)
+                    .hidden()
+                    .font(.body.monospacedDigit())
             }
-            
-            Button(action: { soundPlayerState.goForward(seconds: 10) }) {
-                Image(systemName: "goforward.10")
-                    .padding()
-            }
+            .frame(maxWidth: .infinity)
         }
         .font(.largeTitle)
         .tint(.primary)
