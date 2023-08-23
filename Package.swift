@@ -231,6 +231,7 @@ let targets: [PackageDescription.Target] = [
         dependencies: [
             .dependencies,
             "Database",
+            "HapticClient",
             "Logger",
             "SoundFileState",
             "UserDefaultsClient",
@@ -254,6 +255,11 @@ let targets: [PackageDescription.Target] = [
         name: "ClipboardClient",
         dependencies: [.dependencies],
         path: "Sources/Infra/ClipboardClient"
+    ),
+    .target(
+        name: "HapticClient",
+        dependencies: [.dependencies],
+        path: "Sources/Infra/HapticClient"
     ),
     .target(
         name: "RSSClient",

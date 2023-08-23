@@ -4,6 +4,7 @@ import Database
 import Dependencies
 import Entity
 import Foundation
+import HapticClient
 import MediaPlayer
 import Observation
 import SoundFileState
@@ -29,6 +30,7 @@ public final class SoundPlayerState: NSObject {
     
     public static let shared = SoundPlayerState()
     
+    @ObservationIgnored @Dependency(\.hapticClient) private var hapticClient
     @ObservationIgnored @Dependency(\.userDefaultsClient) private var userDefaultsClient
     
     public var state: State = .notPlaying 
@@ -164,6 +166,8 @@ public final class SoundPlayerState: NSObject {
     }
     
     public func startPlaying(episode: EpisodeRecord) throws {
+        hapticClient.medium()
+        
         // 別のファイルが再生中であれば pause する
         if case .playing(let episode) = state {
             pause(episode: episode)
@@ -198,6 +202,8 @@ public final class SoundPlayerState: NSObject {
     }
     
     public func pause(episode: EpisodeRecord) {
+        hapticClient.medium()
+        
         audioPlayer?.stop()
         
         invalidateDisplayLink()
@@ -216,11 +222,13 @@ public final class SoundPlayerState: NSObject {
     
     public func goForward(seconds: TimeInterval) {
         guard let currentTime = audioPlayer?.currentTime else { return }
+        hapticClient.medium()
         move(to: currentTime + seconds)
     }
     
     public func goBackward(seconds: TimeInterval) {
         guard let currentTime = audioPlayer?.currentTime else { return }
+        hapticClient.medium()
         move(to: currentTime - seconds)
     }
     
