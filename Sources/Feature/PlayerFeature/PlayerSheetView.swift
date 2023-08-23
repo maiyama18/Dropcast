@@ -36,25 +36,29 @@ struct PlayerSheetView: View {
                     imageScale = 1
                 }
             
-            Spacer(minLength: 8)
+            Spacer().frame(height: 16)
             
-            VStack(alignment: .leading) {
-                Text(episode.title)
-                    .font(.title3.bold())
-                    .minimumScaleFactor(0.8)
-                    .lineLimit(2)
-                
-                Text(episode.show?.title ?? "")
-                    .font(.body)
+            VStack(alignment: .leading, spacing: 4) {
+                Text(episode.publishedAt.formatted(date: .numeric, time: .omitted))
+                    .font(.subheadline)
                     .foregroundStyle(.secondary)
                 
-                Spacer()
-                    .frame(height: 16)
+                Text(episode.title)
+                    .font(.headline.bold())
+                    .minimumScaleFactor(0.8)
+                    .lineLimit(3)
                 
-                progressView
-                
-                actionButtonsView(playing: playing, episode: episode)
+                Text(episode.show?.title ?? "")
+                    .font(.headline.weight(.regular))
+                    .foregroundStyle(.secondary)
             }
+            .frame(maxWidth: .infinity, alignment: .leading)
+            
+            Spacer(minLength: 8)
+            
+            progressView
+            
+            actionButtonsView(playing: playing, episode: episode)
             
             Spacer(minLength: 0)
         }
