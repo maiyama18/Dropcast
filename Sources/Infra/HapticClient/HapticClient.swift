@@ -1,6 +1,8 @@
 import Dependencies
 import UIKit
 
+@MainActor let generator = UIImpactFeedbackGenerator(style: .medium)
+
 public struct HapticClient: Sendable {
     public var medium: @MainActor @Sendable () -> Void
 }
@@ -8,7 +10,6 @@ public struct HapticClient: Sendable {
 extension HapticClient {
     public static let live: HapticClient = HapticClient(
         medium: {
-            let generator = UIImpactFeedbackGenerator(style: .medium)
             generator.prepare()
             generator.impactOccurred()
         }
