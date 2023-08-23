@@ -145,14 +145,22 @@ public final class SoundPlayerState: NSObject {
     
     private func restoreCurrentState() {
         guard let storedSoundPlayerState = userDefaultsClient.getStoredSoundPlayerState(),
-              let episode = try? context.fetch(EpisodeRecord.withID(storedSoundPlayerState.episodeID)).first else {
+              let episode = try? context.fetch(EpisodeRecord.withID(storedSoundPlayerState.episodeID)).first,
+              let playingState = episode.playingState else {
+            state = .notPlaying
             return
         }
-        episode.playingState?.lastPausedTime = storedSoundPlayerState.currentTime
-        currentTimeInt = Int(storedSoundPlayerState.currentTime)
         
-        try? startPlaying(episode: episode)
-        pause(episode: episode)
+        do {
+            try playingState.pause(atTime: storedSoundPlayerState.currentTime)
+            currentTimeInt = Int(storedSoundPlayerState.currentTime)
+            duration = episode.duration
+            
+            state = .pausing(episode: episode)
+            updateNowPlayingInfo()
+        } catch {
+            state = .notPlaying
+        }
     }
     
     public func startPlaying(episode: EpisodeRecord) throws {
@@ -165,10 +173,6 @@ public final class SoundPlayerState: NSObject {
             
         let playingState = try? context.fetch(EpisodePlayingStateRecord.withEpisodeID(episode.id)).first
         
-        let audioSession = AVAudioSession.sharedInstance()
-        try audioSession.setCategory(.playback)
-        try audioSession.setActive(true)
-        
         let audioPlayer = try AVAudioPlayer(contentsOf: url)
         audioPlayer.delegate = self
         audioPlayer.currentTime = playingState?.lastPausedTime ?? 0
@@ -179,7 +183,6 @@ public final class SoundPlayerState: NSObject {
         validateDisplayLink()
         
         self.state = .playing(episode: episode)
-        
         updateNowPlayingInfo()
         
         if let playingState {
@@ -200,6 +203,7 @@ public final class SoundPlayerState: NSObject {
         invalidateDisplayLink()
         
         self.state = .pausing(episode: episode)
+        updateNowPlayingInfo()
         
         guard let playingState = findOrCreatePlayingState(episodeID: episode.id) else {
             assertionFailure()
