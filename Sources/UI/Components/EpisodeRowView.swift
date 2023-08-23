@@ -22,6 +22,7 @@ public struct EpisodeRowView: View {
     
     @Environment(SoundFileState.self) private var soundFileState
     @Environment(SoundPlayerState.self) private var soundPlayerState
+    @Environment(\.redactionReasons) private var redactionReasons
     @Dependency(\.messageClient) private var messageClient
     
     public init(
@@ -36,7 +37,7 @@ public struct EpisodeRowView: View {
     
     public var body: some View {
         HStack(alignment: .top, spacing: 8) {
-            if let showImageURL = episode.show?.imageURL {
+            if showsImage, let showImageURL = episode.show?.imageURL {
                 LazyImage(url: showImageURL) { state in
                     if let image = state.image {
                         image
