@@ -122,6 +122,17 @@ let targets: [PackageDescription.Target] = [
         path: "Sources/Feature/DebugFeature"
     ),
     .target(
+        name: "EpisodeDetailFeature",
+        dependencies: [
+            .nukeUI,
+            "Components",
+            "Database",
+            "Extension",
+            "NavigationState",
+        ],
+        path: "Sources/Feature/EpisodeDetailFeature"
+    ),
+    .target(
         name: "FeedFeature",
         dependencies: [
             "ShowDetailFeature",
@@ -171,6 +182,7 @@ let targets: [PackageDescription.Target] = [
             "Components",
             "ClipboardClient",
             "Database",
+            "EpisodeDetailFeature",
             "MessageClient",
             "RSSClient",
             "SoundFileState",

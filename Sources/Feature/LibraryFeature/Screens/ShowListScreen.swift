@@ -1,6 +1,7 @@
 import CoreData
 import Database
 import Dependencies
+import EpisodeDetailFeature
 import Extension
 import IdentifiedCollections
 import NavigationState
@@ -85,6 +86,8 @@ public struct ShowListScreen: View {
             .navigationTitle(Text("Shows", bundle: .module))
             .navigationDestination(for: PodcastRoute.self) { route in
                 switch route {
+                case .episodeDetail(let episode):
+                    EpisodeDetailScreen(episode: episode)
                 case .showDetail(let args):
                     ShowDetailScreen(args: args)
                 }

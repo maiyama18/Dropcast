@@ -3,6 +3,7 @@ import Components
 import Database
 import Dependencies
 import Entity
+import EpisodeDetailFeature
 import Extension
 import MessageClient
 import NavigationState
@@ -68,12 +69,16 @@ public struct ShowDetailScreen: View {
                         .scaleEffect(2, anchor: .top)
                 } else {
                     ForEach(episodeRecords, id: \.objectID) { episode in
-                        EpisodeRowView(
-                            episode: episode,
-                            showsPlayButton: true,
-                            showsImage: false
-                        )
-
+                        NavigationLink(
+                            value: PodcastRoute.episodeDetail(episode: episode)
+                        ) {
+                            EpisodeRowView(
+                                episode: episode,
+                                showsPlayButton: true,
+                                showsImage: false
+                            )
+                        }
+                        
                         EpisodeDivider()
                     }
                 }

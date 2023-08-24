@@ -4,10 +4,13 @@ import Database
 import DeepLink
 import Dependencies
 import Entity
+import EpisodeDetailFeature
 import Extension
 import IdentifiedCollections
 import MessageClient
+import NavigationState
 import RSSClient
+import ShowDetailFeature
 import SoundFileState
 import SwiftUI
 import UserDefaultsClient
@@ -48,11 +51,15 @@ public struct FeedScreen: View {
                     ScrollView {
                         LazyVStack(spacing: 0) {
                             ForEach(episodes, id: \.objectID) { episode in
-                                EpisodeRowView(
-                                    episode: episode,
-                                    showsPlayButton: true,
-                                    showsImage: true
-                                )
+                                NavigationLink(
+                                    value: PodcastRoute.episodeDetail(episode: episode)
+                                ) {
+                                    EpisodeRowView(
+                                        episode: episode,
+                                        showsPlayButton: true,
+                                        showsImage: true
+                                    )
+                                }
                                 
                                 EpisodeDivider()
                             }
@@ -68,6 +75,14 @@ public struct FeedScreen: View {
             .navigationTitle(Text("Feed", bundle: .module))
             .navigationBarTitleDisplayMode(.inline)
             .toolbarBackground(.ultraThinMaterial, for: .navigationBar)
+            .navigationDestination(for: PodcastRoute.self) { route in
+                switch route {
+                case .episodeDetail(let episode):
+                    EpisodeDetailScreen(episode: episode)
+                case .showDetail(let args):
+                    ShowDetailScreen(args: args)
+                }
+            }
         }
         .task {
             if let feedRefreshedAt = userDefaultsClient.getFeedRefreshedAt(),

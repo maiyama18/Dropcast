@@ -2,6 +2,7 @@ import Algorithms
 import Database
 import Dependencies
 import Entity
+import EpisodeDetailFeature
 import IdentifiedCollections
 import ITunesClient
 import NavigationState
@@ -117,6 +118,8 @@ struct ShowSearchScreen: View {
             .navigationTitle(Text("Search", bundle: .module))
             .navigationDestination(for: PodcastRoute.self) { route in
                 switch route {
+                case .episodeDetail(let episode):
+                    EpisodeDetailScreen(episode: episode)
                 case .showDetail(let args):
                     ShowDetailScreen(args: args)
                 }

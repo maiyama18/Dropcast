@@ -79,6 +79,7 @@ public struct EpisodeRowView: View {
                 
                 HStack(spacing: 12) {
                     actionButton
+                        .tint(.accentColor)
                     
                     Spacer()
                     
@@ -95,8 +96,11 @@ public struct EpisodeRowView: View {
                     }
                 }
                 .font(.title)
+                .tint(.accentColor)
             }
         }
+        .multilineTextAlignment(.leading)
+        .tint(.primary)
     }
     
     private var actionButton: some View {
