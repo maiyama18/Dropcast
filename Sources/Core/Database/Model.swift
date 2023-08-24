@@ -1,30 +1,33 @@
 import CoreData
 
 public protocol Model {
-    @MainActor func save() throws
-    @MainActor func delete() throws
+    var viewContext: NSManagedObjectContext { get }
+    @MainActor func saveModel() throws
+    @MainActor func deleteModel() throws
 }
 
 public extension Model where Self: NSManagedObject {
+    var viewContext: NSManagedObjectContext {
+        PersistentProvider.cloud.viewContext
+    }
+    
     @MainActor
-    func save() throws {
-        let context = PersistentProvider.cloud.viewContext
+    func saveModel() throws {
         do {
-            try context.save()
+            try viewContext.save()
         } catch {
-            context.rollback()
+            viewContext.rollback()
             throw error
         }
     }
     
     @MainActor
-    func delete() throws {
-        let context = PersistentProvider.cloud.viewContext
+    func deleteModel() throws {
         do {
-            context.delete(self)
-            try save()
+            viewContext.delete(self)
+            try saveModel()
         } catch {
-            context.rollback()
+            viewContext.rollback()
             throw error
         }
     }

@@ -22,7 +22,7 @@ extension EpisodePlayingStateRecord {
         willFinishedAt = now.addingTimeInterval(episode.duration - atTime)
         lastPausedTime = 0
         
-        try save()
+        try saveModel()
     }
     
     @MainActor
@@ -31,7 +31,7 @@ extension EpisodePlayingStateRecord {
         willFinishedAt = nil
         lastPausedTime = atTime
         
-        try save()
+        try saveModel()
     }
     
     @MainActor
@@ -45,7 +45,7 @@ extension EpisodePlayingStateRecord {
             lastPausedTime = time
         }
         
-        try save()
+        try saveModel()
     }
     
     @MainActor
@@ -55,6 +55,11 @@ extension EpisodePlayingStateRecord {
         willFinishedAt = nil
         lastPausedTime = 0
         
-        try save()
+        try saveModel()
+    }
+    
+    @MainActor
+    public func delete() throws {
+        try deleteModel()
     }
 }

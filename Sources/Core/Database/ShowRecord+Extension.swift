@@ -1,3 +1,4 @@
+import Algorithms
 import CoreData
 import Dependencies
 import Entity
@@ -8,12 +9,11 @@ extension ShowRecord: Model {}
 
 extension ShowRecord {
     @MainActor
-    public static func withFeedURL(_ feedURL: URL) -> FetchRequest<ShowRecord> {
-        FetchRequest<ShowRecord>(
-            entity: ShowRecord.entity(),
-            sortDescriptors: [],
-            predicate: NSPredicate(format: "%K == %@", #keyPath(ShowRecord.feedURL_), feedURL as CVarArg)
-        )
+    public static func withFeedURL(_ feedURL: URL) -> NSFetchRequest<ShowRecord> {
+        let request = ShowRecord.fetchRequest()
+        request.predicate = NSPredicate(format: "%K == %@", #keyPath(ShowRecord.feedURL_), feedURL as CVarArg)
+        request.sortDescriptors = []
+        return request
     }
     
     @MainActor
@@ -59,5 +59,22 @@ extension ShowRecord {
     public func toggleFollow() throws {
         followed = !followed
         try save()
+    }
+    
+    @MainActor
+    public func save() throws {
+        let existingShows = try viewContext.fetch(Self.withFeedURL(feedURL))
+        if existingShows.contains(where: { $0.objectID != objectID }) {
+            // feedURL が同一で objectID が異なる Show が存在する場合は、保存すると重複するためエラーにする
+            throw NSError(domain: "duplicated", code: 0)
+        }
+        let episodes = episodes_?.allObjects.compactMap { $0 as? EpisodeRecord }
+        episodes_ = NSSet(array: episodes?.uniqued(on: { $0.id }) ?? [])
+        try saveModel()
+    }
+    
+    @MainActor
+    public func delete() throws {
+        try deleteModel()
     }
 }

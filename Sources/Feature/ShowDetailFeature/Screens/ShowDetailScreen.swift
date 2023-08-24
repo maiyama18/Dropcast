@@ -37,7 +37,7 @@ public struct ShowDetailScreen: View {
         self.initialImageURL = args.imageURL
         self.initialTitle = args.title
         
-        self._showRecords = ShowRecord.withFeedURL(feedURL)
+        self._showRecords = FetchRequest(fetchRequest: ShowRecord.withFeedURL(feedURL))
         self._episodeRecords = FetchRequest(fetchRequest: EpisodeRecord.withShowFeedURL(feedURL))
     }
 
@@ -64,16 +64,8 @@ public struct ShowDetailScreen: View {
                 EpisodeDivider()
 
                 if episodeRecords.isEmpty {
-                    ForEach(0..<10) { _ in
-                        EpisodeRowView(
-                            episode: .fixture(context: context),
-                            showsPlayButton: true,
-                            showsImage: false
-                        )
-                        .redacted(reason: .placeholder)
-
-                        EpisodeDivider()
-                    }
+                    ProgressView()
+                        .scaleEffect(2, anchor: .top)
                 } else {
                     ForEach(episodeRecords, id: \.objectID) { episode in
                         EpisodeRowView(
