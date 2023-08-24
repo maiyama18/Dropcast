@@ -26,6 +26,7 @@ public struct ShowDetailScreen: View {
     
     @Environment(\.openURL) private var openURL
     @Environment(\.managedObjectContext) private var context
+    @Environment(\.playerBannerHeight) private var playerBannerHeight
     
     @Dependency(\.clipboardClient) private var clipboardClient
     @Dependency(\.messageClient) private var messageClient
@@ -85,6 +86,7 @@ public struct ShowDetailScreen: View {
                     }
                 }
             }
+            .padding(.bottom, playerBannerHeight)
         }
         .padding(.horizontal)
         .toolbar {

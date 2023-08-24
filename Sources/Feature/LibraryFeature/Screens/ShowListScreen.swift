@@ -1,6 +1,7 @@
 import CoreData
 import Database
 import Dependencies
+import Extension
 import IdentifiedCollections
 import NavigationState
 import ShowDetailFeature
@@ -12,6 +13,7 @@ public struct ShowListScreen: View {
     
     @Environment(NavigationState.self) private var navigationState
     @Environment(\.managedObjectContext) private var context
+    @Environment(\.playerBannerHeight) private var playerBannerHeight
     
     @Dependency(\.messageClient) private var messageClient
     
@@ -64,6 +66,7 @@ public struct ShowListScreen: View {
                                 .tint(.red)
                             }
                         }
+                        .padding(.bottom, playerBannerHeight)
                     }
                     .listStyle(.plain)
                 }

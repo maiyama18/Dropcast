@@ -19,6 +19,7 @@ public struct FeedScreen: View {
  
     @Environment(\.openURL) private var openURL
     @Environment(\.managedObjectContext) private var context
+    @Environment(\.playerBannerHeight) private var playerBannerHeight
     
     @Dependency(\.messageClient) private var messageClient
     @Dependency(\.rssClient) private var rssClient
@@ -57,6 +58,7 @@ public struct FeedScreen: View {
                             }
                         }
                         .padding(.horizontal)
+                        .padding(.bottom, playerBannerHeight)
                     }
                     .refreshable {
                         await refreshFeed()

@@ -1,3 +1,4 @@
+import Extension
 import SoundPlayerState
 import SwiftUI
 
@@ -18,6 +19,12 @@ struct PlayerModifier: ViewModifier {
                 PlayerBannerView()
                     .onTapGesture {
                         isSheetModeOn = true
+                    }
+                    .background {
+                        GeometryReader { proxy in
+                            Color.clear
+                                .preference(key: PlayerBannerHeightKey.self, value: proxy.size.height)
+                        }
                     }
             }
             .sheet(

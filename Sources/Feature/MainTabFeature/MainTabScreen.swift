@@ -1,4 +1,5 @@
 import Dependencies
+import Extension
 import FeedFeature
 import LibraryFeature
 import MessageClient
@@ -16,6 +17,8 @@ public struct MainTabScreen: View {
     @Environment(SoundFileState.self) private var soundFileState
     
     @Dependency(\.messageClient) private var messageClient
+    
+    @State private var playerBannerHeight: Double = 0
 
     public init() {}
 
@@ -46,5 +49,9 @@ public struct MainTabScreen: View {
         .onReceive(soundFileState.downloadErrorPublisher) { _ in
             messageClient.presentError(String(localized: "Failed to download episode", bundle: .module))
         }
+        .onPreferenceChange(PlayerBannerHeightKey.self) { height in
+            playerBannerHeight = height
+        }
+        .environment(\.playerBannerHeight, playerBannerHeight)
     }
 }
