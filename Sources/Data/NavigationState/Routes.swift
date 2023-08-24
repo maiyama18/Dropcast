@@ -1,8 +1,4 @@
-public enum ShowListRoute: Hashable {
-    case showDetail(args: ShowDetailInitArguments)
-}
-
-public enum ShowSearchRoute: Hashable {
+public enum PodcastRoute: Hashable {
     case showDetail(args: ShowDetailInitArguments)
 }
 

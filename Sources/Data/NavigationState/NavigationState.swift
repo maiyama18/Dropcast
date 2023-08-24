@@ -9,9 +9,9 @@ public final class NavigationState {
     // feed tab
     
     // library tab
-    public var showListPath: [ShowListRoute] = []
+    public var showListPath: [PodcastRoute] = []
     
-    public var showSearchPath: [ShowSearchRoute]? = nil
+    public var showSearchPath: [PodcastRoute]? = nil
     
     // settings tab
     public var settingsPath: [SettingsRoute] = []

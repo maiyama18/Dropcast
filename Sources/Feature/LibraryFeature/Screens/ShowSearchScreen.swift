@@ -90,7 +90,7 @@ struct ShowSearchScreen: View {
                         List {
                             ForEach(shows, id: \.feedURL) { show in
                                 NavigationLink(
-                                    value: ShowSearchRoute.showDetail(
+                                    value: PodcastRoute.showDetail(
                                         args: .init(
                                             feedURL: show.feedURL,
                                             imageURL: show.imageURL,
@@ -115,7 +115,7 @@ struct ShowSearchScreen: View {
                 }
             }
             .navigationTitle(Text("Search", bundle: .module))
-            .navigationDestination(for: ShowSearchRoute.self) { route in
+            .navigationDestination(for: PodcastRoute.self) { route in
                 switch route {
                 case .showDetail(let args):
                     ShowDetailScreen(args: args)

@@ -40,7 +40,7 @@ public struct ShowListScreen: View {
                     List {
                         ForEach(shows, id: \.objectID) { show in
                             NavigationLink(
-                                value: ShowListRoute.showDetail(
+                                value: PodcastRoute.showDetail(
                                     args: .init(
                                         feedURL: show.feedURL,
                                         imageURL: show.imageURL,
@@ -83,7 +83,7 @@ public struct ShowListScreen: View {
             }
             .toolbarBackground(.ultraThinMaterial, for: .navigationBar)
             .navigationTitle(Text("Shows", bundle: .module))
-            .navigationDestination(for: ShowListRoute.self) { route in
+            .navigationDestination(for: PodcastRoute.self) { route in
                 switch route {
                 case .showDetail(let args):
                     ShowDetailScreen(args: args)
