@@ -41,6 +41,7 @@ struct ShowSearchScreen: View {
     @State private var searchTask: Task<Void, Never>? = nil
     
     @Environment(NavigationState.self) private var navigationState
+    @Environment(\.colorScheme) private var colorScheme
     
     @Dependency(\.messageClient) private var messageClient
     @Dependency(\.showSearchUseCase) private var showSearchUseCase
@@ -70,7 +71,7 @@ struct ShowSearchScreen: View {
                 .padding(.horizontal, 12)
                 .background(
                     RoundedRectangle(cornerRadius: 12, style: .continuous)
-                        .fill(Color(.systemGray6))
+                        .fill(textFieldBackground)
                 )
                 .padding(.horizontal, 12)
 
@@ -136,6 +137,17 @@ struct ShowSearchScreen: View {
 }
 
 private extension ShowSearchScreen {
+    var textFieldBackground: Color {
+        switch colorScheme {
+        case .light:
+            return Color(.systemGray6)
+        case .dark:
+            return Color(.systemGray5)
+        @unknown default:
+            return Color(.systemGray6)
+        }
+    }
+    
     func search() async {
         guard !query.isEmpty else {
             searchState = .prompt
