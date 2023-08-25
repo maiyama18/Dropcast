@@ -1,3 +1,4 @@
+import Algorithms
 import CoreData
 import Database
 import Dependencies
@@ -39,7 +40,7 @@ public struct ShowListScreen: View {
                     )
                 } else {
                     List {
-                        ForEach(shows, id: \.objectID) { show in
+                        ForEach(shows.uniqued(on: { $0.feedURL }), id: \.feedURL) { show in
                             NavigationLink(
                                 value: PodcastRoute.showDetail(
                                     args: .init(

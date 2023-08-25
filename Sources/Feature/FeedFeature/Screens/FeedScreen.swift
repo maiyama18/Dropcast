@@ -1,3 +1,4 @@
+import Algorithms
 import Components
 import CoreData
 import Database
@@ -53,7 +54,7 @@ public struct FeedScreen: View {
                 } else {
                     ScrollView {
                         LazyVStack(spacing: 0) {
-                            ForEach(episodes, id: \.objectID) { episode in
+                            ForEach(episodes.uniqued(on: { $0.id }), id: \.id) { episode in
                                 NavigationLink(
                                     value: PodcastRoute.episodeDetail(episode: episode)
                                 ) {
