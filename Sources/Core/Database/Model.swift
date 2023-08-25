@@ -2,8 +2,8 @@ import CoreData
 
 public protocol Model {
     var viewContext: NSManagedObjectContext { get }
-    @MainActor func saveModel() throws
-    @MainActor func deleteModel() throws
+    @MainActor func save() throws
+    @MainActor func delete() throws
 }
 
 public extension Model where Self: NSManagedObject {
@@ -12,7 +12,7 @@ public extension Model where Self: NSManagedObject {
     }
     
     @MainActor
-    func saveModel() throws {
+    func save() throws {
         do {
             try viewContext.save()
         } catch {
@@ -22,10 +22,10 @@ public extension Model where Self: NSManagedObject {
     }
     
     @MainActor
-    func deleteModel() throws {
+    func delete() throws {
         do {
             viewContext.delete(self)
-            try saveModel()
+            try save()
         } catch {
             viewContext.rollback()
             throw error

@@ -24,6 +24,13 @@ extension ShowRecord {
         return request
     }
     
+    @MainActor
+    public static func deleteAll(with feedURL: URL) throws {
+        for show in try PersistentProvider.cloud.viewContext.fetch(Self.withFeedURL(feedURL)) {
+            try show.delete()
+        }
+    }
+    
     public var title: String { title_! }
     public var feedURL: URL { feedURL_! }
     public var imageURL: URL { imageURL_! }
@@ -33,7 +40,7 @@ extension ShowRecord {
     }
     
     public convenience init(
-        context: NSManagedObjectContext? = nil,
+        context: NSManagedObjectContext = PersistentProvider.cloud.viewContext,
         title: String,
         description: String?,
         author: String?,
@@ -41,11 +48,7 @@ extension ShowRecord {
         imageURL: URL,
         linkURL: URL?
     ) {
-        if let context {
-            self.init(context: context)
-        } else {
-            self.init(entity: PersistentProvider.cloud.managedObjectModel.entitiesByName["ShowRecord"]!, insertInto: nil)
-        }
+        self.init(context: context)
         
         self.title_ = title
         self.showDescription = description
@@ -59,22 +62,5 @@ extension ShowRecord {
     public func toggleFollow() throws {
         followed = !followed
         try save()
-    }
-    
-    @MainActor
-    public func save() throws {
-        let existingShows = try viewContext.fetch(Self.withFeedURL(feedURL))
-        if existingShows.contains(where: { $0.objectID != objectID }) {
-            // feedURL が同一で objectID が異なる Show が存在する場合は、保存すると重複するためエラーにする
-            throw NSError(domain: "duplicated", code: 0)
-        }
-        let episodes = episodes_?.allObjects.compactMap { $0 as? EpisodeRecord }
-        episodes_ = NSSet(array: episodes?.uniqued(on: { $0.id }) ?? [])
-        try saveModel()
-    }
-    
-    @MainActor
-    public func delete() throws {
-        try deleteModel()
     }
 }

@@ -8,6 +8,8 @@ import Extension
 import MessageClient
 import NavigationState
 import RSSClient
+import ShowCreateUseCase
+import ShowEpisodesUpdateUseCase
 import SwiftData
 import SwiftUI
 
@@ -32,6 +34,9 @@ public struct ShowDetailScreen: View {
     @Dependency(\.clipboardClient) private var clipboardClient
     @Dependency(\.messageClient) private var messageClient
     @Dependency(\.rssClient) private var rssClient
+    
+    @Dependency(\.showEpisodesUpdateUseCase) private var showEpisodesUpdateUseCase
+    @Dependency(\.showCreateUseCase) private var showCreateUseCase
 
     public init(args: ShowDetailInitArguments) {
         self.feedURL = args.feedURL
@@ -120,15 +125,10 @@ public struct ShowDetailScreen: View {
             defer { isFetchingShow = false }
             
             do {
-                let rssShow = try await rssClient.fetch(feedURL).get()
                 if let show {
-                    let existingEpisodeIDs = Set(show.episodes.map(\.id))
-                    for rssEpisode in rssShow.episodes where !existingEpisodeIDs.contains(rssEpisode.id) {
-                        show.addToEpisodes_(rssEpisode.toModel(context: context))
-                    }
-                    try show.save()
+                    try await showEpisodesUpdateUseCase.update(show)
                 } else {
-                    try rssShow.toModel(context: context).save()
+                    try await showCreateUseCase.create(feedURL)
                 }
             } catch {
                 if !Task.isCancelled {

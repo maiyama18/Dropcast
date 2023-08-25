@@ -11,6 +11,7 @@ import MessageClient
 import NavigationState
 import RSSClient
 import ShowDetailFeature
+import ShowEpisodesUpdateUseCase
 import SoundFileState
 import SwiftUI
 import UserDefaultsClient
@@ -27,6 +28,8 @@ public struct FeedScreen: View {
     @Dependency(\.messageClient) private var messageClient
     @Dependency(\.rssClient) private var rssClient
     @Dependency(\.userDefaultsClient) private var userDefaultsClient
+    
+    @Dependency(\.showEpisodesUpdateUseCase) private var showEpisodesUpdateUseCase
     
     public init() {}
     
@@ -96,16 +99,11 @@ public struct FeedScreen: View {
 
 private extension FeedScreen {
     func refreshFeed() async {
-        await withTaskGroup(of: Void.self) { [rssClient] group in
+        await withTaskGroup(of: Void.self) { [showEpisodesUpdateUseCase] group in
             for show in shows {
                 group.addTask { @MainActor in
                     do {
-                        let rssShow = try await rssClient.fetch(show.feedURL).get()
-                        let existingEpisodeIDs = Set(show.episodes.map(\.id))
-                        for rssEpisode in rssShow.episodes where !existingEpisodeIDs.contains(rssEpisode.id) {
-                            show.addToEpisodes_(rssEpisode.toModel(context: context))
-                        }
-                        try show.save()
+                        try await showEpisodesUpdateUseCase.update(show)
                     } catch {
                         // do nothing
                     }

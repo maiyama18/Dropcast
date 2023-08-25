@@ -125,10 +125,7 @@ let targets: [PackageDescription.Target] = [
         name: "EpisodeDetailFeature",
         dependencies: [
             .nukeUI,
-            "Components",
             "Database",
-            "Extension",
-            "NavigationState",
         ],
         path: "Sources/Feature/EpisodeDetailFeature"
     ),
@@ -142,6 +139,7 @@ let targets: [PackageDescription.Target] = [
             "Entity",
             "MessageClient",
             "RSSClient",
+            "ShowEpisodesUpdateUseCase",
             "SoundFileState",
             "UserDefaultsClient",
             "Extension",
@@ -185,6 +183,8 @@ let targets: [PackageDescription.Target] = [
             "EpisodeDetailFeature",
             "MessageClient",
             "RSSClient",
+            "ShowEpisodesUpdateUseCase",
+            "ShowCreateUseCase",
             "SoundFileState",
             "Extension",
             "Entity",
@@ -249,6 +249,22 @@ let targets: [PackageDescription.Target] = [
             "UserDefaultsClient",
         ],
         path: "Sources/Data/SoundPlayerState"
+    ),
+    .target(
+        name: "ShowCreateUseCase",
+        dependencies: [
+            "RSSClient",
+            "Database",
+        ],
+        path: "Sources/Data/ShowCreateUseCase"
+    ),
+    .target(
+        name: "ShowEpisodesUpdateUseCase",
+        dependencies: [
+            "RSSClient",
+            "Database",
+        ],
+        path: "Sources/Data/ShowEpisodesUpdateUseCase"
     ),
     .target(
         name: "ShowSearchUseCase",
@@ -470,6 +486,9 @@ var package = Package(
         .library(
             name: "MainTabFeature",
             targets: ["MainTabFeature"]),
+        .library(
+            name: "EpisodeDetailFeature",
+            targets: ["EpisodeDetailFeature"]),
         .library(
             name: "FeedFeature",
             targets: ["FeedFeature"]),

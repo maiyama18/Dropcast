@@ -33,7 +33,7 @@ extension EpisodeRecord {
     public var publishedAt: Date { publishedAt_ ?? .now }
     
     public convenience init(
-        context: NSManagedObjectContext? = nil,
+        context: NSManagedObjectContext = PersistentProvider.cloud.viewContext,
         id: String,
         title: String,
         subtitle: String?,
@@ -42,11 +42,7 @@ extension EpisodeRecord {
         soundURL: URL,
         publishedAt: Date
     ) {
-        if let context {
-            self.init(context: context)
-        } else {
-            self.init(entity: PersistentProvider.cloud.managedObjectModel.entitiesByName["EpisodeRecord"]!, insertInto: nil)
-        }
+        self.init(context: context)
         
         self.id_ = id
         self.title_ = title
