@@ -184,9 +184,9 @@ struct PlayerSheetView: View {
 #Preview {
     let playerState: SoundPlayerState = {
         let playerState = SoundPlayerState(
-            context: PersistentProvider.preview.viewContext
+            context: PersistentProvider.inMemory.viewContext
         )
-        playerState.state = .playing(episode: .fixture(context: PersistentProvider.preview.viewContext))
+        playerState.state = .playing(episode: .fixture(context: PersistentProvider.inMemory.viewContext))
         return playerState
     }()
     

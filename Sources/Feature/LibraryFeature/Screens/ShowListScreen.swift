@@ -40,7 +40,7 @@ public struct ShowListScreen: View {
                     )
                 } else {
                     List {
-                        ForEach(shows.uniqued(on: { $0.feedURL }), id: \.feedURL) { show in
+                        ForEach(shows.uniqued(on: { $0.feedURL }), id: \.objectID) { show in
                             NavigationLink(
                                 value: PodcastRoute.showDetail(
                                     args: .init(

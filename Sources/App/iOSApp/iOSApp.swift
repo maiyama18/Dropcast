@@ -16,6 +16,9 @@ public struct IOSApp: App {
     private let soundPlayerState: SoundPlayerState = .shared
     private let persistentContainer: PersistentProvider = .cloud
 
+    @Dependency(\.logger[.app]) private var logger
+    @Dependency(\.duplicatedRecordsDeleteUseCase) private var duplicatedRecordsDeleteUseCase
+    
     public init() {}
 
     public var body: some Scene {
@@ -35,6 +38,13 @@ public struct IOSApp: App {
                         default:
                             break
                         }
+                    }
+                }
+                .onAppear {
+                    do {
+                        try duplicatedRecordsDeleteUseCase.delete()
+                    } catch {
+                        logger.error("failed to delete duplicated records: \(error, privacy: .public)")
                     }
                 }
         }

@@ -83,6 +83,7 @@ let targets: [PackageDescription.Target] = [
         name: "iOSApp",
         dependencies: [
             "DebugFeature",
+            "DuplicatedRecordsDeleteUseCase",
             "FeedFeature",
             "MainTabFeature",
             "SettingsFeature",
@@ -220,6 +221,20 @@ let targets: [PackageDescription.Target] = [
 
     // Data module
 
+    .target(
+        name: "DuplicatedRecordsDeleteUseCase",
+        dependencies: [
+            "Database",
+        ],
+        path: "Sources/Data/DuplicatedRecordsDeleteUseCase"
+    ),
+    .testTarget(
+        name: "DuplicatedRecordsDeleteUseCaseTests",
+        dependencies: [
+            "DuplicatedRecordsDeleteUseCase"
+        ],
+        path: "Tests/Data/DuplicatedRecordsDeleteUseCaseTests"
+    ),
     .target(
         name: "NavigationState",
         dependencies: [
@@ -519,6 +534,9 @@ var package = Package(
         .library(
             name: "SoundFileState",
             targets: ["SoundFileState"]),
+        .library(
+            name: "DuplicatedRecordsDeleteUseCase",
+            targets: ["DuplicatedRecordsDeleteUseCase"]),
         .library(
             name: "Formatter",
             targets: ["Formatter"]),

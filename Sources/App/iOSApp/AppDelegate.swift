@@ -1,10 +1,12 @@
 import AVFoundation
 import Dependencies
+import DuplicatedRecordsDeleteUseCase
 import Logger
 import UIKit
 
 final class AppDelegate: NSObject, UIApplicationDelegate {
     @Dependency(\.logger[.app]) private var logger
+    @Dependency(\.duplicatedRecordsDeleteUseCase) private var duplicatedRecordsDeleteUseCase
     
     func application(_ application: UIApplication, didFinishLaunchingWithOptions launchOptions: [UIApplication.LaunchOptionsKey: Any]? = nil) -> Bool {
         do {
@@ -12,7 +14,7 @@ final class AppDelegate: NSObject, UIApplicationDelegate {
             try AVAudioSession.sharedInstance().setActive(true)
             logger.notice("complete setup of background audio")
         } catch {
-            logger.error("Failed to setup background audio: \(error, privacy: .public)")
+            logger.error("failed to setup background audio: \(error, privacy: .public)")
         }
         return true
     }

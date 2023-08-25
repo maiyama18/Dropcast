@@ -9,7 +9,7 @@ public final class PersistentProvider {
         persistentContainer: makePersistentCloudKitContainer(containerIdentifier: "iCloud.com.muijp.DropcastDev")
     )
     
-    public static let preview: PersistentProvider = .init(
+    public static let inMemory: PersistentProvider = .init(
         persistentContainer: {
             let model = NSManagedObjectModel(contentsOf: Bundle.module.url(forResource: "Model", withExtension: "momd")!)!
             let container = NSPersistentCloudKitContainer(name: "Model", managedObjectModel: model)
