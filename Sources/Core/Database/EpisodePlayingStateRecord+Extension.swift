@@ -1,8 +1,6 @@
 import CoreData
 import Dependencies
 
-extension EpisodePlayingStateRecord: Model {}
-
 extension EpisodePlayingStateRecord {
     struct RecordNotFound: Error {}
     
@@ -56,5 +54,17 @@ extension EpisodePlayingStateRecord {
         lastPausedTime = 0
         
         try save()
+    }
+    
+    private func save() throws {
+        guard let context = managedObjectContext else {
+            throw NSError(domain: "no context", code: 0)
+        }
+        do {
+            try context.save()
+        } catch {
+            context.rollback()
+            throw error
+        }
     }
 }

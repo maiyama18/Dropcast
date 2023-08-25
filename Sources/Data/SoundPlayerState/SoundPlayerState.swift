@@ -341,7 +341,7 @@ extension SoundPlayerState: AVAudioPlayerDelegate {
                 return
             }
             
-            try? playingState.delete()
+            playingState.managedObjectContext?.delete(playingState)
         }
     }
 }

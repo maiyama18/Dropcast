@@ -60,8 +60,10 @@ public struct ShowDetailScreen: View {
                     toggleFollowButtonTapped: {
                         guard let show else { return }
                         do {
-                            try show.toggleFollow()
+                            show.toggleFollow()
+                            try context.save()
                         } catch {
+                            context.rollback()
                             messageClient.presentError(String(localized: "Unexpected error occurred", bundle: .module))
                         }
                     }

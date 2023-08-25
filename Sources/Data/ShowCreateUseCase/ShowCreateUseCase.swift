@@ -1,3 +1,4 @@
+@preconcurrency import CoreData
 import Database
 import Dependencies
 import Foundation
@@ -8,13 +9,13 @@ public struct ShowCreateUseCase: Sendable {
 }
 
 extension ShowCreateUseCase {
-    static var live: ShowCreateUseCase {
+    static func live(context: NSManagedObjectContext) -> ShowCreateUseCase {
         @Dependency(\.rssClient) var rssClient
         
         return ShowCreateUseCase(
             create: { feedURL in
                 let rssShow = try await rssClient.fetch(feedURL).get()
-                try ShowRecord.deleteAll(with: feedURL)
+                try ShowRecord.deleteAll(context: context, feedURL: feedURL)
                 
                 let show = ShowRecord(
                     title: rssShow.title,
@@ -38,14 +39,19 @@ extension ShowCreateUseCase {
                     )
                 }
                 
-                try show.save()
+                do {
+                    try context.save()
+                } catch {
+                    context.rollback()
+                    throw error
+                }
             }
         )
     }
 }
 
 extension ShowCreateUseCase: DependencyKey {
-    public static var liveValue: ShowCreateUseCase = .live
+    public static var liveValue: ShowCreateUseCase = .live(context: PersistentProvider.cloud.viewContext)
     public static var testValue: ShowCreateUseCase = ShowCreateUseCase(create: unimplemented())
 }
 

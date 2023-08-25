@@ -58,8 +58,10 @@ public struct ShowListScreen: View {
                                         return
                                     }
                                     do {
-                                        try showRecord.delete()
+                                        context.delete(showRecord)
+                                        try context.save()
                                     } catch {
+                                        context.rollback()
                                         messageClient.presentError(String(localized: "Failed to unfollow the show", bundle: .module))
                                     }
                                 } label: {

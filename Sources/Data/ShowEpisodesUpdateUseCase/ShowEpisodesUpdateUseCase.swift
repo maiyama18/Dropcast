@@ -1,5 +1,6 @@
 import Database
 import Dependencies
+import Foundation
 import RSSClient
 
 public struct ShowEpisodesUpdateUseCase: Sendable {
@@ -12,6 +13,10 @@ extension ShowEpisodesUpdateUseCase {
         
         return ShowEpisodesUpdateUseCase(
             update: { show in
+                guard let context = show.managedObjectContext else {
+                    throw NSError(domain: "no context", code: 0)
+                }
+                
                 let rssShow = try await rssClient.fetch(show.feedURL).get()
                 let existingEpisodeIDs = Set(show.episodes.map(\.id))
                 for rssEpisode in rssShow.episodes where !existingEpisodeIDs.contains(rssEpisode.id) {
@@ -27,7 +32,12 @@ extension ShowEpisodesUpdateUseCase {
                         )
                     )
                 }
-                try show.save()
+                do {
+                    try context.save()
+                } catch {
+                    context.rollback()
+                    throw error
+                }
             }
         )
     }

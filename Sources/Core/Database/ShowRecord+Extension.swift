@@ -5,8 +5,6 @@ import Entity
 import Foundation
 import SwiftUI
 
-extension ShowRecord: Model {}
-
 extension ShowRecord {
     @MainActor
     public static func withFeedURL(_ feedURL: URL) -> NSFetchRequest<ShowRecord> {
@@ -25,9 +23,15 @@ extension ShowRecord {
     }
     
     @MainActor
-    public static func deleteAll(with feedURL: URL) throws {
-        for show in try PersistentProvider.cloud.viewContext.fetch(Self.withFeedURL(feedURL)) {
-            try show.delete()
+    public static func deleteAll(context: NSManagedObjectContext, feedURL: URL) throws {
+        for show in try context.fetch(Self.withFeedURL(feedURL)) {
+            context.delete(show)
+        }
+        do {
+            try context.save()
+        } catch {
+            context.rollback()
+            throw error
         }
     }
     
@@ -59,8 +63,7 @@ extension ShowRecord {
     }
     
     @MainActor
-    public func toggleFollow() throws {
+    public func toggleFollow() {
         followed = !followed
-        try save()
     }
 }

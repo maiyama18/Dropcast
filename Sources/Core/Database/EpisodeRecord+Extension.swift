@@ -2,8 +2,6 @@ import CoreData
 import Formatter
 import SwiftUI
 
-extension EpisodeRecord: Model {}
-
 extension EpisodeRecord {
     @MainActor
     public static func withID(_ id: String) -> NSFetchRequest<EpisodeRecord> {
