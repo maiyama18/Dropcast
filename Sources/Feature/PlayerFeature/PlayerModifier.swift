@@ -33,7 +33,7 @@ struct PlayerModifier: ViewModifier {
                     set: { _ in isSheetModeOn = false }
                 )
             ) {
-                PlayerSheetView()
+                PlayerSheet()
             }
     }
 }

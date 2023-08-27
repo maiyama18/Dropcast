@@ -19,11 +19,15 @@ public final class SoundPlayerState: NSObject {
         case pausing(episode: EpisodeRecord)
         
         public var isPlayingOrPausing: Bool {
+            playingEpisode != nil
+        }
+        
+        public var playingEpisode: EpisodeRecord? {
             switch self {
             case .notPlaying:
-                return false
-            case .playing, .pausing:
-                return true
+                return nil
+            case .playing(let episode), .pausing(let episode):
+                return episode
             }
         }
     }

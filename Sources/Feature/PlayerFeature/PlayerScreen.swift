@@ -6,9 +6,8 @@ import SoundPlayerState
 import SwiftUI
 
 @MainActor
-struct PlayerSheetView: View {
+struct PlayerScreen: View {
     @Environment(SoundPlayerState.self) private var soundPlayerState
-    @State private var backgroundRotationAngle: Angle = .degrees(Double.random(in: 0...360))
     @State private var imageScale: Double = 0.2
     
     var body: some View {
@@ -39,10 +38,6 @@ struct PlayerSheetView: View {
             Spacer().frame(height: 16)
             
             VStack(alignment: .leading, spacing: 4) {
-                Text(episode.publishedAt.formatted(date: .numeric, time: .omitted))
-                    .font(.subheadline)
-                    .foregroundStyle(.secondary)
-                
                 Text(episode.title)
                     .font(.headline.bold())
                     .minimumScaleFactor(0.8)
@@ -64,13 +59,6 @@ struct PlayerSheetView: View {
         }
         .padding(.horizontal, 32)
         .frame(maxWidth: .infinity, maxHeight: .infinity)
-        .presentationBackground {
-            lazyImage(show: episode.show)
-                .aspectRatio(contentMode: .fill)
-                .rotationEffect(backgroundRotationAngle)
-                .overlay(Color(.systemBackground).opacity(0.6))
-                .overlay(.ultraThinMaterial)
-        }
     }
     
     private var progressView: some View {
@@ -192,7 +180,7 @@ struct PlayerSheetView: View {
     
     return Text("Preview")
         .sheet(isPresented: .constant(true)) {
-            PlayerSheetView()
+            PlayerScreen()
                 .environment(playerState)
                 .tint(.orange)
         }
