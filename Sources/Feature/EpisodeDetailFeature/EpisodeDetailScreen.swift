@@ -2,6 +2,7 @@ import Components
 import Database
 import Extension
 import Formatter
+import NavigationState
 import NukeUI
 import SwiftUI
 import WebKit
@@ -10,6 +11,7 @@ import WebKit
 public struct EpisodeDetailScreen: View {
     private let episode: EpisodeRecord
     
+    @Environment(NavigationState.self) private var navigationState
     @Environment(\.playerBannerHeight) private var playerBannerHeight
     
     public init(episode: EpisodeRecord) {
@@ -63,8 +65,15 @@ public struct EpisodeDetailScreen: View {
                 
                 if let show = episode.show {
                     Button(action: {
-                        // TODO: transition to show detail
-                        print(show.title)
+                        Task {
+                            await navigationState.moveToShowDetail(
+                                args: .init(
+                                    feedURL: show.feedURL,
+                                    imageURL: show.imageURL,
+                                    title: show.title
+                                )
+                            )
+                        }
                     }) {
                         Text(show.title)
                     }

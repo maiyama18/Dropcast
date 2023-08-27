@@ -128,7 +128,9 @@ let targets: [PackageDescription.Target] = [
             .nukeUI,
             "Components",
             "Database",
+            "Extension",
             "Formatter",
+            "NavigationState",
         ],
         path: "Sources/Feature/EpisodeDetailFeature"
     ),

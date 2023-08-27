@@ -1,4 +1,5 @@
 import Observation
+import SwiftUI
 
 @Observable
 public final class NavigationState {
@@ -16,4 +17,13 @@ public final class NavigationState {
     
     // settings tab
     public var settingsPath: [SettingsRoute] = []
+    
+    public func moveToShowDetail(args: ShowDetailInitArguments) async {
+        showListPath = []
+        showSearchPath = nil
+        mainTab = .library
+        try? await Task.sleep(for: .milliseconds(300))
+        
+        showListPath.append(.showDetail(args: args))
+    }
 }
