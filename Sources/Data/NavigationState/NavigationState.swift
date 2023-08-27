@@ -7,6 +7,7 @@ public final class NavigationState {
     public var mainTab: MainTab = .feed
     
     // feed tab
+    public var feedPath: [PodcastRoute] = []
     
     // library tab
     public var showListPath: [PodcastRoute] = []

@@ -21,7 +21,8 @@ import UserDefaultsClient
 public struct FeedScreen: View {
     @FetchRequest<EpisodeRecord>(fetchRequest: EpisodeRecord.followed()) private var episodes: FetchedResults<EpisodeRecord>
     @FetchRequest<ShowRecord>(fetchRequest: ShowRecord.followed()) private var shows: FetchedResults<ShowRecord>
- 
+    
+    @Environment(NavigationState.self) private var navigationState
     @Environment(\.openURL) private var openURL
     @Environment(\.managedObjectContext) private var context
     @Environment(\.playerBannerHeight) private var playerBannerHeight
@@ -35,7 +36,7 @@ public struct FeedScreen: View {
     public init() {}
     
     public var body: some View {
-        NavigationStack {
+        NavigationStack(path: .init(get: { navigationState.feedPath }, set: { navigationState.feedPath = $0 })) {
             Group {
                 if episodes.isEmpty {
                     ContentUnavailableView(
