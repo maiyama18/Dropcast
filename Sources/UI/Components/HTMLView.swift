@@ -2,9 +2,11 @@ import SwiftUI
 
 public struct HTMLView: UIViewRepresentable {
     private let htmlBodyString: String
+    private let contentBottomInset: Double
     
-    public init(htmlBodyString: String) {
+    public init(htmlBodyString: String, contentBottomInset: Double) {
         self.htmlBodyString = htmlBodyString
+        self.contentBottomInset = contentBottomInset
     }
     
     public func makeUIView(context: Context) -> UITextView {
@@ -24,6 +26,8 @@ public struct HTMLView: UIViewRepresentable {
     }
     
     public func updateUIView(_ uiTextView: UITextView, context: Context) {
+        uiTextView.contentInset.bottom = contentBottomInset
+        
         do {
             let htmlString = html(
                 bodyString: htmlBodyString,
