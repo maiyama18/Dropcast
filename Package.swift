@@ -202,6 +202,7 @@ let targets: [PackageDescription.Target] = [
         dependencies: [
             .nukeUI,
             "Entity",
+            "NavigationState",
             "SoundPlayerState",
         ],
         path: "Sources/Feature/PlayerFeature"

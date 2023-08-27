@@ -1,8 +1,11 @@
 import Components
 import Database
+import NavigationState
 import SwiftUI
 
 struct PlayerEpisodeDetailScreen: View {
+    @Environment(NavigationState.self) private var navigationState
+    
     let episode: EpisodeRecord
     let episodeDescription: String
     
@@ -18,9 +21,24 @@ struct PlayerEpisodeDetailScreen: View {
                     .minimumScaleFactor(0.8)
                     .lineLimit(3)
                 
-                Text(episode.show?.title ?? "")
-                    .font(.headline.weight(.regular))
-                    .foregroundStyle(.secondary)
+                if let show = episode.show {
+                    Button {
+                        Task {
+                            await navigationState.moveToShowDetail(
+                                args: .init(
+                                    feedURL: show.feedURL,
+                                    imageURL: show.imageURL,
+                                    title: show.title
+                                )
+                            )
+                        }
+                    } label: {
+                        Text(show.title)
+                            .font(.headline.weight(.regular))
+                            .underline()
+                            .foregroundStyle(Color.accentColor)
+                    }
+                }
             }
             .frame(maxWidth: .infinity, alignment: .leading)
             

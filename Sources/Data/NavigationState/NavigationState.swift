@@ -7,6 +7,8 @@ public final class NavigationState {
     
     public var mainTab: MainTab = .feed
     
+    public var playerSheetModeOn: Bool = false
+    
     // feed tab
     public var feedPath: [PodcastRoute] = []
     
@@ -19,6 +21,7 @@ public final class NavigationState {
     public var settingsPath: [SettingsRoute] = []
     
     public func moveToShowDetail(args: ShowDetailInitArguments) async {
+        playerSheetModeOn = false
         showListPath = []
         showSearchPath = nil
         mainTab = .library

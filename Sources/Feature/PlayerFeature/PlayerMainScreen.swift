@@ -1,13 +1,16 @@
 import CoreData
 import Database
 import Formatter
+import NavigationState
 import NukeUI
 import SoundPlayerState
 import SwiftUI
 
 @MainActor
-struct PlayerScreen: View {
+struct PlayerMainScreen: View {
     @Environment(SoundPlayerState.self) private var soundPlayerState
+    @Environment(NavigationState.self) private var navigationState
+    
     @State private var imageScale: Double = 0.2
     
     var body: some View {
@@ -43,9 +46,24 @@ struct PlayerScreen: View {
                     .minimumScaleFactor(0.8)
                     .lineLimit(3)
                 
-                Text(episode.show?.title ?? "")
-                    .font(.headline.weight(.regular))
-                    .foregroundStyle(.secondary)
+                if let show = episode.show {
+                    Button {
+                        Task {
+                            await navigationState.moveToShowDetail(
+                                args: .init(
+                                    feedURL: show.feedURL,
+                                    imageURL: show.imageURL,
+                                    title: show.title
+                                )
+                            )
+                        }
+                    } label: {
+                        Text(show.title)
+                            .font(.headline.weight(.regular))
+                            .underline()
+                            .foregroundStyle(Color.accentColor)
+                    }
+                }
             }
             .frame(maxWidth: .infinity, alignment: .leading)
             
@@ -180,7 +198,7 @@ struct PlayerScreen: View {
     
     return Text("Preview")
         .sheet(isPresented: .constant(true)) {
-            PlayerScreen()
+            PlayerMainScreen()
                 .environment(playerState)
                 .tint(.orange)
         }

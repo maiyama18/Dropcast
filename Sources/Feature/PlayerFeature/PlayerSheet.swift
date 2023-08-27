@@ -9,7 +9,7 @@ struct PlayerSheet: View {
     
     var body: some View {
         TabView {
-            PlayerScreen()
+            PlayerMainScreen()
             
             if let episode = soundPlayerState.state.playingEpisode,
                let episodeDescription = episode.episodeDescription {
