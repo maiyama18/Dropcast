@@ -70,7 +70,11 @@ public struct ShowListScreen: View {
                                 .tint(.red)
                             }
                         }
-                        .padding(.bottom, playerBannerHeight)
+                        
+                        Spacer()
+                            .frame(height: playerBannerHeight)
+                            .listRowInsets(EdgeInsets())
+                            .listRowSeparator(.hidden)
                     }
                     .listStyle(.plain)
                 }
