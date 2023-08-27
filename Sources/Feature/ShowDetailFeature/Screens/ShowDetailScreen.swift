@@ -81,7 +81,6 @@ public struct ShowDetailScreen: View {
                         ) {
                             EpisodeRowView(
                                 episode: episode,
-                                showsPlayButton: true,
                                 showsImage: false
                             )
                         }

@@ -60,7 +60,6 @@ public struct FeedScreen: View {
                                 ) {
                                     EpisodeRowView(
                                         episode: episode,
-                                        showsPlayButton: true,
                                         showsImage: true
                                     )
                                 }
