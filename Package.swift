@@ -201,6 +201,7 @@ let targets: [PackageDescription.Target] = [
         name: "PlayerFeature",
         dependencies: [
             .nukeUI,
+            "Components",
             "Entity",
             "NavigationState",
             "SoundPlayerState",
@@ -246,6 +247,13 @@ let targets: [PackageDescription.Target] = [
             "Database",
         ],
         path: "Sources/Data/NavigationState"
+    ),
+    .target(
+        name: "PodcastChapterExtractUseCase",
+        dependencies: [
+            .dependencies,
+        ],
+        path: "Sources/Data/PodcastChapterExtractUseCase"
     ),
     .target(
         name: "SoundFileState",
