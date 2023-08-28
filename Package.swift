@@ -273,6 +273,7 @@ let targets: [PackageDescription.Target] = [
             "Database",
             "HapticClient",
             "Logger",
+            "PodcastChapterExtractUseCase",
             "SoundFileState",
             "UserDefaultsClient",
         ],

@@ -2,9 +2,10 @@ import AVFoundation
 import Dependencies
 import Foundation
 
-public struct Chapter {
+public struct Chapter: Sendable, Equatable {
     public let title: String
     public let startsAt: TimeInterval
+    public let endsAt: TimeInterval
     public let duration: TimeInterval
 }
 
@@ -35,6 +36,7 @@ extension PodcastChapterExtractUseCase {
                         Chapter(
                             title: title,
                             startsAt: metadata.timeRange.start.seconds,
+                            endsAt: metadata.timeRange.end.seconds,
                             duration: metadata.timeRange.duration.seconds
                         )
                     )

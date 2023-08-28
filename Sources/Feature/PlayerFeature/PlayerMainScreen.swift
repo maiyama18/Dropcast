@@ -1,8 +1,10 @@
 import CoreData
 import Database
+import Dependencies
 import Formatter
 import NavigationState
 import NukeUI
+import PodcastChapterExtractUseCase
 import SoundPlayerState
 import SwiftUI
 
@@ -12,6 +14,7 @@ struct PlayerMainScreen: View {
     @Environment(NavigationState.self) private var navigationState
     
     @State private var imageScale: Double = 0.2
+    @State private var chaptersMenuPresented: Bool = false
     
     var body: some View {
         switch soundPlayerState.state {
@@ -69,6 +72,10 @@ struct PlayerMainScreen: View {
             
             Spacer(minLength: 8)
             
+            Text(soundPlayerState.currentChapter?.title ?? " ")
+                .foregroundStyle(.secondary)
+                .font(.subheadline.bold())
+            
             progressView
             
             actionButtonsView(playing: playing, episode: episode)
@@ -77,6 +84,12 @@ struct PlayerMainScreen: View {
         }
         .padding(.horizontal, 32)
         .frame(maxWidth: .infinity, maxHeight: .infinity)
+        .overlay {
+            if chaptersMenuPresented {
+                chaptersMenu
+                    .transition(.opacity)
+            }
+        }
     }
     
     private var progressView: some View {
@@ -116,7 +129,7 @@ struct PlayerMainScreen: View {
                 Text(SoundPlayerState.SpeedRate._1_75.formatted)
                     .hidden()
                     .overlay {
-                        Menu(soundPlayerState.speedRate.formatted) {
+                        Menu {
                             ForEach(SoundPlayerState.SpeedRate.allCases, id: \.rawValue) { rate in
                                 Button {
                                     soundPlayerState.speedRate = rate
@@ -125,6 +138,8 @@ struct PlayerMainScreen: View {
                                         .padding(.vertical)
                                 }
                             }
+                        } label: {
+                            Text(soundPlayerState.speedRate.formatted)
                         }
                     }
                     .font(.body.monospacedDigit())
@@ -166,13 +181,87 @@ struct PlayerMainScreen: View {
                 Text(SoundPlayerState.SpeedRate._1_75.formatted)
                     .hidden()
                     .font(.body.monospacedDigit())
+                    .overlay {
+                        if soundPlayerState.currentChapter != nil {
+                            Button {
+                                withAnimation {
+                                    chaptersMenuPresented = true
+                                }
+                            } label: {
+                                Image(systemName: "list.dash")
+                                    .padding(.vertical)
+                            }
+                        }
+                    }
             }
             .frame(maxWidth: .infinity)
         }
         .font(.largeTitle)
         .tint(.primary)
         .frame(maxWidth: .infinity)
-        
+    }
+    
+    private var chaptersMenu: some View {
+        ZStack {
+            Color.clear
+                .contentShape(Rectangle())
+                .onTapGesture {
+                    withAnimation {
+                        chaptersMenuPresented = false
+                    }
+                }
+            
+            ScrollViewReader { proxy in
+                ScrollView(showsIndicators: false) {
+                    VStack {
+                        ForEach(soundPlayerState.chapters, id: \.startsAt) { chapter in
+                            Button {
+                                soundPlayerState.goToChapter(chapter: chapter)
+                            } label: {
+                                HStack {
+                                    Text(chapter.title)
+                                    
+                                    Spacer()
+                                    
+                                    Text(formatEpisodeDuration(duration: chapter.duration))
+                                        .foregroundStyle(.secondary)
+                                        .font(.callout.monospacedDigit())
+                                }
+                                .padding(.vertical, 12)
+                                .padding(.horizontal, 8)
+                                .background {
+                                    if chapter == soundPlayerState.currentChapter {
+                                        RoundedRectangle(cornerRadius: 4, style: .continuous)
+                                            .fill(Color(.systemGroupedBackground))
+                                            .overlay {
+                                                HStack(spacing: 0) {
+                                                    GeometryReader { proxy in
+                                                        RoundedRectangle(cornerRadius: 4, style: .continuous)
+                                                            .fill(Color.accentColor.opacity(0.5))
+                                                            .frame(width: proxy.size.width * soundPlayerState.currentChapterProgress)
+                                                    }
+                                                }
+                                                .frame(maxWidth: .infinity, alignment: .leading)
+                                            }
+                                    }
+                                }
+                                .padding(.horizontal, 8)
+                            }
+                        }
+                        .tint(.primary)
+                    }
+                    .padding(.vertical, 8)
+                }
+                .onAppear {
+                    if let currentChapter = soundPlayerState.currentChapter {
+                        proxy.scrollTo(currentChapter.startsAt, anchor: .center)
+                    }
+                }
+            }
+            .background(Material.regular, in: RoundedRectangle(cornerRadius: 8, style: .continuous))
+            .padding(.horizontal, 36)
+            .frame(height: 400)
+        }
     }
     
     private func lazyImage(show: ShowRecord?) -> some View {

@@ -7,6 +7,7 @@ import Foundation
 import HapticClient
 import MediaPlayer
 import Observation
+import PodcastChapterExtractUseCase
 import SoundFileState
 import UserDefaultsClient
 
@@ -56,6 +57,7 @@ public final class SoundPlayerState: NSObject {
     
     @ObservationIgnored @Dependency(\.hapticClient) private var hapticClient
     @ObservationIgnored @Dependency(\.userDefaultsClient) private var userDefaultsClient
+    @ObservationIgnored @Dependency(\.podcastChapterExtractUseCase) private var podcastChapterExtractUseCase
     
     public var state: State = .notPlaying 
     public var currentTimeInt: Int?
@@ -65,6 +67,16 @@ public final class SoundPlayerState: NSObject {
             audioPlayer?.rate = speedRate.rawValue
             userDefaultsClient.setSoundPlayerSpeedRate(speedRate.rawValue)
         }
+    }
+    public var chapters: [Chapter] = []
+    public var currentChapter: Chapter? {
+        guard let currentTimeInt else { return nil }
+        return chapters.first(where: { Double(currentTimeInt) >= $0.startsAt && Double(currentTimeInt) < $0.endsAt })
+    }
+    public var currentChapterProgress: Double {
+        guard let currentChapter, let currentTimeInt else { return 0 }
+        let progress = (Double(currentTimeInt) - currentChapter.startsAt) / currentChapter.duration
+        return max(min(progress, 1), 0)
     }
     
     private var displayLink: CADisplayLink?
@@ -192,7 +204,16 @@ public final class SoundPlayerState: NSObject {
             duration = episode.duration
             
             state = .pausing(episode: episode)
+            
+            let url = try SoundFileState.soundFileURL(episode: episode)
+            
+            self.audioPlayer = try configureAudioPlayer(url: url, currentTime: storedSoundPlayerState.currentTime)
+            
             updateNowPlayingInfo()
+            
+            Task {
+                chapters = try await podcastChapterExtractUseCase.extract(url)
+            }
         } catch {
             state = .notPlaying
         }
@@ -210,13 +231,9 @@ public final class SoundPlayerState: NSObject {
             
         let playingState = try? context.fetch(EpisodePlayingStateRecord.withEpisodeID(episode.id)).first
         
-        let audioPlayer = try AVAudioPlayer(contentsOf: url)
-        audioPlayer.delegate = self
-        audioPlayer.enableRate = true
-        audioPlayer.rate = speedRate.rawValue
-        audioPlayer.currentTime = playingState?.lastPausedTime ?? 0
-        audioPlayer.play()
+        let audioPlayer = try configureAudioPlayer(url: url, currentTime: playingState?.lastPausedTime ?? 0)
         self.audioPlayer = audioPlayer
+        audioPlayer.play()
         self.duration = audioPlayer.duration
         
         validateDisplayLink()
@@ -233,6 +250,10 @@ public final class SoundPlayerState: NSObject {
                 return
             }
             try playingState.startPlaying(atTime: audioPlayer.currentTime)
+        }
+        
+        Task {
+            chapters = try await podcastChapterExtractUseCase.extract(url)
         }
     }
     
@@ -267,6 +288,10 @@ public final class SoundPlayerState: NSObject {
         move(to: currentTime - seconds)
     }
     
+    public func goToChapter(chapter: Chapter) {
+        move(to: chapter.startsAt + 0.5)
+    }
+    
     public func move(to time: TimeInterval) {
         guard let audioPlayer else { return }
         switch state {
@@ -282,6 +307,11 @@ public final class SoundPlayerState: NSObject {
             nowPlayingInfo[MPNowPlayingInfoPropertyElapsedPlaybackTime] = clampedTime
             MPNowPlayingInfoCenter.default().nowPlayingInfo = nowPlayingInfo
             didDisplayLinkTick()
+            
+            Task {
+                let url = try SoundFileState.soundFileURL(episode: episode)
+                chapters = try await podcastChapterExtractUseCase.extract(url)
+            }
         case .notPlaying:
             assertionFailure()
         }
@@ -307,6 +337,15 @@ public final class SoundPlayerState: NSObject {
     private func invalidateDisplayLink() {
         displayLink?.invalidate()
         displayLink = nil
+    }
+    
+    private func configureAudioPlayer(url: URL, currentTime: TimeInterval) throws -> AVAudioPlayer {
+        let audioPlayer = try AVAudioPlayer(contentsOf: url)
+        audioPlayer.delegate = self
+        audioPlayer.enableRate = true
+        audioPlayer.rate = speedRate.rawValue
+        audioPlayer.currentTime = currentTime
+        return audioPlayer
     }
     
     @objc private func didDisplayLinkTick() {
