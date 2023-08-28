@@ -49,9 +49,6 @@ struct PlayerEpisodeDetailScreen: View {
                 contentBottomInset: 0
             )
         }
-        .padding(16)
-        .background(Material.ultraThin)
-        .clipShape(RoundedRectangle(cornerRadius: 8, style: .continuous))
-        .padding(16)
+        .padding(24)
     }
 }

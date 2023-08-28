@@ -58,16 +58,6 @@ public struct HTMLView: UIViewRepresentable {
                     font-size: \(Int(UIFont.preferredFont(forTextStyle: .body).pointSize))px;
                     color: \(hexString(of: labelColor));
                 }
-        
-                h1, h2, h3, h4, h5, h6 {
-                }
-        
-                a {
-                }
-        
-                li:last-child {
-                    margin-bottom: 1em;
-                }
             </style>
         </head>
         <body>
