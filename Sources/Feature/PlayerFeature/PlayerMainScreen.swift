@@ -220,8 +220,11 @@ struct PlayerMainScreen: View {
                             } label: {
                                 HStack {
                                     Text(chapter.title)
+                                        .font(.callout)
+                                        .lineLimit(2)
+                                        .multilineTextAlignment(.leading)
                                     
-                                    Spacer()
+                                    Spacer(minLength: 4)
                                     
                                     Text(formatEpisodeDuration(duration: chapter.duration))
                                         .foregroundStyle(.secondary)
