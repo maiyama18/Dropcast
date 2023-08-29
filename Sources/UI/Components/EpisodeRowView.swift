@@ -1,5 +1,6 @@
 import Database
 import Entity
+import Extension
 import Formatter
 import NukeUI
 import SwiftUI
@@ -53,10 +54,14 @@ public struct EpisodeRowView: View {
                 .lineLimit(2)
                 
                 if let subtitle = episode.subtitle {
-                    Text(subtitle)
-                        .font(.footnote)
-                        .foregroundStyle(.secondary)
-                        .lineLimit(3)
+                    Text(
+                        subtitle
+                            .htmlTagRemoved()
+                            .replacingOccurrences(of: "\n", with: " ")
+                    )
+                    .font(.footnote)
+                    .foregroundStyle(.secondary)
+                    .lineLimit(3)
                 }
                 
                 HStack(spacing: 12) {
