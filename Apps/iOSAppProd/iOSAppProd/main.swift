@@ -2,5 +2,5 @@ import Environment
 import iOSApp
 import SwiftUI
 
-setEnvironment(.develop)
+setEnvironment(.production)
 IOSApp.main()
