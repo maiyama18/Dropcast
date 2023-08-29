@@ -1,3 +1,4 @@
+import Extension
 import NukeUI
 import SwiftUI
 
@@ -81,7 +82,7 @@ struct ShowHeaderView: View {
                 .overlay(alignment: .topLeading) {
                     if let description {
                         ScrollView {
-                            Text(description)
+                            Text(description.htmlTagRemoved())
                         }
                     }
                 }
@@ -103,54 +104,5 @@ extension Button {
         } else {
             buttonStyle(.bordered).disabled(true)
         }
-    }
-}
-
-import Entity
-
-struct ShowHeaderView_Previews: PreviewProvider {
-    static var previews: some View {
-        VStack {
-            let rebuild = Show.fixtureRebuild
-            ShowHeaderView(
-                imageURL: rebuild.imageURL,
-                title: rebuild.title,
-                author: rebuild.author,
-                description: rebuild.description,
-                followed: false,
-                isFetchingShow: false,
-                toggleFollowButtonTapped: {}
-            )
-            .padding()
-
-            Divider()
-
-            let swift = Show.fixtureSwiftBySundell
-            ShowHeaderView(
-                imageURL: swift.imageURL,
-                title: swift.title,
-                author: swift.author,
-                description: swift.description,
-                followed: true,
-                isFetchingShow: false,
-                toggleFollowButtonTapped: {}
-            )
-            .padding()
-
-            Divider()
-
-            let program = Show.fixtureプログラム雑談
-            ShowHeaderView(
-                imageURL: program.imageURL,
-                title: program.title,
-                author: program.author,
-                description: program.description,
-                followed: nil,
-                isFetchingShow: false,
-                toggleFollowButtonTapped: {}
-            )
-            .padding()
-        }
-        .tint(.orange)
     }
 }

@@ -42,32 +42,36 @@ public struct ProgressSystemImage: View {
     }
 }
 
-struct ProgressSystemImage_Previews: PreviewProvider {
-    static var previews: some View {
-        VStack {
-            HStack {
-                ForEach([0, 0.2, 0.4, 0.6, 0.8, 1], id: \.self) { progress in
-                    ProgressSystemImage(
-                        systemName: "play.circle",
-                        progress: progress,
-                        onColor: .orange,
-                        offColor: .gray.opacity(0.3)
-                    )
-                }
-            }
-            .font(.title)
+#if DEBUG
 
-            HStack {
-                ForEach([0, 0.2, 0.4, 0.6, 0.8, 1], id: \.self) { progress in
-                    ProgressSystemImage(
-                        systemName: "pause.circle",
-                        progress: progress,
-                        onColor: .teal,
-                        offColor: .teal.opacity(0.2)
-                    )
-                }
-            }
-            .font(.largeTitle)
+#Preview {
+    
+VStack {
+    HStack {
+        ForEach([0, 0.2, 0.4, 0.6, 0.8, 1], id: \.self) { progress in
+            ProgressSystemImage(
+                systemName: "play.circle",
+                progress: progress,
+                onColor: .orange,
+                offColor: .gray.opacity(0.3)
+            )
         }
     }
+    .font(.title)
+
+    HStack {
+        ForEach([0, 0.2, 0.4, 0.6, 0.8, 1], id: \.self) { progress in
+            ProgressSystemImage(
+                systemName: "pause.circle",
+                progress: progress,
+                onColor: .teal,
+                offColor: .teal.opacity(0.2)
+            )
+        }
+    }
+    .font(.largeTitle)
 }
+    
+}
+
+#endif

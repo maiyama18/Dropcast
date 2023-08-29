@@ -1,5 +1,4 @@
 import Dependencies
-import Entity
 import Error
 import FeedKit
 import Foundation
@@ -7,7 +6,7 @@ import Logger
 import Network
 
 public struct RSSClient: Sendable {
-    public var fetch: @Sendable (_ url: URL) async -> Result<Show, RSSError>
+    public var fetch: @Sendable (_ url: URL) async -> Result<RSSShow, RSSError>
 }
 
 extension RSSClient {

@@ -1,6 +1,16 @@
 {
   "sourceLanguage" : "en",
   "strings" : {
+    "Failed to download episode" : {
+      "localizations" : {
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "エピソードのダウンロードに失敗しました"
+          }
+        }
+      }
+    },
     "Feed" : {
       "localizations" : {
         "ja" : {

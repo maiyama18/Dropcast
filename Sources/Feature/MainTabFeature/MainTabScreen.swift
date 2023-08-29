@@ -1,47 +1,57 @@
 import Dependencies
+import Extension
 import FeedFeature
 import LibraryFeature
-import ScreenTransitionCoordinator
+import MessageClient
+import NavigationState
+import PlayerFeature
 import SettingsFeature
+import SoundFileState
+import SoundPlayerState
 import SwiftUI
 
-enum Tab: Int {
-    case feed
-    case library
-    case settings
-}
+import NukeUI
 
 public struct MainTabScreen: View {
-    @State private var tab: Tab = .feed
-
-    @Dependency(\.screenTransitionCoordinator) private var coordinator
+    @Environment(NavigationState.self) private var navigationState
+    @Environment(SoundFileState.self) private var soundFileState
+    
+    @Dependency(\.messageClient) private var messageClient
+    
+    @State private var playerBannerHeight: Double = 0
 
     public init() {}
 
     public var body: some View {
-        TabView(selection: $tab) {
-            FeedScreen()
-                .tabItem {
-                    Label(title: { Text("Feed", bundle: .module) }, icon: { Image(systemName: "dot.radiowaves.up.forward") })
-                }
-                .tag(Tab.feed)
-
-            ShowListScreen()
-                .tabItem {
-                    Label(title: { Text("Library", bundle: .module) }, icon: { Image(systemName: "square.stack.3d.down.right") })
-                }
-                .tag(Tab.library)
-
-            SettingsScreen()
-                .tabItem {
-                    Label(title: { Text("Settings", bundle: .module) }, icon: { Image(systemName: "gearshape") })
-                }
-                .tag(Tab.settings)
-        }
-        .task {
-            for await _ in coordinator.changeTabToLibrary {
-                tab = .library
+        TabView(selection: .init(get: { navigationState.mainTab }, set: { navigationState.mainTab = $0 })) {
+            Group {
+                FeedScreen()
+                    .tabItem {
+                        Label(title: { Text("Feed", bundle: .module) }, icon: { Image(systemName: "dot.radiowaves.up.forward") })
+                    }
+                    .tag(MainTab.feed)
+                
+                ShowListScreen()
+                    .tabItem {
+                        Label(title: { Text("Library", bundle: .module) }, icon: { Image(systemName: "square.stack.3d.down.right") })
+                    }
+                    .tag(MainTab.library)
+                
+                SettingsScreen()
+                    .tabItem {
+                        Label(title: { Text("Settings", bundle: .module) }, icon: { Image(systemName: "gearshape") })
+                    }
+                    .tag(MainTab.settings)
             }
+            .toolbarBackground(.ultraThinMaterial, for: .tabBar)
+            .player()
         }
+        .onReceive(soundFileState.downloadErrorPublisher) { _ in
+            messageClient.presentError(String(localized: "Failed to download episode", bundle: .module))
+        }
+        .onPreferenceChange(PlayerBannerHeightKey.self) { height in
+            playerBannerHeight = height
+        }
+        .environment(\.playerBannerHeight, playerBannerHeight)
     }
 }

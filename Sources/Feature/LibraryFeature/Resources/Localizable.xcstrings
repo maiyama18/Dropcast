@@ -16,37 +16,7 @@
         "ja" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "好きな番組をフォローしましょう！"
-          }
-        }
-      }
-    },
-    "Invalid query" : {
-      "localizations" : {
-        "ja" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "検索ワードが不正です"
-          }
-        }
-      }
-    },
-    "Invalid server response" : {
-      "localizations" : {
-        "ja" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "サーバーからのレスポンスが不正です"
-          }
-        }
-      }
-    },
-    "No results" : {
-      "localizations" : {
-        "ja" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "検索結果が見つかりませんでした"
+            "value" : "好きな番組をフォロー"
           }
         }
       }
@@ -81,12 +51,12 @@
         }
       }
     },
-    "Search shows" : {
+    "Search podcasts" : {
       "localizations" : {
         "ja" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "番組を検索しましょう"
+            "value" : "Podcast を検索"
           }
         }
       }
@@ -97,6 +67,16 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "番組一覧"
+          }
+        }
+      }
+    },
+    "Unexpected error occurred" : {
+      "localizations" : {
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "予期しないエラーが発生しました"
           }
         }
       }

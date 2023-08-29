@@ -1,3 +1,5 @@
+import Foundation
+
 public enum EpisodeDownloadState: Sendable, Equatable {
     case notDownloaded
     case pushedToDownloadQueue

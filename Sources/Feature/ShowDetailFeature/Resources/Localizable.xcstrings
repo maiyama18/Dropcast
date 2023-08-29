@@ -21,42 +21,12 @@
         }
       }
     },
-    "Failed to connect to database" : {
+    "Failed to fetch show information" : {
       "localizations" : {
         "ja" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "データベースとの通信に失敗しました"
-          }
-        }
-      }
-    },
-    "Failed to download the episode" : {
-      "localizations" : {
-        "ja" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "エピソードをダウンロードできませんでした"
-          }
-        }
-      }
-    },
-    "Failed to follow the show" : {
-      "localizations" : {
-        "ja" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "フォローに失敗しました"
-          }
-        }
-      }
-    },
-    "Failed to unfollow the show" : {
-      "localizations" : {
-        "ja" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "フォロー解除に失敗しました"
+            "value" : "番組情報の取得に失敗しました"
           }
         }
       }
@@ -77,16 +47,6 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "フォロー中"
-          }
-        }
-      }
-    },
-    "Invalid RSS feed" : {
-      "localizations" : {
-        "ja" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "不正な RSS Feed です"
           }
         }
       }
@@ -131,7 +91,7 @@
         }
       }
     },
-    "Something went wrong" : {
+    "Unexpected error occurred" : {
       "localizations" : {
         "ja" : {
           "stringUnit" : {

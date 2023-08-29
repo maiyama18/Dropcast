@@ -83,6 +83,7 @@ let targets: [PackageDescription.Target] = [
         name: "iOSApp",
         dependencies: [
             "DebugFeature",
+            "DuplicatedRecordsDeleteUseCase",
             "FeedFeature",
             "MainTabFeature",
             "SettingsFeature",
@@ -90,7 +91,8 @@ let targets: [PackageDescription.Target] = [
             "LibraryFeature",
             "MessageClientLive",
             "Logger",
-            "ScreenTransitionCoordinator",
+            "NavigationState",
+            "SoundPlayerState",
         ],
         path: "Sources/App/iOSApp"
     ),
@@ -103,6 +105,8 @@ let targets: [PackageDescription.Target] = [
             "FeedFeature",
             "LibraryFeature",
             "SettingsFeature",
+            "PlayerFeature",
+            "NavigationState",
         ],
         path: "Sources/Feature/MainTabFeature"
     ),
@@ -114,21 +118,34 @@ let targets: [PackageDescription.Target] = [
             "Formatter",
             "Logger",
             "MessageClient",
-            "SoundFileClient",
+            "SoundFileState",
         ],
         path: "Sources/Feature/DebugFeature"
+    ),
+    .target(
+        name: "EpisodeDetailFeature",
+        dependencies: [
+            .nukeUI,
+            "Components",
+            "Database",
+            "Extension",
+            "Formatter",
+            "NavigationState",
+        ],
+        path: "Sources/Feature/EpisodeDetailFeature"
     ),
     .target(
         name: "FeedFeature",
         dependencies: [
             "ShowDetailFeature",
             "Components",
-            "DatabaseClient",
+            "Database",
             "DeepLink",
             "Entity",
             "MessageClient",
             "RSSClient",
-            "SoundFileClient",
+            "ShowEpisodesUpdateUseCase",
+            "SoundFileState",
             "UserDefaultsClient",
             "Extension",
         ],
@@ -139,6 +156,7 @@ let targets: [PackageDescription.Target] = [
         dependencies: [
             "Build",
             "Extension",
+            "NavigationState",
         ],
         path: "Sources/Feature/SettingsFeature",
         plugins: [.licenses]
@@ -146,15 +164,17 @@ let targets: [PackageDescription.Target] = [
     .target(
         name: "LibraryFeature",
         dependencies: [
+            .asyncAlgorithms,
             .nukeUI,
             "ShowDetailFeature",
             "Entity",
             "Error",
-            "DatabaseClient",
+            "Database",
             "ITunesClient",
             "MessageClient",
             "RSSClient",
-            "ScreenTransitionCoordinator",
+            "NavigationState",
+            "ShowSearchUseCase",
         ],
         path: "Sources/Feature/LibraryFeature"
     ),
@@ -164,36 +184,128 @@ let targets: [PackageDescription.Target] = [
             .nukeUI,
             "Components",
             "ClipboardClient",
-            "DatabaseClient",
+            "Database",
+            "EpisodeDetailFeature",
             "MessageClient",
             "RSSClient",
-            "SoundFileClient",
+            "ShowEpisodesUpdateUseCase",
+            "ShowCreateUseCase",
+            "SoundFileState",
             "Extension",
             "Entity",
+            "NavigationState",
         ],
         path: "Sources/Feature/ShowDetailFeature"
     ),
-
+    .target(
+        name: "PlayerFeature",
+        dependencies: [
+            .nukeUI,
+            "Components",
+            "Entity",
+            "NavigationState",
+            "SoundPlayerState",
+        ],
+        path: "Sources/Feature/PlayerFeature"
+    ),
+    
     // UI module
 
     .target(
         name: "Components",
         dependencies: [
+            .dependencies,
             .nukeUI,
             "Entity",
             "Formatter",
+            "MessageClient",
+            "SoundFileState",
+            "SoundPlayerState",
         ],
         path: "Sources/UI/Components"
     ),
+
+    // Data module
+
     .target(
-        name: "ScreenTransitionCoordinator",
+        name: "DuplicatedRecordsDeleteUseCase",
         dependencies: [
-            .asyncAlgorithms,
+            "Database",
+        ],
+        path: "Sources/Data/DuplicatedRecordsDeleteUseCase"
+    ),
+    .testTarget(
+        name: "DuplicatedRecordsDeleteUseCaseTests",
+        dependencies: [
+            "DuplicatedRecordsDeleteUseCase"
+        ],
+        path: "Tests/Data/DuplicatedRecordsDeleteUseCaseTests"
+    ),
+    .target(
+        name: "NavigationState",
+        dependencies: [
+            "Database",
+        ],
+        path: "Sources/Data/NavigationState"
+    ),
+    .target(
+        name: "PodcastChapterExtractUseCase",
+        dependencies: [
             .dependencies,
         ],
-        path: "Sources/UI/ScreenTransitionCoordinator"
+        path: "Sources/Data/PodcastChapterExtractUseCase"
     ),
-
+    .target(
+        name: "SoundFileState",
+        dependencies: [
+            .dependencies,
+            "Database",
+            "Error",
+            "Entity",
+            "Logger",
+        ],
+        path: "Sources/Data/SoundFileState"
+    ),
+    .target(
+        name: "SoundPlayerState",
+        dependencies: [
+            .dependencies,
+            "Database",
+            "HapticClient",
+            "Logger",
+            "PodcastChapterExtractUseCase",
+            "SoundFileState",
+            "UserDefaultsClient",
+        ],
+        path: "Sources/Data/SoundPlayerState"
+    ),
+    .target(
+        name: "ShowCreateUseCase",
+        dependencies: [
+            "RSSClient",
+            "Database",
+        ],
+        path: "Sources/Data/ShowCreateUseCase"
+    ),
+    .target(
+        name: "ShowEpisodesUpdateUseCase",
+        dependencies: [
+            "RSSClient",
+            "Database",
+        ],
+        path: "Sources/Data/ShowEpisodesUpdateUseCase"
+    ),
+    .target(
+        name: "ShowSearchUseCase",
+        dependencies: [
+            .algorithms,
+            "Entity",
+            "RSSClient",
+            "ITunesClient"
+        ],
+        path: "Sources/Data/ShowSearchUseCase"
+    ),
+    
     // Infra module
 
     .target(
@@ -202,31 +314,16 @@ let targets: [PackageDescription.Target] = [
         path: "Sources/Infra/ClipboardClient"
     ),
     .target(
-        name: "DatabaseClient",
-        dependencies: [
-            .algorithms,
-            .asyncAlgorithms,
-            .dependencies,
-            .identifiedCollections,
-            "Entity",
-            "Error",
-            "Logger",
-        ],
-        path: "Sources/Infra/DatabaseClient"
-    ),
-    .testTarget(
-        name: "DatabaseClientTests",
-        dependencies: [
-            "DatabaseClient",
-            "TestHelper",
-        ],
-        path: "Tests/Infra/DatabaseClientTests"
+        name: "HapticClient",
+        dependencies: [.dependencies],
+        path: "Sources/Infra/HapticClient"
     ),
     .target(
         name: "RSSClient",
         dependencies: [
             .dependencies,
             .feedKit,
+            "Database",
             "Entity",
             "Error",
             "Logger",
@@ -278,24 +375,6 @@ let targets: [PackageDescription.Target] = [
         path: "Sources/Infra/MessageClientLive"
     ),
     .target(
-        name: "SoundFileClient",
-        dependencies: [
-            .dependencies,
-            "Error",
-            "Entity",
-            "Logger",
-        ],
-        path: "Sources/Infra/SoundFileClient"
-    ),
-    .testTarget(
-        name: "SoundFileClientTests",
-        dependencies: [
-            "SoundFileClient",
-            "TestHelper",
-        ],
-        path: "Tests/Infra/SoundFileClientTests"
-    ),
-    .target(
         name: "UserDefaultsClient",
         dependencies: [
             .defaults,
@@ -313,8 +392,22 @@ let targets: [PackageDescription.Target] = [
         path: "Sources/Core/Build"
     ),
     .target(
+        name: "Database",
+        dependencies: [
+            .algorithms,
+            .asyncAlgorithms,
+            .dependencies,
+            .identifiedCollections,
+            "Entity",
+            "Error",
+            "Logger",
+        ],
+        path: "Sources/Core/Database"
+    ),
+    .target(
         name: "DeepLink",
         dependencies: [
+            .dependencies,
             "Environment"
         ],
         path: "Sources/Core/DeepLink"
@@ -414,7 +507,7 @@ let targets: [PackageDescription.Target] = [
 var package = Package(
     name: "Dropcast",
     defaultLocalization: "en",
-    platforms: [.iOS(.v16)],
+    platforms: [.iOS(.v17)],
     products: [
         .library(
             name: "iOSApp",
@@ -422,6 +515,9 @@ var package = Package(
         .library(
             name: "MainTabFeature",
             targets: ["MainTabFeature"]),
+        .library(
+            name: "EpisodeDetailFeature",
+            targets: ["EpisodeDetailFeature"]),
         .library(
             name: "FeedFeature",
             targets: ["FeedFeature"]),
@@ -435,11 +531,14 @@ var package = Package(
             name: "ShowDetailFeature",
             targets: ["ShowDetailFeature"]),
         .library(
+            name: "PlayerFeature",
+            targets: ["PlayerFeature"]),
+        .library(
             name: "Components",
             targets: ["Components"]),
         .library(
-            name: "DatabaseClient",
-            targets: ["DatabaseClient"]),
+            name: "Database",
+            targets: ["Database"]),
         .library(
             name: "ITunesClient",
             targets: ["ITunesClient"]),
@@ -447,8 +546,11 @@ var package = Package(
             name: "RSSClient",
             targets: ["RSSClient"]),
         .library(
-            name: "SoundFileClient",
-            targets: ["SoundFileClient"]),
+            name: "SoundFileState",
+            targets: ["SoundFileState"]),
+        .library(
+            name: "DuplicatedRecordsDeleteUseCase",
+            targets: ["DuplicatedRecordsDeleteUseCase"]),
         .library(
             name: "Formatter",
             targets: ["Formatter"]),

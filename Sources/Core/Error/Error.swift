@@ -43,8 +43,3 @@ public enum DatabaseError: Error, Equatable {
     case databaseError
     case showNotFollowed
 }
-
-public enum SoundFileClientError: Error, Equatable {
-    case unexpectedError
-    case downloadError
-}

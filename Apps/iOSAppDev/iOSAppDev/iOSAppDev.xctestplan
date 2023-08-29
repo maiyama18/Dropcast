@@ -15,13 +15,6 @@
     {
       "target" : {
         "containerPath" : "container:..\/..",
-        "identifier" : "DatabaseClientTests",
-        "name" : "DatabaseClientTests"
-      }
-    },
-    {
-      "target" : {
-        "containerPath" : "container:..\/..",
         "identifier" : "FormatterTests",
         "name" : "FormatterTests"
       }
@@ -50,8 +43,8 @@
     {
       "target" : {
         "containerPath" : "container:..\/..",
-        "identifier" : "SoundFileClientTests",
-        "name" : "SoundFileClientTests"
+        "identifier" : "DuplicatedRecordsDeleteUseCaseTests",
+        "name" : "DuplicatedRecordsDeleteUseCaseTests"
       }
     }
   ],
