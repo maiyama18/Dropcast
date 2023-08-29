@@ -30,6 +30,7 @@ public struct HTMLView: UIViewRepresentable {
         
         guard htmlBodyString.starts(with: "<") else {
             uiTextView.text = htmlBodyString
+            uiTextView.font = UIFont.preferredFont(forTextStyle: .body)
             return
         }
         
@@ -48,6 +49,7 @@ public struct HTMLView: UIViewRepresentable {
             )
         } catch {
             uiTextView.text = htmlBodyString
+            uiTextView.font = UIFont.preferredFont(forTextStyle: .body)
         }
     }
     
