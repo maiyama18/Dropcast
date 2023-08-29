@@ -53,16 +53,24 @@ public struct EpisodeRowView: View {
                 .font(.body.bold())
                 .lineLimit(2)
                 
-                if let subtitle = episode.subtitle {
-                    Text(
-                        subtitle
-                            .htmlTagRemoved()
-                            .replacingOccurrences(of: "\n", with: " ")
-                    )
-                    .font(.footnote)
-                    .foregroundStyle(.secondary)
-                    .lineLimit(3)
+                Group {
+                    if let subtitle = episode.subtitle {
+                        Text(
+                            subtitle
+                                .htmlTagRemoved()
+                                .replacingOccurrences(of: "\n", with: " ")
+                        )
+                    } else if let description = episode.episodeDescription {
+                        Text(
+                            description
+                                .htmlTagRemoved()
+                                .replacingOccurrences(of: "\n", with: " ")
+                        )
+                    }
                 }
+                .font(.footnote)
+                .foregroundStyle(.secondary)
+                .lineLimit(3)
                 
                 HStack(spacing: 12) {
                     EpisodeActionButton(episode: episode)

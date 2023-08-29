@@ -1,3 +1,4 @@
+import Extension
 import NukeUI
 import SwiftUI
 
@@ -81,7 +82,7 @@ struct ShowHeaderView: View {
                 .overlay(alignment: .topLeading) {
                     if let description {
                         ScrollView {
-                            Text(description)
+                            Text(description.htmlTagRemoved())
                         }
                     }
                 }
