@@ -16,7 +16,7 @@ let dependencies: [PackageDescription.Package.Dependency] = [
     .package(url: "https://github.com/pointfreeco/swift-identified-collections", exact: "0.7.1"),
 
     // plugins
-    .package(url: "https://github.com/maiyama18/SwiftLintPlugins", branch: "fix-xcode-cloud"),
+    .package(url: "https://github.com/maiyama18/SwiftLintPlugins", exact: "0.9.6"),
     .package(url: "https://github.com/maiyama18/LicensesPlugin", exact: "0.1.5"),
     .package(url: "https://github.com/SwiftGen/SwiftGenPlugin", exact: "6.6.2"),
 ]
