@@ -28,6 +28,11 @@ public struct HTMLView: UIViewRepresentable {
     public func updateUIView(_ uiTextView: UITextView, context: Context) {
         uiTextView.contentInset.bottom = contentBottomInset
         
+        guard htmlBodyString.starts(with: "<") else {
+            uiTextView.text = htmlBodyString
+            return
+        }
+        
         do {
             let htmlString = html(
                 bodyString: htmlBodyString,
@@ -42,7 +47,7 @@ public struct HTMLView: UIViewRepresentable {
                 documentAttributes: nil
             )
         } catch {
-            uiTextView.attributedText = NSAttributedString(string: htmlBodyString)
+            uiTextView.text = htmlBodyString
         }
     }
     
