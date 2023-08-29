@@ -90,6 +90,12 @@ public final class SoundPlayerState: NSObject {
         self.speedRate = SpeedRate(rawValue: userDefaultsClient.getSoundPlayerSpeedRate() ?? 1) ?? ._1
         restoreCurrentState()
         configureRemoteCommands()
+        
+        NotificationCenter.default.addObserver(
+            self, selector: #selector(handleInterruption),
+            name: AVAudioSession.interruptionNotification,
+            object: nil
+        )
     }
     
     private func configureRemoteCommands() {
@@ -351,6 +357,12 @@ public final class SoundPlayerState: NSObject {
     @objc private func didDisplayLinkTick() {
         currentTimeInt = Int(audioPlayer?.currentTime ?? 0)
         storeCurrentState()
+    }
+    
+    @objc private func handleInterruption() {
+        if case .playing(let episode) = state {
+            pause(episode: episode)
+        }
     }
 }
 
