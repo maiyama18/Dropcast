@@ -149,8 +149,8 @@
       "kind" : "remoteSourceControl",
       "location" : "https://github.com/maiyama18/SwiftLintPlugins",
       "state" : {
-        "revision" : "77d2f2d387d49e67fb0855a06f577acf1d7c5d17",
-        "version" : "0.9.4"
+        "branch" : "fix-xcode-cloud",
+        "revision" : "27b76d68fb56502d189cfdcc493db673346bebb3"
       }
     },
     {
