@@ -4,13 +4,13 @@ import SwiftUI
 
 struct PlayerSheet: View {
     @Environment(SoundPlayerState.self) private var soundPlayerState
-    
+
     @State private var backgroundRotationAngle: Angle = .degrees(Double.random(in: 0...360))
-    
+
     var body: some View {
         TabView {
             PlayerMainScreen()
-            
+
             if let episode = soundPlayerState.state.playingEpisode,
                let episodeDescription = episode.episodeDescription {
                 PlayerEpisodeDetailScreen(episode: episode, episodeDescription: episodeDescription)

@@ -9,7 +9,7 @@ public struct RSSShow: Sendable, Equatable {
     public let description: String?
     public let author: String?
     public let linkURL: URL?
-    
+
     public let episodes: [RSSEpisode]
 }
 

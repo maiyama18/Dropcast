@@ -11,12 +11,12 @@ public struct ShowCreateUseCase: Sendable {
 extension ShowCreateUseCase {
     static func live(context: NSManagedObjectContext) -> ShowCreateUseCase {
         @Dependency(\.rssClient) var rssClient
-        
+
         return ShowCreateUseCase(
             create: { feedURL in
                 let rssShow = try await rssClient.fetch(feedURL).get()
                 try ShowRecord.deleteAll(context: context, feedURL: feedURL)
-                
+
                 let show = ShowRecord(
                     title: rssShow.title,
                     description: rssShow.description,
@@ -38,7 +38,7 @@ extension ShowCreateUseCase {
                         )
                     )
                 }
-                
+
                 do {
                     try context.save()
                 } catch {

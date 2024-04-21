@@ -208,7 +208,7 @@ let targets: [PackageDescription.Target] = [
         ],
         path: "Sources/Feature/PlayerFeature"
     ),
-    
+
     // UI module
 
     .target(
@@ -301,11 +301,11 @@ let targets: [PackageDescription.Target] = [
             .algorithms,
             "Entity",
             "RSSClient",
-            "ITunesClient"
+            "ITunesClient",
         ],
         path: "Sources/Data/ShowSearchUseCase"
     ),
-    
+
     // Infra module
 
     .target(
@@ -408,7 +408,7 @@ let targets: [PackageDescription.Target] = [
         name: "DeepLink",
         dependencies: [
             .dependencies,
-            "Environment"
+            "Environment",
         ],
         path: "Sources/Core/DeepLink"
     ),

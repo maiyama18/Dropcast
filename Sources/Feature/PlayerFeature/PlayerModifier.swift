@@ -12,7 +12,7 @@ public extension View {
 struct PlayerModifier: ViewModifier {
     @Environment(SoundPlayerState.self) private var soundPlayerState
     @Environment(NavigationState.self) private var navigationState
-    
+
     func body(content: Content) -> some View {
         content
             .overlay(alignment: .bottom) {

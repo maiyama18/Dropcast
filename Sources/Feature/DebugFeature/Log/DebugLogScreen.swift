@@ -8,16 +8,16 @@ struct DebugLogScreen: View {
         case all
         case category(LogCategory)
     }
-    
+
     @State private var allLogEntries: [LogEntry] = []
     @State private var searchScope: SearchScope = .all
     @State private var query: String = ""
     @State private var loading: Bool = false
-    
+
     @Dependency(\.messageClient) private var messageClient
-    
+
     private let logStore = LogStore()
-    
+
     private var visibleEntries: [LogEntry] {
         let scopedEntries: [LogEntry]
         switch searchScope {
@@ -33,7 +33,7 @@ struct DebugLogScreen: View {
         }
         return scopedEntries.filter { $0.message.contains(trimmedQuery) }
     }
-    
+
     var body: some View {
         Group {
             if loading {
