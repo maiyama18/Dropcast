@@ -6,7 +6,7 @@ public struct StoredSoundPlayerState: Codable, Defaults.Serializable {
         self.episodeID = episodeID
         self.currentTime = currentTime
     }
-    
+
     public var episodeID: String
     public var currentTime: TimeInterval
 }

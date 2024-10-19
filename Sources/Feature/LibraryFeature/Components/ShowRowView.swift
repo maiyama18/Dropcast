@@ -7,7 +7,7 @@ struct ShowRowView: View {
     let imageURL: URL
     let title: String
     let author: String?
-    
+
     var body: some View {
         HStack(spacing: 12) {
             LazyImage(url: imageURL) { state in

@@ -18,11 +18,11 @@ public final class SoundPlayerState: NSObject {
         case notPlaying
         case playing(episode: EpisodeRecord)
         case pausing(episode: EpisodeRecord)
-        
+
         public var isPlayingOrPausing: Bool {
             playingEpisode != nil
         }
-        
+
         public var playingEpisode: EpisodeRecord? {
             switch self {
             case .notPlaying:
@@ -32,7 +32,7 @@ public final class SoundPlayerState: NSObject {
             }
         }
     }
-        
+
     public enum SpeedRate: Float, CaseIterable {
         case _0_5 = 0.5
         case _0_75 = 0.75
@@ -40,7 +40,7 @@ public final class SoundPlayerState: NSObject {
         case _1_25 = 1.25
         case _1_5 = 1.5
         case _1_75 = 1.75
-        
+
         public var formatted: String {
             switch self {
             case ._0_5: return "0.5x"
@@ -54,12 +54,12 @@ public final class SoundPlayerState: NSObject {
     }
 
     public static let shared = SoundPlayerState()
-    
+
     @ObservationIgnored @Dependency(\.hapticClient) private var hapticClient
     @ObservationIgnored @Dependency(\.userDefaultsClient) private var userDefaultsClient
     @ObservationIgnored @Dependency(\.podcastChapterExtractUseCase) private var podcastChapterExtractUseCase
-    
-    public var state: State = .notPlaying 
+
+    public var state: State = .notPlaying
     public var currentTimeInt: Int?
     public var duration: Double?
     public var speedRate: SpeedRate = ._1 {
@@ -78,29 +78,29 @@ public final class SoundPlayerState: NSObject {
         let progress = (Double(currentTimeInt) - currentChapter.startsAt) / currentChapter.duration
         return max(min(progress, 1), 0)
     }
-    
+
     private var displayLink: CADisplayLink?
     private var audioPlayer: AVAudioPlayer? = nil
     private let context: NSManagedObjectContext
-    
+
     public init(context: NSManagedObjectContext = PersistentProvider.cloud.viewContext) {
         self.context = context
         super.init()
-        
+
         self.speedRate = SpeedRate(rawValue: userDefaultsClient.getSoundPlayerSpeedRate() ?? 1) ?? ._1
         restoreCurrentState()
         configureRemoteCommands()
-        
+
         NotificationCenter.default.addObserver(
             self, selector: #selector(handleInterruption),
             name: AVAudioSession.interruptionNotification,
             object: nil
         )
     }
-    
+
     private func configureRemoteCommands() {
         let center = MPRemoteCommandCenter.shared()
-        
+
         center.playCommand.isEnabled = true
         center.playCommand.removeTarget(self)
         center.playCommand.addTarget { [weak self] _ in
@@ -117,7 +117,7 @@ public final class SoundPlayerState: NSObject {
                 }
             }
         }
-        
+
         center.pauseCommand.isEnabled = true
         center.pauseCommand.removeTarget(self)
         center.pauseCommand.addTarget { [weak self] _ in
@@ -130,7 +130,7 @@ public final class SoundPlayerState: NSObject {
                 return .success
             }
         }
-        
+
         center.skipForwardCommand.isEnabled = true
         center.skipForwardCommand.preferredIntervals = [10.0]
         center.skipForwardCommand.removeTarget(self)
@@ -139,7 +139,7 @@ public final class SoundPlayerState: NSObject {
             goForward(seconds: 10)
             return .success
         }
-        
+
         center.skipBackwardCommand.isEnabled = true
         center.skipBackwardCommand.preferredIntervals = [10.0]
         center.skipBackwardCommand.removeTarget(self)
@@ -149,7 +149,7 @@ public final class SoundPlayerState: NSObject {
             return .success
         }
     }
-    
+
     private func updateNowPlayingInfo() {
         let episode: EpisodeRecord
         switch state {
@@ -158,7 +158,7 @@ public final class SoundPlayerState: NSObject {
         case .playing(let e), .pausing(let e):
             episode = e
         }
-        
+
         var nowPlayingInfo: [String: Any] = [
             MPNowPlayingInfoPropertyPlaybackRate: speedRate.rawValue,
             MPMediaItemPropertyTitle: episode.title,
@@ -171,7 +171,7 @@ public final class SoundPlayerState: NSObject {
         if let show = episode.show {
             nowPlayingInfo[MPMediaItemPropertyArtist] = show.title
             nowPlayingInfo[MPMediaItemPropertyPodcastTitle] = show.title
-            
+
             let imageURL = show.imageURL
             nowPlayingInfo[MPMediaItemPropertyArtwork] = MPMediaItemArtwork(boundsSize: .init(width: 600, height: 600)) { _ in
                 guard let data = try? Data(contentsOf: imageURL) else {
@@ -180,10 +180,10 @@ public final class SoundPlayerState: NSObject {
                 return UIImage(data: data) ?? UIImage()
             }
         }
-        
+
         MPNowPlayingInfoCenter.default().nowPlayingInfo = nowPlayingInfo
     }
-    
+
     private func storeCurrentState() {
         let episodeID: EpisodeRecord.ID
         switch state {
@@ -192,10 +192,10 @@ public final class SoundPlayerState: NSObject {
         case .playing(let episode), .pausing(let episode):
             episodeID = episode.id
         }
-        
+
         userDefaultsClient.setStoredSoundPlayerState(episodeID, audioPlayer?.currentTime ?? 0)
     }
-    
+
     private func restoreCurrentState() {
         guard let storedSoundPlayerState = userDefaultsClient.getStoredSoundPlayerState(),
               let episode = try? context.fetch(EpisodeRecord.withID(storedSoundPlayerState.episodeID)).first,
@@ -203,20 +203,20 @@ public final class SoundPlayerState: NSObject {
             state = .notPlaying
             return
         }
-        
+
         do {
             try playingState.pause(atTime: storedSoundPlayerState.currentTime)
             currentTimeInt = Int(storedSoundPlayerState.currentTime)
             duration = episode.duration
-            
+
             state = .pausing(episode: episode)
-            
+
             let url = try SoundFileState.soundFileURL(episode: episode)
-            
+
             self.audioPlayer = try configureAudioPlayer(url: url, currentTime: storedSoundPlayerState.currentTime)
-            
+
             updateNowPlayingInfo()
-            
+
             Task {
                 chapters = try await podcastChapterExtractUseCase.extract(url)
             }
@@ -224,29 +224,29 @@ public final class SoundPlayerState: NSObject {
             state = .notPlaying
         }
     }
-    
+
     public func startPlaying(episode: EpisodeRecord) throws {
         hapticClient.medium()
-        
+
         // 別のファイルが再生中であれば pause する
         if case .playing(let episode) = state {
             pause(episode: episode)
         }
-        
+
         let url = try SoundFileState.soundFileURL(episode: episode)
-            
+
         let playingState = try? context.fetch(EpisodePlayingStateRecord.withEpisodeID(episode.id)).first
-        
+
         let audioPlayer = try configureAudioPlayer(url: url, currentTime: playingState?.lastPausedTime ?? 0)
         self.audioPlayer = audioPlayer
         audioPlayer.play()
         self.duration = audioPlayer.duration
-        
+
         validateDisplayLink()
-        
+
         self.state = .playing(episode: episode)
         updateNowPlayingInfo()
-        
+
         if let playingState {
             try playingState.startPlaying(atTime: audioPlayer.currentTime)
         } else {
@@ -257,22 +257,22 @@ public final class SoundPlayerState: NSObject {
             }
             try playingState.startPlaying(atTime: audioPlayer.currentTime)
         }
-        
+
         Task {
             chapters = try await podcastChapterExtractUseCase.extract(url)
         }
     }
-    
+
     public func pause(episode: EpisodeRecord) {
         hapticClient.medium()
-        
+
         audioPlayer?.stop()
-        
+
         invalidateDisplayLink()
-        
+
         self.state = .pausing(episode: episode)
         updateNowPlayingInfo()
-        
+
         guard let playingState = findOrCreatePlayingState(episodeID: episode.id) else {
             assertionFailure()
             state = .notPlaying
@@ -281,23 +281,23 @@ public final class SoundPlayerState: NSObject {
         try? playingState.pause(atTime: audioPlayer?.currentTime ?? 0)
         storeCurrentState()
     }
-    
+
     public func goForward(seconds: TimeInterval) {
         guard let currentTime = audioPlayer?.currentTime else { return }
         hapticClient.medium()
         move(to: currentTime + seconds)
     }
-    
+
     public func goBackward(seconds: TimeInterval) {
         guard let currentTime = audioPlayer?.currentTime else { return }
         hapticClient.medium()
         move(to: currentTime - seconds)
     }
-    
+
     public func goToChapter(chapter: Chapter) {
         move(to: chapter.startsAt + 0.5)
     }
-    
+
     public func move(to time: TimeInterval) {
         guard let audioPlayer else { return }
         switch state {
@@ -313,7 +313,7 @@ public final class SoundPlayerState: NSObject {
             nowPlayingInfo[MPNowPlayingInfoPropertyElapsedPlaybackTime] = clampedTime
             MPNowPlayingInfoCenter.default().nowPlayingInfo = nowPlayingInfo
             didDisplayLinkTick()
-            
+
             Task {
                 let url = try SoundFileState.soundFileURL(episode: episode)
                 chapters = try await podcastChapterExtractUseCase.extract(url)
@@ -322,7 +322,7 @@ public final class SoundPlayerState: NSObject {
             assertionFailure()
         }
     }
-    
+
     private func findOrCreatePlayingState(episodeID: EpisodeRecord.ID) -> EpisodePlayingStateRecord? {
         if let playingState = try? context.fetch(EpisodePlayingStateRecord.withEpisodeID(episodeID)).first {
             return playingState
@@ -334,17 +334,17 @@ public final class SoundPlayerState: NSObject {
         }
         return nil
     }
-    
+
     private func validateDisplayLink() {
         displayLink = CADisplayLink(target: self, selector: #selector(didDisplayLinkTick))
         displayLink?.add(to: .main, forMode: .common)
     }
-    
+
     private func invalidateDisplayLink() {
         displayLink?.invalidate()
         displayLink = nil
     }
-    
+
     private func configureAudioPlayer(url: URL, currentTime: TimeInterval) throws -> AVAudioPlayer {
         let audioPlayer = try AVAudioPlayer(contentsOf: url)
         audioPlayer.delegate = self
@@ -353,12 +353,12 @@ public final class SoundPlayerState: NSObject {
         audioPlayer.currentTime = currentTime
         return audioPlayer
     }
-    
+
     @objc private func didDisplayLinkTick() {
         currentTimeInt = Int(audioPlayer?.currentTime ?? 0)
         storeCurrentState()
     }
-    
+
     @objc private func handleInterruption() {
         if case .playing(let episode) = state {
             pause(episode: episode)
@@ -373,29 +373,29 @@ extension SoundPlayerState: AVAudioPlayerDelegate {
             self.audioPlayer = nil
             self.duration = nil
             invalidateDisplayLink()
-            
+
             defer { state = .notPlaying }
             guard case .playing(let episode) = state,
                   let playingState = episode.playingState else {
                 return
             }
-            
+
             try? playingState.complete()
         }
     }
-    
+
     nonisolated public func audioPlayerDecodeErrorDidOccur(_ player: AVAudioPlayer, error: Error?) {
         player.stop()
         Task { @MainActor in
             self.audioPlayer = nil
             invalidateDisplayLink()
-            
+
             defer { state = .notPlaying }
             guard case .playing(let episode) = state,
                   let playingState = episode.playingState else {
                 return
             }
-            
+
             playingState.managedObjectContext?.delete(playingState)
         }
     }

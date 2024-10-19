@@ -26,7 +26,7 @@ struct ShowSearchScreen: View {
                 return shows
             }
         }
-        
+
         var searching: Bool {
             switch self {
             case .loading:
@@ -36,14 +36,14 @@ struct ShowSearchScreen: View {
             }
         }
     }
-    
+
     @State private var searchState: SearchState = .prompt
     @State private var query: String = ""
     @State private var searchTask: Task<Void, Never>? = nil
-    
+
     @Environment(NavigationState.self) private var navigationState
     @Environment(\.colorScheme) private var colorScheme
-    
+
     @Dependency(\.messageClient) private var messageClient
     @Dependency(\.showSearchUseCase) private var showSearchUseCase
 
@@ -150,13 +150,13 @@ private extension ShowSearchScreen {
             return Color(.systemGray6)
         }
     }
-    
+
     func search() async {
         guard !query.isEmpty else {
             searchState = .prompt
             return
         }
-        
+
         searchState = .loading(shows: searchState.currentShows)
         do {
             let shows = try await showSearchUseCase.search(query)

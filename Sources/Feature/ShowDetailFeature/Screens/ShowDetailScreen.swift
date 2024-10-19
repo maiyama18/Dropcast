@@ -18,23 +18,23 @@ public struct ShowDetailScreen: View {
     private let feedURL: URL
     private let initialImageURL: URL
     private let initialTitle: String
-    
+
     @State private var isFetchingShow: Bool = false
     @State private var downloadStates: [EpisodeRecord.ID: EpisodeDownloadState]? = nil
-    
+
     @FetchRequest var showRecords: FetchedResults<ShowRecord>
     private var show: ShowRecord? { showRecords.first }
-    
+
     @FetchRequest var episodeRecords: FetchedResults<EpisodeRecord>
-    
+
     @Environment(\.openURL) private var openURL
     @Environment(\.managedObjectContext) private var context
     @Environment(\.playerBannerHeight) private var playerBannerHeight
-    
+
     @Dependency(\.clipboardClient) private var clipboardClient
     @Dependency(\.messageClient) private var messageClient
     @Dependency(\.rssClient) private var rssClient
-    
+
     @Dependency(\.showEpisodesUpdateUseCase) private var showEpisodesUpdateUseCase
     @Dependency(\.showCreateUseCase) private var showCreateUseCase
 
@@ -42,7 +42,7 @@ public struct ShowDetailScreen: View {
         self.feedURL = args.feedURL
         self.initialImageURL = args.imageURL
         self.initialTitle = args.title
-        
+
         self._showRecords = FetchRequest(fetchRequest: ShowRecord.withFeedURL(feedURL))
         self._episodeRecords = FetchRequest(fetchRequest: EpisodeRecord.withShowFeedURL(feedURL))
     }
@@ -84,7 +84,7 @@ public struct ShowDetailScreen: View {
                                 showsImage: false
                             )
                         }
-                        
+
                         EpisodeDivider()
                     }
                 }
@@ -124,7 +124,7 @@ public struct ShowDetailScreen: View {
         .task {
             isFetchingShow = true
             defer { isFetchingShow = false }
-            
+
             do {
                 if let show {
                     try await showEpisodesUpdateUseCase.update(show)

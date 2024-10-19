@@ -12,10 +12,10 @@ import SwiftUI
 struct PlayerMainScreen: View {
     @Environment(SoundPlayerState.self) private var soundPlayerState
     @Environment(NavigationState.self) private var navigationState
-    
+
     @State private var imageScale: Double = 0.2
     @State private var chaptersMenuPresented: Bool = false
-    
+
     var body: some View {
         switch soundPlayerState.state {
         case .notPlaying:
@@ -27,11 +27,11 @@ struct PlayerMainScreen: View {
             sheetView(playing: true, episode: episode)
         }
     }
-    
+
     private func sheetView(playing: Bool, episode: EpisodeRecord) -> some View {
         VStack {
             Spacer(minLength: 8)
-            
+
             lazyImage(show: episode.show)
                 .cornerRadius(8)
                 .aspectRatio(contentMode: .fit)
@@ -40,15 +40,15 @@ struct PlayerMainScreen: View {
                 .onAppear {
                     imageScale = 1
                 }
-            
+
             Spacer().frame(height: 16)
-            
+
             VStack(alignment: .leading, spacing: 4) {
                 Text(episode.title)
                     .font(.headline.bold())
                     .minimumScaleFactor(0.8)
                     .lineLimit(3)
-                
+
                 if let show = episode.show {
                     Button {
                         Task {
@@ -69,17 +69,17 @@ struct PlayerMainScreen: View {
                 }
             }
             .frame(maxWidth: .infinity, alignment: .leading)
-            
+
             Spacer(minLength: 8)
-            
+
             Text(soundPlayerState.currentChapter?.title ?? " ")
                 .foregroundStyle(.secondary)
                 .font(.subheadline.bold())
-            
+
             progressView
-            
+
             actionButtonsView(playing: playing, episode: episode)
-            
+
             Spacer(minLength: 0)
         }
         .padding(.horizontal, 32)
@@ -91,7 +91,7 @@ struct PlayerMainScreen: View {
             }
         }
     }
-    
+
     private var progressView: some View {
         VStack(spacing: 0) {
             Slider(
@@ -101,28 +101,28 @@ struct PlayerMainScreen: View {
                 ),
                 in: 0...(soundPlayerState.duration ?? 0)
             )
-            
+
             HStack {
                 Text(
                     formatEpisodeDuration(
                         duration: Double(soundPlayerState.currentTimeInt ?? 0)
                     )
                 )
-                
+
                 Spacer(minLength: 0)
-                
+
                 Text(
                     "-" +
-                    formatEpisodeDuration(
-                        duration: Double(soundPlayerState.duration ?? 0) - Double(soundPlayerState.currentTimeInt ?? 0)
-                    )
+                        formatEpisodeDuration(
+                            duration: Double(soundPlayerState.duration ?? 0) - Double(soundPlayerState.currentTimeInt ?? 0)
+                        )
                 )
             }
             .font(.caption.monospacedDigit())
             .foregroundStyle(.secondary)
         }
     }
-    
+
     private func actionButtonsView(playing: Bool, episode: EpisodeRecord) -> some View {
         HStack {
             Group {
@@ -144,12 +144,12 @@ struct PlayerMainScreen: View {
                     }
                     .font(.body.monospacedDigit())
                     .padding(.vertical)
-                
+
                 Button(action: { soundPlayerState.goBackward(seconds: 10) }) {
                     Image(systemName: "gobackward.10")
                         .padding(.vertical)
                 }
-                
+
                 if playing {
                     Button(action: {
                         soundPlayerState.pause(episode: episode)
@@ -172,12 +172,12 @@ struct PlayerMainScreen: View {
                             .padding(.vertical)
                     }
                 }
-                
+
                 Button(action: { soundPlayerState.goForward(seconds: 10) }) {
                     Image(systemName: "goforward.10")
                         .padding(.vertical)
                 }
-                
+
                 Text(SoundPlayerState.SpeedRate._1_75.formatted)
                     .hidden()
                     .font(.body.monospacedDigit())
@@ -200,7 +200,7 @@ struct PlayerMainScreen: View {
         .tint(.primary)
         .frame(maxWidth: .infinity)
     }
-    
+
     private var chaptersMenu: some View {
         ZStack {
             Color.clear
@@ -210,7 +210,7 @@ struct PlayerMainScreen: View {
                         chaptersMenuPresented = false
                     }
                 }
-            
+
             ScrollViewReader { proxy in
                 ScrollView(showsIndicators: false) {
                     VStack {
@@ -223,9 +223,9 @@ struct PlayerMainScreen: View {
                                         .font(.callout)
                                         .lineLimit(2)
                                         .multilineTextAlignment(.leading)
-                                    
+
                                     Spacer(minLength: 4)
-                                    
+
                                     Text(formatEpisodeDuration(duration: chapter.duration))
                                         .foregroundStyle(.secondary)
                                         .font(.callout.monospacedDigit())
@@ -266,7 +266,7 @@ struct PlayerMainScreen: View {
             .frame(height: 400)
         }
     }
-    
+
     private func lazyImage(show: ShowRecord?) -> some View {
         LazyImage(url: show?.imageURL) { state in
             if let image = state.image {
@@ -287,7 +287,7 @@ struct PlayerMainScreen: View {
         playerState.state = .playing(episode: .fixture(context: PersistentProvider.inMemory.viewContext))
         return playerState
     }()
-    
+
     return Text("Preview")
         .sheet(isPresented: .constant(true)) {
             PlayerMainScreen()
