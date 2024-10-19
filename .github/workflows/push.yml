@@ -11,7 +11,7 @@ jobs:
         with:
           ref: ${{ github.ref_name }}
       - name: SwiftPM Cache
-        uses: actions/cache@v3
+        uses: actions/cache@v4
         with:
           path: .build
           key: ${{ runner.os }}-spm-plugin-${{ hashFiles('**/Package.resolved') }}
@@ -44,7 +44,7 @@ jobs:
       - uses: actions/checkout@v3
       - uses: mikehardy/buildcache-action@v2
       - name: SwiftPM Cache
-        uses: actions/cache@v3
+        uses: actions/cache@v4
         with:
           path: /tmp/SourcePackages
           key: ${{ runner.os }}-spm-${{ hashFiles('**/Package.resolved') }}
