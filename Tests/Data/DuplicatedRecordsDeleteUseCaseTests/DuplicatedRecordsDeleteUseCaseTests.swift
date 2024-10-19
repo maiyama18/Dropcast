@@ -8,7 +8,7 @@ import XCTest
 final class DuplicatedRecordsDeleteUseCaseTests: XCTestCase {
     func test() async throws {
         let context = PersistentProvider.inMemory.viewContext
-        
+
         // ShowA
         _ = fixtureShow(
             context: context,
@@ -23,7 +23,7 @@ final class DuplicatedRecordsDeleteUseCaseTests: XCTestCase {
                 fixtureEpisode(context: context, id: "A-4"),
             ]
         )
-        
+
         // ShowB1
         _ = fixtureShow(
             context: context,
@@ -51,12 +51,12 @@ final class DuplicatedRecordsDeleteUseCaseTests: XCTestCase {
                 fixtureEpisode(context: context, id: "B-1"),
             ]
         )
-        
+
         try context.save()
-        
+
         let useCase = DuplicatedRecordsDeleteUseCase.live(context: context)
         try useCase.delete()
-        
+
         let shows = (try context.fetch(ShowRecord.fetchRequest())).sorted(by: { $0.feedURL.absoluteString < $1.feedURL.absoluteString })
         XCTAssertEqual(shows.count, 2)
         XCTAssertEqual(
@@ -72,7 +72,7 @@ final class DuplicatedRecordsDeleteUseCaseTests: XCTestCase {
             ["B-1", "B-2", "B-3"]
         )
     }
-    
+
     private func fixtureShow(
         context: NSManagedObjectContext,
         feedURL: URL,
@@ -92,7 +92,7 @@ final class DuplicatedRecordsDeleteUseCaseTests: XCTestCase {
         }
         return show
     }
-    
+
     private func fixtureEpisode(context: NSManagedObjectContext, id: String) -> EpisodeRecord {
         EpisodeRecord(
             context: context,

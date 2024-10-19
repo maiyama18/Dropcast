@@ -18,14 +18,14 @@ extension PodcastChapterExtractUseCase {
         PodcastChapterExtractUseCase(
             extract: { fileURL in
                 let asset = AVAsset(url: fileURL)
-                
+
                 let availableLocales = try await asset.load(.availableChapterLocales)
                 guard let availableLocale = availableLocales.first else {
                     return []
                 }
-                
+
                 let chapterMetadataList = try await asset.loadChapterMetadataGroups(withTitleLocale: availableLocale)
-                
+
                 var chapters: [Chapter] = []
                 for metadata in chapterMetadataList {
                     guard let titleItem = metadata.items.first(where: { $0.commonKey == .commonKeyTitle }),

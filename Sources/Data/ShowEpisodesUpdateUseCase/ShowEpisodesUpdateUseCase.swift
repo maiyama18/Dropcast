@@ -10,13 +10,13 @@ public struct ShowEpisodesUpdateUseCase: Sendable {
 extension ShowEpisodesUpdateUseCase {
     static var live: ShowEpisodesUpdateUseCase {
         @Dependency(\.rssClient) var rssClient
-        
+
         return ShowEpisodesUpdateUseCase(
             update: { show in
                 guard let context = show.managedObjectContext else {
                     throw NSError(domain: "no context", code: 0)
                 }
-                
+
                 let rssShow = try await rssClient.fetch(show.feedURL).get()
                 let existingEpisodeIDs = Set(show.episodes.map(\.id))
                 for rssEpisode in rssShow.episodes where !existingEpisodeIDs.contains(rssEpisode.id) {

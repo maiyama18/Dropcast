@@ -15,13 +15,13 @@ extension DuplicatedRecordsDeleteUseCase {
                     let showFeedURL: URL
                     let id: String
                 }
-                
+
                 let allShows = try context.fetch(ShowRecord.fetchRequest())
                 let allShowFeedURLs = Set(allShows.map(\.feedURL_))
                 for showFeedURL in allShowFeedURLs {
                     let shows = allShows.filter { $0.feedURL_ == showFeedURL }
                     if shows.count <= 1 { continue }
-                    
+
                     // 残したいレコードが先頭に来るようにソートする。
                     // follow されていて、かつ episodes の数が多いものを優先して残す
                     let sortedShows = shows.sorted { s1, s2 in
@@ -31,18 +31,18 @@ extension DuplicatedRecordsDeleteUseCase {
                         if s2.followed && !s1.followed { return false }
                         return s1.episodes.count > s2.episodes.count
                     }
-                    
+
                     for show in sortedShows.dropFirst() {
                         context.delete(show)
                     }
                 }
-                
+
                 do {
                     try context.save()
                 } catch {
                     context.rollback()
                 }
-                
+
                 let allEpisodes = try context.fetch(EpisodeRecord.fetchRequest())
                 let allEpisodeIDs: [EpisodeID] = allEpisodes.compactMap { episode -> EpisodeID? in
                     guard let feedURL = episode.show?.feedURL_ else { return nil }
@@ -51,14 +51,14 @@ extension DuplicatedRecordsDeleteUseCase {
                 for episodeID in allEpisodeIDs {
                     let episodes = allEpisodes.filter { $0.show?.feedURL_ == episodeID.showFeedURL && $0.id == episodeID.id }
                     if episodes.count <= 1 { continue }
-                    
+
                     let sortedEpisodes = episodes.sorted { $0.publishedAt > $1.publishedAt }
-                    
+
                     for episode in sortedEpisodes.dropFirst() {
                         context.delete(episode)
                     }
                 }
-                
+
                 do {
                     try context.save()
                 } catch {
