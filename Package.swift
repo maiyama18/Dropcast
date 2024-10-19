@@ -11,9 +11,9 @@ let dependencies: [PackageDescription.Package.Dependency] = [
     .package(url: "https://github.com/noppefoxwolf/DebugMenu", exact: "2.0.5"),
     .package(url: "https://github.com/omaralbeik/Drops", exact: "1.6.1"),
     .package(url: "https://github.com/sindresorhus/Defaults", exact: "7.1.0"),
-    .package(url: "https://github.com/pointfreeco/swift-custom-dump", exact: "0.10.2"),
-    .package(url: "https://github.com/pointfreeco/swift-dependencies", exact: "0.4.2"),
-    .package(url: "https://github.com/pointfreeco/swift-identified-collections", exact: "0.7.1"),
+    .package(url: "https://github.com/pointfreeco/swift-custom-dump", exact: "1.3.3"),
+    .package(url: "https://github.com/pointfreeco/swift-dependencies", exact: "1.4.1"),
+    .package(url: "https://github.com/pointfreeco/swift-identified-collections", exact: "1.1.0"),
 
     // plugins
     .package(url: "https://github.com/maiyama18/SwiftLintPlugins", exact: "0.9.6"),
