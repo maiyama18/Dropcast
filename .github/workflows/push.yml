@@ -7,7 +7,7 @@ jobs:
     timeout-minutes: 10
     name: Lint
     steps:
-      - uses: actions/checkout@v3
+      - uses: actions/checkout@v4
         with:
           ref: ${{ github.ref_name }}
       - name: SwiftPM Cache
@@ -41,7 +41,7 @@ jobs:
       - uses: maxim-lobanov/setup-xcode@v1
         with:
           xcode-version: '14.3'
-      - uses: actions/checkout@v3
+      - uses: actions/checkout@v4
       - uses: mikehardy/buildcache-action@v2
       - name: SwiftPM Cache
         uses: actions/cache@v3
