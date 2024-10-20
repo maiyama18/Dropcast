@@ -45,33 +45,33 @@ public struct ProgressSystemImage: View {
 #if DEBUG
 
 #Preview {
-    
-VStack {
-    HStack {
-        ForEach([0, 0.2, 0.4, 0.6, 0.8, 1], id: \.self) { progress in
-            ProgressSystemImage(
-                systemName: "play.circle",
-                progress: progress,
-                onColor: .orange,
-                offColor: .gray.opacity(0.3)
-            )
-        }
-    }
-    .font(.title)
 
-    HStack {
-        ForEach([0, 0.2, 0.4, 0.6, 0.8, 1], id: \.self) { progress in
-            ProgressSystemImage(
-                systemName: "pause.circle",
-                progress: progress,
-                onColor: .teal,
-                offColor: .teal.opacity(0.2)
-            )
+    VStack {
+        HStack {
+            ForEach([0, 0.2, 0.4, 0.6, 0.8, 1], id: \.self) { progress in
+                ProgressSystemImage(
+                    systemName: "play.circle",
+                    progress: progress,
+                    onColor: .orange,
+                    offColor: .gray.opacity(0.3)
+                )
+            }
         }
+        .font(.title)
+
+        HStack {
+            ForEach([0, 0.2, 0.4, 0.6, 0.8, 1], id: \.self) { progress in
+                ProgressSystemImage(
+                    systemName: "pause.circle",
+                    progress: progress,
+                    onColor: .teal,
+                    offColor: .teal.opacity(0.2)
+                )
+            }
+        }
+        .font(.largeTitle)
     }
-    .font(.largeTitle)
-}
-    
+
 }
 
 #endif

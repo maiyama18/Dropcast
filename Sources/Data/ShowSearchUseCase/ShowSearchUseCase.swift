@@ -13,11 +13,11 @@ extension ShowSearchUseCase {
     static var live: ShowSearchUseCase {
         @Dependency(\.iTunesClient) var iTunesClient
         @Dependency(\.rssClient) var rssClient
-        
+
         return ShowSearchUseCase(
             search: { query in
                 guard !query.isEmpty else { return [] }
-                
+
                 if let url = URL(string: query), (url.scheme == "https" || url.scheme == "http") {
                     do {
                         let rssShow = try await rssClient.fetch(url).get()

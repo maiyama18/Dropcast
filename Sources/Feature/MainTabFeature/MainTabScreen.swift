@@ -15,9 +15,9 @@ import NukeUI
 public struct MainTabScreen: View {
     @Environment(NavigationState.self) private var navigationState
     @Environment(SoundFileState.self) private var soundFileState
-    
+
     @Dependency(\.messageClient) private var messageClient
-    
+
     @State private var playerBannerHeight: Double = 0
 
     public init() {}
@@ -30,13 +30,13 @@ public struct MainTabScreen: View {
                         Label(title: { Text("Feed", bundle: .module) }, icon: { Image(systemName: "dot.radiowaves.up.forward") })
                     }
                     .tag(MainTab.feed)
-                
+
                 ShowListScreen()
                     .tabItem {
                         Label(title: { Text("Library", bundle: .module) }, icon: { Image(systemName: "square.stack.3d.down.right") })
                     }
                     .tag(MainTab.library)
-                
+
                 SettingsScreen()
                     .tabItem {
                         Label(title: { Text("Settings", bundle: .module) }, icon: { Image(systemName: "gearshape") })

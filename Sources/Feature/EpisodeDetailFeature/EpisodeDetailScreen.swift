@@ -10,21 +10,21 @@ import WebKit
 @MainActor
 public struct EpisodeDetailScreen: View {
     private let episode: EpisodeRecord
-    
+
     @Environment(NavigationState.self) private var navigationState
     @Environment(\.playerBannerHeight) private var playerBannerHeight
-    
+
     public init(episode: EpisodeRecord) {
         self.episode = episode
     }
-    
+
     public var body: some View {
         VStack {
             header
-            
+
             if let description = episode.episodeDescription {
                 Divider()
-                
+
                 HTMLView(htmlBodyString: description, contentBottomInset: playerBannerHeight)
             }
         }
@@ -35,7 +35,7 @@ public struct EpisodeDetailScreen: View {
             }
         }
     }
-    
+
     private var header: some View {
         HStack(alignment: .top) {
             if let showImageURL = episode.show?.imageURL {
@@ -50,7 +50,7 @@ public struct EpisodeDetailScreen: View {
                 .frame(width: 84, height: 84)
                 .cornerRadius(8)
             }
-            
+
             VStack(alignment: .leading, spacing: 4) {
                 HStack(spacing: 0) {
                     Text(episode.publishedAt.formatted(date: .numeric, time: .omitted))
@@ -58,11 +58,11 @@ public struct EpisodeDetailScreen: View {
                     Text(formatEpisodeDuration(duration: episode.duration))
                 }
                 .font(.footnote.monospacedDigit())
-                
+
                 Text(episode.title)
                     .font(.headline.bold())
                     .lineLimit(3)
-                
+
                 if let show = episode.show {
                     Button(action: {
                         Task {

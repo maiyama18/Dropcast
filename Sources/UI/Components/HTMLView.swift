@@ -3,37 +3,37 @@ import SwiftUI
 public struct HTMLView: UIViewRepresentable {
     private let htmlBodyString: String
     private let contentBottomInset: Double
-    
+
     public init(htmlBodyString: String, contentBottomInset: Double) {
         self.htmlBodyString = htmlBodyString
         self.contentBottomInset = contentBottomInset
     }
-    
+
     public func makeUIView(context: Context) -> UITextView {
         let uiTextView = UITextView()
-        
+
         uiTextView.backgroundColor = .clear
         uiTextView.isEditable = false
-        
+
         uiTextView.isScrollEnabled = true
         uiTextView.showsVerticalScrollIndicator = false
         uiTextView.setContentHuggingPriority(.defaultLow, for: .vertical)
         uiTextView.setContentHuggingPriority(.defaultLow, for: .horizontal)
         uiTextView.setContentCompressionResistancePriority(.required, for: .vertical)
         uiTextView.setContentCompressionResistancePriority(.defaultLow, for: .horizontal)
-        
+
         return uiTextView
     }
-    
+
     public func updateUIView(_ uiTextView: UITextView, context: Context) {
         uiTextView.contentInset.bottom = contentBottomInset
-        
+
         guard htmlBodyString.starts(with: "<") else {
             uiTextView.text = htmlBodyString
             uiTextView.font = UIFont.preferredFont(forTextStyle: .body)
             return
         }
-        
+
         do {
             let htmlString = html(
                 bodyString: htmlBodyString,
@@ -52,7 +52,7 @@ public struct HTMLView: UIViewRepresentable {
             uiTextView.font = UIFont.preferredFont(forTextStyle: .body)
         }
     }
-    
+
     private func html(bodyString: String, labelColor: UIColor) -> String {
         return """
         <!doctype html>
@@ -73,15 +73,15 @@ public struct HTMLView: UIViewRepresentable {
         </html>
         """
     }
-    
+
     private func hexString(of uiColor: UIColor) -> String {
         var red: CGFloat = 0
         var green: CGFloat = 0
         var blue: CGFloat = 0
         var alpha: CGFloat = 0
-        
+
         uiColor.getRed(&red, green: &green, blue: &blue, alpha: &alpha)
-        
+
         return String(
             format: "#%02lX%02lX%02lX%02lX",
             lroundf(Float(red * 255)),
