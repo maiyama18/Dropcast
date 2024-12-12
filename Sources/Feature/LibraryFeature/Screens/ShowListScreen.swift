@@ -12,15 +12,15 @@ import SwiftUI
 @MainActor
 public struct ShowListScreen: View {
     @FetchRequest<ShowRecord>(fetchRequest: ShowRecord.followed()) private var shows: FetchedResults<ShowRecord>
-    
+
     @Environment(NavigationState.self) private var navigationState
     @Environment(\.managedObjectContext) private var context
     @Environment(\.playerBannerHeight) private var playerBannerHeight
-    
+
     @Dependency(\.messageClient) private var messageClient
-    
+
     public init() {}
-    
+
     public var body: some View {
         NavigationStack(path: .init(get: { navigationState.showListPath }, set: { navigationState.showListPath = $0 })) {
             Group {
@@ -70,7 +70,7 @@ public struct ShowListScreen: View {
                                 .tint(.red)
                             }
                         }
-                        
+
                         Spacer()
                             .frame(height: playerBannerHeight)
                             .listRowInsets(EdgeInsets())
