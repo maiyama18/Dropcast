@@ -9,7 +9,7 @@ import SwiftUI
 public struct EpisodeRowView: View {
     var episode: EpisodeRecord
     var showsImage: Bool
-    
+
     public init(
         episode: EpisodeRecord,
         showsImage: Bool
@@ -17,7 +17,7 @@ public struct EpisodeRowView: View {
         self.episode = episode
         self.showsImage = showsImage
     }
-    
+
     public var body: some View {
         HStack(alignment: .top, spacing: 8) {
             if showsImage, let showImageURL = episode.show?.imageURL {
@@ -32,7 +32,7 @@ public struct EpisodeRowView: View {
                 .frame(width: 64, height: 64)
                 .cornerRadius(8)
             }
-            
+
             VStack(alignment: .leading, spacing: 4) {
                 HStack(spacing: 0) {
                     Text(episode.publishedAt.formatted(date: .numeric, time: .omitted))
@@ -40,7 +40,7 @@ public struct EpisodeRowView: View {
                     Text(formatEpisodeDuration(duration: episode.duration))
                 }
                 .font(.footnote.monospacedDigit())
-                
+
                 Group {
                     if episode.playingState?.isCompleted == true {
                         Text(Image(systemName: "checkmark.circle.fill"))
@@ -52,7 +52,7 @@ public struct EpisodeRowView: View {
                 }
                 .font(.body.bold())
                 .lineLimit(2)
-                
+
                 Group {
                     if let subtitle = episode.subtitle {
                         Text(
@@ -71,19 +71,19 @@ public struct EpisodeRowView: View {
                 .font(.footnote)
                 .foregroundStyle(.secondary)
                 .lineLimit(3)
-                
+
                 HStack(spacing: 12) {
                     EpisodeActionButton(episode: episode)
                         .tint(.accentColor)
-                    
+
                     Spacer()
-                    
+
                     Button {
                         print("misc")
                     } label: {
                         Image(systemName: "plus.circle")
                     }
-                    
+
                     Button {
                         print("misc")
                     } label: {
