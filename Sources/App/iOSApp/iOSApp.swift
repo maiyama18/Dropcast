@@ -10,7 +10,7 @@ import SwiftUI
 
 public struct IOSApp: App {
     @UIApplicationDelegateAdaptor(AppDelegate.self) private var appDelegate
-    
+
     private let navigationState: NavigationState = .shared
     private let soundFileState: SoundFileState = .shared
     private let soundPlayerState: SoundPlayerState = .shared
@@ -18,7 +18,7 @@ public struct IOSApp: App {
 
     @Dependency(\.logger[.app]) private var logger
     @Dependency(\.duplicatedRecordsDeleteUseCase) private var duplicatedRecordsDeleteUseCase
-    
+
     public init() {}
 
     public var body: some Scene {

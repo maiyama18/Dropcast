@@ -7,7 +7,7 @@ import UIKit
 final class AppDelegate: NSObject, UIApplicationDelegate {
     @Dependency(\.logger[.app]) private var logger
     @Dependency(\.duplicatedRecordsDeleteUseCase) private var duplicatedRecordsDeleteUseCase
-    
+
     func application(_ application: UIApplication, didFinishLaunchingWithOptions launchOptions: [UIApplication.LaunchOptionsKey: Any]? = nil) -> Bool {
         do {
             try AVAudioSession.sharedInstance().setCategory(.playback, mode: .default)
@@ -18,7 +18,7 @@ final class AppDelegate: NSObject, UIApplicationDelegate {
         }
         return true
     }
-    
+
     func application(_ application: UIApplication, handleEventsForBackgroundURLSession identifier: String) async {
         logger.notice("handleEventsForBackgroundURLSession")
     }
