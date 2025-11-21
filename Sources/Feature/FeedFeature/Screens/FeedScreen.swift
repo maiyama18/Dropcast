@@ -21,20 +21,20 @@ import UserDefaultsClient
 public struct FeedScreen: View {
     @FetchRequest<EpisodeRecord>(fetchRequest: EpisodeRecord.followed()) private var episodes: FetchedResults<EpisodeRecord>
     @FetchRequest<ShowRecord>(fetchRequest: ShowRecord.followed()) private var shows: FetchedResults<ShowRecord>
-    
+
     @Environment(NavigationState.self) private var navigationState
     @Environment(\.openURL) private var openURL
     @Environment(\.managedObjectContext) private var context
     @Environment(\.playerBannerHeight) private var playerBannerHeight
-    
+
     @Dependency(\.messageClient) private var messageClient
     @Dependency(\.rssClient) private var rssClient
     @Dependency(\.userDefaultsClient) private var userDefaultsClient
-    
+
     @Dependency(\.showEpisodesUpdateUseCase) private var showEpisodesUpdateUseCase
-    
+
     public init() {}
-    
+
     public var body: some View {
         NavigationStack(path: .init(get: { navigationState.feedPath }, set: { navigationState.feedPath = $0 })) {
             Group {
@@ -64,7 +64,7 @@ public struct FeedScreen: View {
                                         showsImage: true
                                     )
                                 }
-                                
+
                                 EpisodeDivider()
                             }
                         }
@@ -111,7 +111,7 @@ private extension FeedScreen {
                 }
             }
         }
-        
+
         userDefaultsClient.setFeedRefreshedAt(.now)
     }
 }
