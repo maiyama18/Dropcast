@@ -38,40 +38,40 @@ public final class SoundFileState: NSObject {
             guard let data = try? JSONEncoder().encode(self) else { return nil }
             return String(data: data, encoding: .utf8)
         }
-        
+
         func episodeID() -> EpisodeRecord.ID? {
             String(base64Encoded: idBase64)
         }
     }
-    
+
     struct UnexpectedError: Error {}
-    
+
     public static let shared: SoundFileState = .init()
     public static let soundFilesRootDirectoryURL: URL = URL.documentsDirectory.appendingPathComponent("SoundFiles")
-    
+
     public static func soundFileURL(episode: EpisodeRecord) throws -> URL {
         guard let identifier = TaskIdentifier(episode: episode) else { throw NSError(domain: "TaskIdentifierCreationFailed", code: 0) }
         return soundFileURL(identifier: identifier)
     }
-    
+
     private static func soundFileURL(identifier: TaskIdentifier) -> URL {
         soundFileDirectoryURL(identifier: identifier)
             .appendingPathComponent(identifier.soundFileName)
     }
-    
+
     private nonisolated static func soundFileDirectoryURL(identifier: TaskIdentifier) -> URL {
         soundFilesRootDirectoryURL
             .appendingPathComponent(identifier.feedURLBase64)
             .appendingPathComponent(identifier.idBase64)
     }
-    
+
     public var downloadStates: [EpisodeRecord.ID: EpisodeDownloadState] = [:]
     public let downloadErrorPublisher: PassthroughSubject<Void, Never> = .init()
-    
+
     private var tasks: [TaskIdentifier: URLSessionDownloadTask] = [:]
-    
+
     @ObservationIgnored @Dependency(\.logger[.soundFile]) var logger
-    
+
     override private init() {
         super.init()
         self.initializeDownloadStates()
@@ -94,20 +94,20 @@ public final class SoundFileState: NSObject {
         tasks[identifier] = task
         task.resume()
     }
-    
+
     public func cancelDownload(episode: EpisodeRecord) {
         downloadStates[episode.id] = .notDownloaded
-        
+
         guard let identifier = TaskIdentifier(episode: episode) else {
             return
         }
-        
+
         logger.notice("canceling download episode: \(identifier.idBase64) \(episode.title)")
-        
+
         tasks[identifier]?.cancel()
         tasks.removeValue(forKey: identifier)
     }
-    
+
     private func initializeDownloadStates() {
         if !FileManager.default.fileExists(atPath: Self.soundFilesRootDirectoryURL.path()) {
             try? FileManager.default.createDirectory(at: Self.soundFilesRootDirectoryURL, withIntermediateDirectories: true)
@@ -161,7 +161,7 @@ extension SoundFileState: URLSessionDownloadDelegate {
             }
             return
         }
-        
+
         let directoryURL = Self.soundFileDirectoryURL(identifier: identifier)
         do {
             try FileManager.default.createDirectory(at: directoryURL, withIntermediateDirectories: true)
@@ -174,7 +174,7 @@ extension SoundFileState: URLSessionDownloadDelegate {
                 return
             }
         }
-        
+
         let fileURL = directoryURL.appendingPathComponent(identifier.soundFileName)
         do {
             try data.write(to: fileURL)
@@ -210,7 +210,7 @@ extension SoundFileState: URLSessionDownloadDelegate {
 
     private func handleDelegateError(session: URLSession, error: Error) {
         downloadErrorPublisher.send(())
-        
+
         guard let identifierString = session.configuration.identifier,
               let episodeID = TaskIdentifier(string: identifierString)?.episodeID() else {
             logger.fault("failed to download file and identifier cannot be retrieved: \(error, privacy: .public)")

@@ -13,18 +13,18 @@ public struct EpisodeActionButton: View {
         case playing
         case pausing
     }
-    
+
     private let episode: EpisodeRecord
-    
+
     @Environment(SoundFileState.self) private var soundFileState
     @Environment(SoundPlayerState.self) private var soundPlayerState
-    
+
     @Dependency(\.messageClient) private var messageClient
-    
+
     public init(episode: EpisodeRecord) {
         self.episode = episode
     }
-    
+
     public var body: some View {
         Button {
             switch downloadState {
@@ -74,11 +74,11 @@ public struct EpisodeActionButton: View {
             }
         }
     }
-    
+
     private var downloadState: EpisodeDownloadState {
         soundFileState.downloadStates[episode.id] ?? .notDownloaded
     }
-    
+
     private var soundState: SoundState {
         switch soundPlayerState.state {
         case .notPlaying:
