@@ -13,7 +13,7 @@ extension ShowRecord {
         request.sortDescriptors = []
         return request
     }
-    
+
     @MainActor
     public static func followed() -> NSFetchRequest<ShowRecord> {
         let request = ShowRecord.fetchRequest()
@@ -21,7 +21,7 @@ extension ShowRecord {
         request.sortDescriptors = [.init(keyPath: \ShowRecord.title_, ascending: true)]
         return request
     }
-    
+
     @MainActor
     public static func deleteAll(context: NSManagedObjectContext, feedURL: URL) throws {
         for show in try context.fetch(Self.withFeedURL(feedURL)) {
@@ -34,7 +34,7 @@ extension ShowRecord {
             throw error
         }
     }
-    
+
     public var title: String { title_! }
     public var feedURL: URL { feedURL_! }
     public var imageURL: URL { imageURL_! }
@@ -42,7 +42,7 @@ extension ShowRecord {
         guard let episodes = episodes_ as? Set<EpisodeRecord> else { return [] }
         return Array(episodes)
     }
-    
+
     public convenience init(
         context: NSManagedObjectContext = PersistentProvider.cloud.viewContext,
         title: String,
@@ -53,7 +53,7 @@ extension ShowRecord {
         linkURL: URL?
     ) {
         self.init(context: context)
-        
+
         self.title_ = title
         self.showDescription = description
         self.author = author
@@ -61,7 +61,7 @@ extension ShowRecord {
         self.imageURL_ = imageURL
         self.linkURL = linkURL
     }
-    
+
     @MainActor
     public func toggleFollow() {
         followed = !followed

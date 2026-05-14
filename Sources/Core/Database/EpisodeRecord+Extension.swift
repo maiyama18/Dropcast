@@ -9,7 +9,7 @@ extension EpisodeRecord {
         request.predicate = NSPredicate(format: "id_ == %@", id)
         return request
     }
-    
+
     @MainActor
     public static func followed() -> NSFetchRequest<EpisodeRecord> {
         let request = EpisodeRecord.fetchRequest()
@@ -17,19 +17,19 @@ extension EpisodeRecord {
         request.sortDescriptors = [.init(keyPath: \EpisodeRecord.publishedAt_, ascending: false)]
         return request
     }
-    
+
     public static func withShowFeedURL(_ url: URL) -> NSFetchRequest<EpisodeRecord> {
         let request = EpisodeRecord.fetchRequest()
         request.predicate = NSPredicate(format: "show.feedURL_ == %@", url as CVarArg)
         request.sortDescriptors = [.init(keyPath: \EpisodeRecord.publishedAt_, ascending: false)]
         return request
     }
-    
+
     public var id: String { id_ ?? "" }
     public var title: String { title_ ?? "" }
     public var soundURL: URL { soundURL_! }
     public var publishedAt: Date { publishedAt_ ?? .now }
-    
+
     public convenience init(
         context: NSManagedObjectContext = PersistentProvider.cloud.viewContext,
         id: String,
@@ -41,7 +41,7 @@ extension EpisodeRecord {
         publishedAt: Date
     ) {
         self.init(context: context)
-        
+
         self.id_ = id
         self.title_ = title
         self.subtitle = subtitle
@@ -70,7 +70,7 @@ extension EpisodeRecord {
             soundURL: URL(string: "https://example.com")!,
             publishedAt: rssDateFormatter.date(from: "Tue, 03 Jan 2023 20:00:00 -0800")!
         )
-        
+
         episode.show = ShowRecord(
             context: context,
             title: "Rebuild",
@@ -80,7 +80,7 @@ extension EpisodeRecord {
             imageURL: URL(string: "https://cdn.rebuild.fm/images/icon1400.jpg")!,
             linkURL: URL(string: "https://rebuild.fm")
         )
-        
+
         return episode
     }
 }
