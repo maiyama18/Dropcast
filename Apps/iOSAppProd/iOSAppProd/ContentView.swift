@@ -3,7 +3,7 @@
 //  iOSAppProd
 //
 //  Created by maiyama18 on 2023/08/29
-//  
+//
 //
 
 import SwiftUI
